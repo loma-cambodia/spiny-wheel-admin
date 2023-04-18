@@ -45,7 +45,7 @@ const onCheckTheme = async () => {
 onCheckTheme()
 
 const title = computed(() =>
-  t(Utils.getKey("One Shop"))
+  t(Utils.getKey("Spiny Wheel"))
 );
 
 useMeta(() => {

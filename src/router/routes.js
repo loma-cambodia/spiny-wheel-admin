@@ -89,6 +89,27 @@ const routes = [
         meta: { title: "Currency", subtitle: "Country" },
       },
 
+      // SEGMENT MANAGEMENT
+      {
+        name: "segment",
+        path: "/segment",
+        component: () => import("src/pages/Segment/Index.vue"),
+        meta: { title: "Segment", subtitle: "Segment", permission: "Segment: View" },
+      },
+      {
+        name: "game",
+        path: "/game",
+        component: () => import("src/pages/Game/Index.vue"),
+        meta: { title: "game", subtitle: "game", permission: "Game: View" },
+      },
+
+      // PLATFROM MANAGEMENT
+      {
+        name: "platform",
+        path: "/platform",
+        component: () => import("src/pages/Platform/Index.vue"),
+        meta: { title: "platform", subtitle: "platform", permission: "Platform: View" },
+      },
     ],
   },
 

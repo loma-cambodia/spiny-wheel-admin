@@ -2,15 +2,8 @@ import { reactive, toRefs, ref } from "vue";
 import { date } from "quasar";
 import { api } from "../boot/axios";
 import Utils from "../helpers/Utils";
-import axios from "axios";
 
-const axoisInstance = axios.create({
-  baseURL: process.env.API_URL,
-  headers: { "X-Requested-With": "XMLHttpRequest",   'Content-Type': 'application/x-www-form-urlencoded' },
-  withCredentials: true,
-});
-
-export default function useCustomerService() {
+export default function useGame() {
   const state = reactive({
     loading: false,
     saving: false,
@@ -19,68 +12,78 @@ export default function useCustomerService() {
   });
 
   const columns = [
-    // {
-    //   name: "sl",
-    //   label: "#",
-    //   required: true,
-    //   field: (row) => row,
-    //   align: "left",
-    //   sortable: false,
-    // },
     {
-      name: "service",
-      label: "service",
-      required: true,
-      field: (row) => row.service,
-      align: "center",
-      sortable: true,
-    },
-    {
-      name: "account",
-      label: "account",
-      required: true,
-      field: (row) => row.account,
-      align: "center",
-      sortable: true,
-    },
-    {
-      name: "app_display",
-      label: "app display",
+      name: "sl",
+      label: "#",
       required: true,
       field: (row) => row,
-      align: "center",
+      align: "left",
       sortable: false,
     },
     {
-      name: "icon",
-      label: "icon",
+      name: "transaction_ID",
+      label: "Transaction Id",
       required: true,
       field: (row) => row,
+      align: "center",
+      sortable: true,
+    },
+    {
+      name: "member_id",
+      label: "Member Id",
+      required: true,
+      field: (row) => row?.customer?.member_ID,
+      align: "center",
+      sortable: true,
+    },
+    {
+      name: "transaction_type",
+      label: "transaction type",
+      required: true,
+      field: (row) => row?.transaction_type,
+      align: "center",
+      sortable: true,
+    },
+    {
+      name: "amount",
+      label: "Amount",
+      required: true,
+      field: (row) => row,
+      align: "center",
+      sortable: true,
+    },
+    {
+      name: "message",
+      label: "Message",
+      required: true,
+      field: (row) => row?.message,
       align: "center",
       sortable: false,
     },
 
     {
       name: "status",
-      label: "status",
+      label: "Status",
       required: true,
-      field: (row) => row,
+      field: (row) => row?.status,
       align: "center",
-      sortable: true,
+      sortable: false,
     },
+
+    /*
     {
       name: "actions",
-      label: "actions",
+      label: "ACTIONS",
       required: true,
       field: (row) => row,
       align: "center",
-    },
+    }, */
   ];
 
   const add = async (data) => {
     try {
       state.saving = true;
-      await axoisInstance.post("/customer-service-settings", data);
+      await api.post("/transactions", data);
     } catch (err) {
       //throw Error(Utils.getErrorMessage(err));
       throw Utils.getErrorMessage(err);
@@ -92,7 +95,7 @@ export default function useCustomerService() {
   const update = async (id, data) => {
     try {
       state.saving = true;
-      await axoisInstance.post(`/customer-service-settings/${id}`, data);
+      await api.patch(`/transactions/${id}`, data);
     } catch (err) {
       //throw Error(Utils.getErrorMessage(err));
       throw Utils.getErrorMessage(err);
@@ -104,7 +107,7 @@ export default function useCustomerService() {
   const trash = async (id) => {
     try {
       state.deleting = true;
-      await api.delete(`/customer-service-settings/${id}`);
+      await api.delete(`/transactions/${id}`);
     } catch (err) {
       //throw Error(Utils.getErrorMessage(err));
       throw Utils.getErrorMessage(err);
@@ -113,19 +116,9 @@ export default function useCustomerService() {
     }
   };
 
-  const getUsing = async (id) => {
-    try {
-      const response = await api.get(`/customer-service-settings/using/${id}`);
-      return response;
-    } catch (err) {
-      //throw Error(Utils.getErrorMessage(err));
-      throw Utils.getErrorMessage(err);
-    }
-  };
-
   const get = async (id) => {
     try {
-      const response = await api.get(`/customer-service-settings/${id}`);
+      const response = await api.get(`/transactions/${id}`);
       return response;
     } catch (err) {
       //throw Error(Utils.getErrorMessage(err));
@@ -140,7 +133,7 @@ export default function useCustomerService() {
         ? Object.assign(props.pagination, { ...props.filter })
         : props.pagination;
     try {
-      const response = await api.get("/customer-service-settings/paginate", { params });
+      const response = await api.get("/transactions/paginate", { params });
       state.items = response.data.data;
       state.loading = false;
       return response;
@@ -153,7 +146,7 @@ export default function useCustomerService() {
 
   const all = async () => {
     try {
-      const response = await api.get("/customer-service-settings/all");
+      const response = await api.get("/transactions/all");
       return response;
     } catch (err) {
       //throw Error(Utils.getErrorMessage(err));
@@ -170,6 +163,5 @@ export default function useCustomerService() {
     get,
     paginate,
     all,
-    getUsing
   };
 }

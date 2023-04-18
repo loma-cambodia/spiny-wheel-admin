@@ -254,7 +254,7 @@ watch(leftDrawerOpen, (newValue, _) => {
   //  alert('home')
 });
 watch(locale, (newValue, _) => {
-  document.title = i18n.global.t(Utils.getKey("One Shop"));
+  document.title = i18n.global.t(Utils.getKey("Spiny Wheel"));
   localStorage.setItem("locale", newValue);
 });
 
@@ -288,7 +288,7 @@ onMounted(async () => {
   }
   // otpBalance.value = await (await checkOTPbalance()).data;
 });
-document.title = i18n.global.t(Utils.getKey("One Shop"));
+document.title = i18n.global.t(Utils.getKey("Spiny Wheel"));
 </script>
 
 <style scoped>

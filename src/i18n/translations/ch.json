@@ -1223,6 +1223,14 @@
 
     "intergration": "Intergration",
     "segment_managerment": "Segment managerment",
-    "rotation_managerment": "Rotation managerment",
-    "game_play_rule": "Game play rule"
+    "setting_managerment": "Setting managerment",
+    "game_play_rule": "Game play rule",
+    "platform": "Platform",
+    "rotation_speed": "Rotation speed",
+    "rotation_time": "Rotation time",
+    "segment": "Segment",
+    "point": "Point",
+    "spiny_wheel": "Spiny wheel",
+    "game": "Game",
+    "game_managerment": "Game managerment"
 }

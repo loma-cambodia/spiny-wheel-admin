@@ -17,15 +17,21 @@ export default {
     ],
     children: [
       {
-        label: "Segment Managerment",
-        icon: "mdi-group",
+        label: "Platform",
+        icon: "mdi-application",
+        to: { name: "platform" },
+        permissions: ["Deal: View Deal", "Deal: Edit/Update"],
+      },
+      {
+        label: "Configure",
+        icon: "mdi-cog",
         to: { name: "members" },
         permissions: ["Deal: View Deal", "Deal: Edit/Update"],
       },
     ],
   },
   segments: {
-    label: "Segment Managerment",
+    label: "Game Managerment",
     icon: "mdi-segment",
     permissions: [
       "Deal: View",
@@ -34,15 +40,33 @@ export default {
     ],
     children: [
       {
-        label: "Segment Managerment",
+        label: "game",
+        icon: "mdi-gamepad-circle-outline",
+        to: { name: "game" },
+        permissions: ["Deal: View Deal", "Deal: Edit/Update"],
+      },
+      {
+        label: "Segment",
         icon: "mdi-group",
+        to: { name: "segment" },
+        permissions: ["Deal: View Deal", "Deal: Edit/Update"],
+      },
+      {
+        label: "Price",
+        icon: "mdi-cash",
+        to: { name: "members" },
+        permissions: ["Deal: View Deal", "Deal: Edit/Update"],
+      },
+      {
+        label: "Configure",
+        icon: "mdi-cog",
         to: { name: "members" },
         permissions: ["Deal: View Deal", "Deal: Edit/Update"],
       },
     ],
   },
   rotation_managerment: {
-    label: "Rotation Managerment",
+    label: "Seting Managerment",
     icon: "mdi-crosshairs",
     permissions: [
       "Agent: View",
@@ -51,8 +75,14 @@ export default {
     ],
     children: [
       {
-        label: "Agent List",
-        icon: "mdi-handshake",
+        label: "Rotation Speed",
+        icon: "mdi-speedometer",
+        to: { name: "agents" },
+        permissions: ["Agent: View", "Agent: Edit/Update"],
+      },
+      {
+        label: "Rotation Time",
+        icon: "mdi-timelapse",
         to: { name: "agents" },
         permissions: ["Agent: View", "Agent: Edit/Update"],
       }
@@ -68,8 +98,8 @@ export default {
     ],
     children: [
       {
-        label: "Agent List",
-        icon: "mdi-handshake",
+        label: "Point",
+        icon: "mdi-star-four-points",
         to: { name: "agents" },
         permissions: ["Agent: View", "Agent: Edit/Update"],
       }

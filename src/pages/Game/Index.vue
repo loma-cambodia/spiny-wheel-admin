@@ -161,18 +161,18 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import useTable from "../../composables/useTable";
-import useCustomerService from "../../composables/useCustomerService";
+import useGame from "../../composables/useGame";
 import Utils from "../../helpers/Utils";
 import Loading from "src/components/Shared/Loading.vue";
 import { store } from "../../store/store";
 import AddButton from "../../components/Buttons/AddButton.vue";
-import EditService from "../../components/Service/Edit.vue";
-import AddService from "../../components/Service/Add.vue";
+import EditService from "../../components/Game/Edit.vue";
+import AddService from "../../components/Game/Add.vue";
 import Confirm from "../../components/Shared/Confirm.vue";
 import useLanguage from "src/composables/useLanguage";
 
 const { all } = useLanguage();
-const { loading, columns, items, trash, paginate } = useCustomerService();
+const { loading, columns, items, trash, paginate } = useGame();
 const {
   showAdd,
   showEdit,

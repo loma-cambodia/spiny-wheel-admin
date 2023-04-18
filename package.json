@@ -1,9 +1,9 @@
 {
-  "name": "admin",
+  "name": "spiny-wheel",
   "version": "0.0.1",
-  "description": "Ecommerce",
-  "productName": "Ecommerce",
-  "author": "Sandeep Singh <spsandy.patel@gmail.com>",
+  "description": "Spiny Wheel",
+  "productName": "Spiny Wheel",
+  "author": "",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue ./",
