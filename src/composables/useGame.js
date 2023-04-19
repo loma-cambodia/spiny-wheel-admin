@@ -21,46 +21,21 @@ export default function useGame() {
       sortable: false,
     },
     {
-      name: "transaction_ID",
-      label: "Transaction Id",
+      name: "name",
+      label: "name",
       required: true,
       field: (row) => row,
       align: "center",
       sortable: true,
     },
     {
-      name: "member_id",
-      label: "Member Id",
+      name: "created_at",
+      label: "created_at",
       required: true,
-      field: (row) => row?.customer?.member_ID,
+      field: (row) => date.formatDate(row.created_at, "YYYY-MM-DD HH:mm:ss") ,
       align: "center",
       sortable: true,
     },
-    {
-      name: "transaction_type",
-      label: "transaction type",
-      required: true,
-      field: (row) => row?.transaction_type,
-      align: "center",
-      sortable: true,
-    },
-    {
-      name: "amount",
-      label: "Amount",
-      required: true,
-      field: (row) => row,
-      align: "center",
-      sortable: true,
-    },
-    {
-      name: "message",
-      label: "Message",
-      required: true,
-      field: (row) => row?.message,
-      align: "center",
-      sortable: false,
-    },
-
     {
       name: "status",
       label: "Status",
@@ -69,21 +44,19 @@ export default function useGame() {
       align: "center",
       sortable: false,
     },
-
-    /*
     {
       name: "actions",
       label: "ACTIONS",
       required: true,
       field: (row) => row,
       align: "center",
-    }, */
+    },
   ];
 
   const add = async (data) => {
     try {
       state.saving = true;
-      await api.post("/transactions", data);
+      await api.post("/games", data);
     } catch (err) {
       //throw Error(Utils.getErrorMessage(err));
       throw Utils.getErrorMessage(err);
@@ -95,7 +68,7 @@ export default function useGame() {
   const update = async (id, data) => {
     try {
       state.saving = true;
-      await api.patch(`/transactions/${id}`, data);
+      await api.patch(`/games/${id}`, data);
     } catch (err) {
       //throw Error(Utils.getErrorMessage(err));
       throw Utils.getErrorMessage(err);
@@ -107,7 +80,7 @@ export default function useGame() {
   const trash = async (id) => {
     try {
       state.deleting = true;
-      await api.delete(`/transactions/${id}`);
+      await api.delete(`/games/${id}`);
     } catch (err) {
       //throw Error(Utils.getErrorMessage(err));
       throw Utils.getErrorMessage(err);
@@ -118,7 +91,7 @@ export default function useGame() {
 
   const get = async (id) => {
     try {
-      const response = await api.get(`/transactions/${id}`);
+      const response = await api.get(`/games/${id}`);
       return response;
     } catch (err) {
       //throw Error(Utils.getErrorMessage(err));
@@ -133,7 +106,7 @@ export default function useGame() {
         ? Object.assign(props.pagination, { ...props.filter })
         : props.pagination;
     try {
-      const response = await api.get("/transactions/paginate", { params });
+      const response = await api.get("/games/paginate", { params });
       state.items = response.data.data;
       state.loading = false;
       return response;
@@ -146,7 +119,7 @@ export default function useGame() {
 
   const all = async () => {
     try {
-      const response = await api.get("/transactions/all");
+      const response = await api.get("/games/all");
       return response;
     } catch (err) {
       //throw Error(Utils.getErrorMessage(err));

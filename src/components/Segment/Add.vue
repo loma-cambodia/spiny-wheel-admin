@@ -163,7 +163,6 @@ const form = ref(null);
 const { t } = useI18n();
 const props = defineProps({ data: Object, languages: Array });
 const emit = defineEmits(["onClose", "onAdded"]);
-const { all } = useSocialMedia();
 const $q = useQuasar();
 const { saving, add } = useSegment();
 const customerSevice = ref({

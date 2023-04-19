@@ -45,18 +45,18 @@ export default {
         to: { name: "game" },
         permissions: ["Deal: View Deal", "Deal: Edit/Update"],
       },
-      {
-        label: "Segment",
-        icon: "mdi-group",
-        to: { name: "segment" },
-        permissions: ["Deal: View Deal", "Deal: Edit/Update"],
-      },
-      {
-        label: "Price",
-        icon: "mdi-cash",
-        to: { name: "members" },
-        permissions: ["Deal: View Deal", "Deal: Edit/Update"],
-      },
+      // {
+      //   label: "Segment",
+      //   icon: "mdi-group",
+      //   to: { name: "segment" },
+      //   permissions: ["Deal: View Deal", "Deal: Edit/Update"],
+      // },
+      // {
+      //   label: "Price",
+      //   icon: "mdi-cash",
+      //   to: { name: "members" },
+      //   permissions: ["Deal: View Deal", "Deal: Edit/Update"],
+      // },
       {
         label: "Configure",
         icon: "mdi-cog",
@@ -66,7 +66,7 @@ export default {
     ],
   },
   rotation_managerment: {
-    label: "Seting Managerment",
+    label: "Setting Managerment",
     icon: "mdi-crosshairs",
     permissions: [
       "Agent: View",

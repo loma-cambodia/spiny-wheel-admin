@@ -2,14 +2,12 @@
   <q-card
     id="cardScrolling"
     :style="{
-      width: $q.platform.is.mobile ? '100%' : '800px',
+      width: $q.platform.is.mobile ? '100%' : '100%',
       maxWidth: '100%',
     }"
   >
     <q-bar dark class="bg-primary text-white">
-      <span class="text-body2">{{
-        $t(Utils.getKey("Edit Customer Service"))
-      }}</span>
+      <span class="text-body2">{{ $t(Utils.getKey("Update")) }}</span>
       <q-space />
       <q-btn
         dense
@@ -25,100 +23,146 @@
     <q-card-section class="q-pt-lg pb-0" v-if="!showMedia">
       <q-form ref="refForm">
         <div class="row">
-          <div class="col-12 col-md-12 q-pr-md d-flex">
+            <div
+              class="col-12 col-md-3 q-pr-md"
+              v-for="lang in languages"
+              :key="lang.locale_web"
+            >
+              <label class="text-uppercase">{{ $t(lang.locale) }}</label>
+              <q-input
+                v-model="translation_name[lang.id]"
+                :label="$t(Utils.getKey('name'))"
+                dense
+                :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
+                autogrow
+                type="textarea"
+                outlined
+              />
+            </div>
+            <!-- <q-btn style="height: 39px;" @click="showMedia = true">{{$t('new')}}</q-btn> -->
+          <!-- </div> -->
+          <div class="col-12 col-md-5 q-pr-md">
+            <label class="text-uppercase">{{ $t('type') }}</label>
             <q-select
-              v-model="customerSevice.social_media_id"
-              :label="$t(Utils.getKey('service'))"
-              dense
-              class="flex-1"
-              map-options
-              :options="mediaOptions"
-              outlined
-              emit-value
-              option-value="id"
-              option-label="name"
-              lazy-rules
-              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
-            />
-            <q-btn style="height: 39px;" @click="showMedia = true">{{$t('new')}}</q-btn>
-          </div>
-          <div class="col-12 col-md-12 q-pr-md">
-            <q-input
-              v-model="customerSevice.account"
-              :label="$t(Utils.getKey(accountLablel))"
+              v-model="game.type"
               dense
               outlined
+              :options="['wheel', 'lucky']"
               maxlength="500"
               lazy-rules
-              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
             />
           </div>
-
+          <div class="col-12 col-md-2 q-pr-md q-pt-sm">
+            <q-radio v-model="game.status" val="active" :label="$t('active')" />
+            <q-radio v-model="game.status" val="inactive" :label="$t('inactive')" />
+          </div>
           <div class="col-12 col-md-12 q-pr-md">
-            <q-radio
-              v-model="customerSevice.status"
-              :val="1"
-              :label="$t('active')"
-            />
-            <q-radio
-              v-model="customerSevice.status"
-              :val="0"
-              :label="$t('inactive')"
-            />
-          </div>
-        </div>
-        <div class="mt-3 row">
-          <div class="col-6 col-sm-4">
-            <label class="">{{ $t("icon") }}</label>
-            <div class="mt-3">
-              <label
-                class="pa-2 border"
-                :class="!iconRequired ? 'border' : 'border_red'"
-              >
-                <i class="fa fa-image"></i> {{ $t("choose_image") }}
-                <input
-                  class="mt-2"
-                  style="display: none"
-                  accept=".jpg, .png, .jpeg, .gif, .bmp, .tif"
-                  type="file"
-                  id="file-input"
-                  @change="uploadChange"
-                  name="image"
-                />
-              </label>
-              <p v-if="iconRequired" class="red mt-3">
-                {{ $t("image_is_required") }}
-              </p>
-              <div>
-                <img style="height: 90px" class="mt-3" :src="images_url" />
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-sm-4">
-            <label class="">{{ $t("app_display") }}</label>
-            <div class="mt-3">
-              <label
-                class="pa-2"
-                :class="!appDisplayRequired ? 'border' : 'border_red'"
-              >
-                <i class="fa fa-image"></i> {{ $t("choose_image") }}
-                <input
-                  class="mt-2"
-                  style="display: none"
-                  accept=".jpg, .png, .jpeg, .gif, .bmp, .tif"
-                  type="file"
-                  id="file-imageH5"
-                  @change="uploadChangeH5"
-                  name="imageH5"
-                />
-              </label>
-              <p v-if="appDisplayRequired" class="red mt-3">
-                {{ $t("image_is_required") }}
-              </p>
-              <div>
-                <img style="height: 90px" class="mt-3" :src="app_display_url" />
-              </div>
-            </div>
+            <p class="text-h6">{{ $t("settings") }}</p>
+            <q-separator class="q-mb-md" />
+            <q-table
+              :columns="columns"
+              bordered
+              hide-pagination
+              flat
+              :rows-per-page-options="[500]"
+              :rows="rows"
+              row-key="name"
+              :rows-per-page-label="$t(Utils.getKey('Records per page'))"
+            >
+              <template v-slot:body-cell-actions="props">
+                <q-td class="text-center">
+                  <!-- <q-btn
+                    class="q-mr-sm"
+                    size="xs"
+                    rounded
+                    padding="5px"
+                    color="primary"
+                    icon="fas fa-pen"
+                    @click="onEditClick(props.row)"
+                  >
+                    <q-tooltip>{{ $t(Utils.getKey("Edit")) }}</q-tooltip>
+                  </q-btn> -->
+                  <q-btn
+                    class="q-mr-sm"
+                    size="xs"
+                    rounded
+                    padding="5px"
+                    color="red"
+                    icon="fas fa-trash"
+                    @click="onRemove(props.row)"
+                  >
+                    <q-tooltip>{{ $t(Utils.getKey("Edit")) }}</q-tooltip>
+                  </q-btn>
+                </q-td>
+              </template>
+              <!-- header column -->
+              <template v-slot:header-cell="props">
+                <q-th :props="props">
+                  {{
+                    props.col.label === "#"
+                      ? props.col.label
+                      : $t(Utils.getKey(props.col.label))
+                  }}
+                </q-th>
+              </template>
+              <template v-slot:body-cell-segment="props">
+                <q-td>
+                  <q-input
+                    v-model="props.row.segment"
+                    :label="$t(Utils.getKey('segment'))"
+                    dense
+                    :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
+                    outlined
+                    maxlength="500"
+                    lazy-rules
+                  />
+                </q-td>
+              </template>
+              <template v-slot:body-cell-price="props">
+                <q-td>
+                  <q-input
+                    v-model="props.row.price"
+                    :label="$t(Utils.getKey('price'))"
+                    dense
+                    outlined
+                    :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
+                    type="number"
+                    maxlength="500"
+                    lazy-rules
+                  />
+                </q-td>
+              </template>
+              <template v-slot:body-cell-winning_percentage="props">
+                <q-td>
+                  <q-input
+                    v-model="props.row.winning_percentage"
+                    type="number"
+                    :label="$t(Utils.getKey('percentage'))"
+                    dense
+                    :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
+                    outlined
+                    maxlength="500"
+                    lazy-rules
+                  />
+                </q-td>
+              </template>
+                 <template v-slot:body-cell-color="props">
+                <q-td>
+                  <input
+                    v-model="props.row.color"
+                    type="color"
+                  />
+                </q-td>
+              </template>
+            </q-table>
+            <q-btn
+              size="sm"
+              icon="mdi-plus"
+              color="primary"
+              class="q-mt-sm"
+              @click="onAddRow"
+            >
+            </q-btn>
           </div>
         </div>
       </q-form>
@@ -142,8 +186,8 @@
         >{{ $t(Utils.getKey("Save")) }}</q-btn
       >
     </q-card-section>
-        <div  v-if="showMedia">
-      <Media @back="showMedia = false, onGetMedia()" />
+    <div v-if="showMedia">
+      <Media @back="(showMedia = false), onGetMedia()" />
     </div>
     <Loading :loading="isLoading" />
   </q-card>
@@ -153,96 +197,81 @@
 import { onMounted, ref, watch } from "vue";
 import { useQuasar } from "quasar";
 import useGame from "../../composables/useGame";
+import useLanguage from "src/composables/useLanguage";
 import { useI18n } from "vue-i18n";
 import Loading from "src/components/Shared/Loading.vue";
 import Utils from "../../helpers/Utils";
-
+import Auth from "src/store/auth";
 const form = ref(null);
 const { t } = useI18n();
-const props = defineProps({ data: Object, languages: Array });
+const props = defineProps({ data: Object });
+console.log(props.data?.setting?.setting, 'setting');
 const emit = defineEmits(["onClose", "onUpdated"]);
-
 const $q = useQuasar();
 const { saving, update } = useGame();
-const customerSevice = ref({ ...props.data });
+const { all } = useLanguage();
+const game = ref({...props.data});
+const translation_name = ref({})
 const isLoading = ref(false);
-const icon = ref("");
-const iconRequired = ref(false);
-const appDisplayRequired = ref(false);
-const images_url = ref("");
-const app_display = ref("");
-const app_display_url = ref("");
+const columns = [
+  {
+    name: "segment",
+    field: (row) => row.name,
+    align: "left",
+    label: "segment",
+  },
+  { name: "price", field: (row) => row.name, align: "left", label: "price" },
+  {
+    name: "winning_percentage",
+    field: (row) => row.name,
+    align: "left",
+    label: "winning_percentage",
+  },
+  { name: "color", field: (row) => row.color, align: "left", label: "color" },
+
+  { name: "actions", field: (row) => row, label: " Action", align: "center" },
+];
 const refForm = ref(null);
-const mediaOptions = ref([])
-const showMedia = ref(false);
-const accountLablel = ref('account')
-
-watch(()=> customerSevice.value.social_media_id , ()=> {
-  let type = mediaOptions.value.filter(sv => sv.id == customerSevice.value.social_media_id)[0]
-  let isPhone = ['Telephone', 'Telegram', 'telegram', 'whatsapp', 'WhatsApp', 'Phone', 'phone', 'telephone']
-  let isVidoe = ['Youtube', 'youtube', 'video']
-  if(isPhone.includes(type.name)){
-    accountLablel.value = "phone"
-  } else if (isVidoe.includes(type.name)){
-    accountLablel.value = "video_url"
-  }
-   else {
-    accountLablel.value = "account"
-  }
-})
-
-
-const uploadChange = (e) => {
-  iconRequired.value = false;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    if (e.target.result) {
-      images_url.value = e.target.result;
-    }
-  };
-  icon.value = e.target.files[0];
-
-  reader.readAsDataURL(e.target.files[0]);
+const rows = ref(props.data?.setting?.setting);
+const incNum = ref(0);
+const onAddRow = () => {
+  incNum.value += 1;
+  rows.value.push({
+    id: incNum.value,
+    segment: "",
+    price: "",
+    winning_percentage: "",
+    color: "#808080",
+  });
 };
+const languages = ref([]);
 
-const onGetMedia = async () => {
-  let getAll = await all();
-  mediaOptions.value = getAll.data;
+const onRemove = (val) => {
+  rows.value = rows.value.filter((row) => row.id != val.id);
 };
-onGetMedia();
-
-const uploadChangeH5 = (e) => {
-  appDisplayRequired.value = false;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    if (e.target.result) {
-      app_display_url.value = e.target.result;
-    }
-  };
-  app_display.value = e.target.files[0];
-
-  reader.readAsDataURL(e.target.files[0]);
-};
-
+getLanguages();
+async function getLanguages() {
+  languages.value = await (await all()).data;
+  languages.value.forEach(item => {
+    translation_name.value[item.id] = props.data.translates[item.locale]?.name
+  });
+}
 async function onSubmit() {
   try {
     let validation = await refForm.value.validate();
     if (!validation) {
       return;
     }
-
-    const FormData = require("form-data");
-    const fomrData = new FormData();
-    for (const key in customerSevice.value) {
-      fomrData.append(key, customerSevice.value[key]);
+    let lang_data = []
+    for (const key in translation_name.value) {
+      lang_data.push({
+        language_id: key,
+        field_name: 'name',
+        translation: translation_name.value[key]
+      })
     }
-    if (icon.value != "") {
-      fomrData.append("icon", icon.value);
-    }
-    if (app_display.value != "") {
-      fomrData.append("app_display", app_display.value);
-    }
-    await update(customerSevice.value.id, fomrData);
+    game.value.setting = rows.value;
+    await update(game.value.id, {...game.value, translation_name: lang_data});
     $q.notify({
       position: "top-right",
       type: "positive",
@@ -261,10 +290,5 @@ async function onSubmit() {
     });
   }
 }
-onMounted(async () => {
-  // app_display = 0
-  // icon = 1
-  images_url.value = props.data.image[0]?.path;
-  app_display_url.value = props.data.image[1]?.path;
-});
+onMounted(async () => {});
 </script>

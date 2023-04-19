@@ -2,6 +2,7 @@
   <q-page :class="!store.leftDrawerOpen ? 'ml-5' : ''">
     <q-card
       class="mt-3"
+      v-if="!showAdd && !showEdit"
       style="margin-left: 0px; box-shadow: none; min-height: 100vh"
     >
       <q-card-section>
@@ -40,7 +41,7 @@
             <q-space />
 
             <add-button
-              v-if="Utils.hasPermissions(['CustomerServiceSetting: Create CustomerServiceSetting'])"
+              v-if="Utils.hasPermissions(['Game: Create'])"
               :disable="loading"
               @click="showAdd = true"
               tooltip-text="Add"
@@ -71,31 +72,18 @@
               {{ props.rowIndex + 1 }}
             </q-td>
           </template>
-          <template v-slot:body-cell-description="props">
-            <q-td>
-              {{
-                props.row.description != "undefined"
-                  ? props.row.description
-                  : ""
-              }}
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-app_display="props">
+          <template v-slot:body-cell-name="props">
             <q-td class="text-center">
-              <img :src="props.row?.image[0].path" style="height: 40px" />
-            </q-td>
-          </template>
-          <template v-slot:body-cell-icon="props">
-            <q-td class="text-center">
-              <img :src="props.row?.image[1].path" style="height: 40px" />
+              {{ props.row?.translates[locale]?.name }}
             </q-td>
           </template>
           <template v-slot:body-cell-status="props">
             <q-td class="text-center">
               <q-chip
                 size="sm"
-                :label="props.row.status == 1 ? $t('active') : $t('inactive')"
+                :label="
+                  props.row.status == 'active' ? $t('active') : $t('inactive')
+                "
                 :color="getStatusColor(props)"
                 :class="'text-white'"
               />
@@ -104,7 +92,7 @@
           <template v-slot:body-cell-actions="props">
             <q-td class="text-center">
               <q-btn
-                v-if="Utils.hasPermissions(['CustomerServiceSetting: Edit/Update CustomerServiceSetting'])"
+                v-if="Utils.hasPermissions(['Game: Edit/Update'])"
                 class="q-mr-sm"
                 size="xs"
                 rounded
@@ -117,7 +105,11 @@
               </q-btn>
 
               <q-btn
-                v-if="Utils.hasPermissions(['CustomerServiceSetting: Create CustomerServiceSetting'])"
+                v-if="
+                  Utils.hasPermissions([
+                    'CustomerServiceSetting: Create CustomerServiceSetting',
+                  ])
+                "
                 class="q-mr-sm"
                 size="xs"
                 rounded
@@ -135,17 +127,22 @@
       <Loading :loading="loading" />
     </q-card>
 
-    <q-dialog v-model="showAdd" position="top" persistent>
-      <add-service @onClose="showAdd = false" @onAdded="onRefresh" />
-    </q-dialog>
+    <div v-if="showAdd" class="q-py-lg q-px-md">
+      <add-game @onClose="showAdd = false" @onAdded="onRefresh" />
+    </div>
 
-    <q-dialog v-model="showEdit" position="top" persistent>
-      <edit-service
+    <div v-if="showEdit" class="q-py-lg q-px-md">
+      <edit-game
         :data="selectedCategory"
         @onClose="showEdit = false"
         @onUpdated="onRefresh"
       />
-    </q-dialog>
+    </div>
+
+    <!--
+    <q-dialog v-model="showEdit" position="top" persistent>
+
+    </q-dialog> -->
 
     <q-dialog v-model="showConfirm" persistent>
       <confirm
@@ -159,19 +156,20 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, inject } from "vue";
 import useTable from "../../composables/useTable";
 import useGame from "../../composables/useGame";
 import Utils from "../../helpers/Utils";
 import Loading from "src/components/Shared/Loading.vue";
 import { store } from "../../store/store";
 import AddButton from "../../components/Buttons/AddButton.vue";
-import EditService from "../../components/Game/Edit.vue";
-import AddService from "../../components/Game/Add.vue";
+import EditGame from "../../components/Game/Edit.vue";
+import AddGame from "../../components/Game/Add.vue";
 import Confirm from "../../components/Shared/Confirm.vue";
 import useLanguage from "src/composables/useLanguage";
 
 const { all } = useLanguage();
+const locale = inject("locale");
 const { loading, columns, items, trash, paginate } = useGame();
 const {
   showAdd,
@@ -218,7 +216,7 @@ const onDeleteClick = (row) => {
 };
 
 const getStatusColor = (props) => {
-  if (props.row.status === 1) {
+  if (props.row.status === "active") {
     return "positive";
   }
   return "negative";

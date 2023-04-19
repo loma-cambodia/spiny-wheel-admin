@@ -38,7 +38,7 @@
             />
             <q-space />
             <add-button
-              v-if="Utils.hasPermissions(['Role: Create Role'])"
+              v-if="Utils.hasPermissions(['Role: Create'])"
               :disable="loading"
               @click="showAdd = true"
               tooltip-text="Add"
@@ -73,7 +73,7 @@
               <q-btn
                 v-if="
                   props.row.name !== 'super admin' &&
-                  Utils.hasPermissions(['Role: Edit/Update Role'])
+                  Utils.hasPermissions(['Role: Edit/Update'])
                 "
                 class="q-ml-sm"
                 size="xs"
@@ -88,7 +88,7 @@
               <q-btn
                 v-if="
                   props.row.name !== 'super admin' &&
-                  Utils.hasPermissions(['Role: Delete Role'])
+                  Utils.hasPermissions(['Role: Delete'])
                 "
                 class="q-ml-sm"
                 size="xs"
