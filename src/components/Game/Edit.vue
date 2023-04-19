@@ -41,7 +41,7 @@
             </div>
             <!-- <q-btn style="height: 39px;" @click="showMedia = true">{{$t('new')}}</q-btn> -->
           <!-- </div> -->
-          <div class="col-12 col-md-5 q-pr-md">
+          <!-- <div class="col-12 col-md-5 q-pr-md">
             <label class="text-uppercase">{{ $t('type') }}</label>
             <q-select
               v-model="game.type"
@@ -51,11 +51,37 @@
               maxlength="500"
               lazy-rules
             />
-          </div>
+          </div> -->
           <div class="col-12 col-md-2 q-pr-md q-pt-sm">
             <q-radio v-model="game.status" val="active" :label="$t('active')" />
             <q-radio v-model="game.status" val="inactive" :label="$t('inactive')" />
           </div>
+
+                  <!-- time settingh -->
+          <div class="col-12 col-md-12 q-pr-md">
+            <p class="text-h6">{{ $t(Utils.getKey("time setting")) }}</p>
+          </div>
+          <div class="col-6 col-md-6 q-pr-md">
+            <q-input
+              v-model="time.rotation_speed"
+              :label="$t(Utils.getKey('rotation speed'))"
+              dense
+              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
+              type="number"
+              outlined
+            />
+          </div>
+          <div class="col-6 col-md-6 q-pr-md">
+            <q-input
+              v-model="time.rotation_time"
+              :label="$t(Utils.getKey('rotation time'))"
+              dense
+              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
+              type="number"
+              outlined
+            />
+          </div>
+          <!-- setting -->
           <div class="col-12 col-md-12 q-pr-md">
             <p class="text-h6">{{ $t("settings") }}</p>
             <q-separator class="q-mb-md" />
@@ -147,7 +173,7 @@
                 </q-td>
               </template>
                  <template v-slot:body-cell-color="props">
-                <q-td>
+                <q-td class="text-center">
                   <input
                     v-model="props.row.color"
                     type="color"
@@ -227,12 +253,16 @@ const columns = [
     align: "left",
     label: "winning_percentage",
   },
-  { name: "color", field: (row) => row.color, align: "left", label: "color" },
+  { name: "color", field: (row) => row.color, align: "center", label: "color" },
 
   { name: "actions", field: (row) => row, label: " Action", align: "center" },
 ];
 const refForm = ref(null);
-const rows = ref(props.data?.setting?.setting);
+const rows = ref(props.data?.setting?.setting?.segment);
+const time = ref(props.data?.setting?.setting?.setting || {
+  rotation_speed: '',
+  rotation_time: ''
+});
 const incNum = ref(0);
 const onAddRow = () => {
   incNum.value += 1;
@@ -270,7 +300,8 @@ async function onSubmit() {
         translation: translation_name.value[key]
       })
     }
-    game.value.setting = rows.value;
+    game.value.setting.segment = rows.value;
+    game.value.setting.setting = time.value
     await update(game.value.id, {...game.value, translation_name: lang_data});
     $q.notify({
       position: "top-right",

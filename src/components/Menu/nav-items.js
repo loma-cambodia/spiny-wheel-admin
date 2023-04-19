@@ -65,29 +65,29 @@ export default {
       },
     ],
   },
-  rotation_managerment: {
-    label: "Setting Managerment",
-    icon: "mdi-crosshairs",
-    permissions: [
-      "Agent: View",
-      "Agent: Create",
-      "Agent: Edit/Update",
-    ],
-    children: [
-      {
-        label: "Rotation Speed",
-        icon: "mdi-speedometer",
-        to: { name: "agents" },
-        permissions: ["Agent: View", "Agent: Edit/Update"],
-      },
-      {
-        label: "Rotation Time",
-        icon: "mdi-timelapse",
-        to: { name: "agents" },
-        permissions: ["Agent: View", "Agent: Edit/Update"],
-      }
-    ],
-  },
+  // rotation_managerment: {
+  //   label: "Setting Managerment",
+  //   icon: "mdi-crosshairs",
+  //   permissions: [
+  //     "Agent: View",
+  //     "Agent: Create",
+  //     "Agent: Edit/Update",
+  //   ],
+  //   children: [
+  //     {
+  //       label: "Rotation Speed",
+  //       icon: "mdi-speedometer",
+  //       to: { name: "agents" },
+  //       permissions: ["Agent: View", "Agent: Edit/Update"],
+  //     },
+  //     {
+  //       label: "Rotation Time",
+  //       icon: "mdi-timelapse",
+  //       to: { name: "agents" },
+  //       permissions: ["Agent: View", "Agent: Edit/Update"],
+  //     }
+  //   ],
+  // },
   game_play_rule: {
     label: "Game Play Rule",
     icon: "mdi-gamepad-circle-left",
