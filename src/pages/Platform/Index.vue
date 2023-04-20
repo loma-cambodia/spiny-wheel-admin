@@ -40,8 +40,9 @@
             <q-space />
 
             <add-button
-              v-if="Utils.hasPermissions(['CustomerServiceSetting: Create CustomerServiceSetting'])"
+              v-if="Utils.hasPermissions(['Platform: Create'])"
               :disable="loading"
+              :languages="languages"
               @click="showAdd = true"
               tooltip-text="Add"
               color="primary"
@@ -71,31 +72,19 @@
               {{ props.rowIndex + 1 }}
             </q-td>
           </template>
-          <template v-slot:body-cell-description="props">
-            <q-td>
-              {{
-                props.row.description != "undefined"
-                  ? props.row.description
-                  : ""
-              }}
-            </q-td>
-          </template>
 
-          <template v-slot:body-cell-app_display="props">
+          <template v-slot:body-cell-name="props">
             <q-td class="text-center">
-              <img :src="props.row?.image[0].path" style="height: 40px" />
-            </q-td>
-          </template>
-          <template v-slot:body-cell-icon="props">
-            <q-td class="text-center">
-              <img :src="props.row?.image[1].path" style="height: 40px" />
+              {{ props.row.name }}
             </q-td>
           </template>
           <template v-slot:body-cell-status="props">
             <q-td class="text-center">
               <q-chip
                 size="sm"
-                :label="props.row.status == 1 ? $t('active') : $t('inactive')"
+                :label="
+                  props.row.status == 'active' ? $t('active') : $t('inactive')
+                "
                 :color="getStatusColor(props)"
                 :class="'text-white'"
               />
@@ -104,7 +93,7 @@
           <template v-slot:body-cell-actions="props">
             <q-td class="text-center">
               <q-btn
-                v-if="Utils.hasPermissions(['CustomerServiceSetting: Edit/Update CustomerServiceSetting'])"
+                v-if="Utils.hasPermissions(['Platform: Edit/Update'])"
                 class="q-mr-sm"
                 size="xs"
                 rounded
@@ -141,7 +130,7 @@
 
     <q-dialog v-model="showEdit" position="top" persistent>
       <edit-service
-        :data="selectedCategory"
+        :data="selectedPlatform"
         @onClose="showEdit = false"
         @onUpdated="onRefresh"
       />
@@ -184,14 +173,17 @@ const {
   onRefresh,
 } = useTable(paginate, trash);
 const languages = ref([]);
-const selectedCategory = ref();
+const selectedPlatform = ref();
 const filters = reactive({
   search: "",
 });
 
+// getLanguages();
+// async function getLanguages() {
+//   languages.value = await (await all()).data;
+// }
 
-
-onMounted(() => {
+onMounted(async () => {
   onRequest({
     pagination: {
       ...pagination.value,
@@ -203,7 +195,7 @@ onMounted(() => {
 
 const onEditClick = (row) => {
   showEdit.value = true;
-  selectedCategory.value = row;
+  selectedPlatform.value = row;
 };
 
 const onDeleteClick = (row) => {

@@ -7,9 +7,7 @@
     }"
   >
     <q-bar dark class="bg-primary text-white">
-      <span class="text-body2">{{
-        $t(Utils.getKey("New"))
-      }}</span>
+      <span class="text-body2">{{ $t(Utils.getKey("Add Platform")) }}</span>
       <q-space />
       <q-btn
         dense
@@ -22,105 +20,54 @@
       </q-btn>
     </q-bar>
 
-    <q-card-section class="q-pt-lg pb-0" v-if="!showMedia">
+    <q-card-section class="q-pt-lg pb-0">
       <q-form ref="refForm">
         <div class="row">
           <div class="col-12 col-md-12 q-pr-md d-flex">
-            <q-select
-              v-model="customerSevice.social_media_id"
-              :label="$t(Utils.getKey('service'))"
+            <q-input
+              v-model="platforms.name"
+              :label="$t(Utils.getKey('name'))"
               dense
               class="flex-1"
-              map-options
-              :options="mediaOptions"
               outlined
               emit-value
-              option-value="id"
-              option-label="name"
-              lazy-rules
-              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
-            />
-            <q-btn style="height: 39px;" @click="showMedia = true">{{$t('new')}}</q-btn>
-          </div>
-          <div class="col-12 col-md-12 q-pr-md">
-            <q-input
-              v-model="customerSevice.account"
-              :label="$t(Utils.getKey(accountLablel))"
-              dense
-              outlined
-              :oninput="(evt)=> Utils.validationNumberAndCaracter(evt)"
-              maxlength="500"
               lazy-rules
               :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
             />
           </div>
 
+          <q-card-section class="q-pt-none">
+            <div class="row">
+              <div
+                class="col-12 col-md-6 q-pr-md"
+                v-for="lang in languages"
+                :key="lang.locale"
+              >
+                <label class="text-uppercase">{{ $t(lang.locale) }}</label>
+                <q-input
+                  v-model="platforms.translation_name[lang.locale]"
+                  :label="$t(Utils.getKey('name'))"
+                  dense
+                  autogrow
+                  type="textarea"
+                  outlined
+                />
+              </div>
+            </div>
+          </q-card-section>
+
           <div class="col-12 col-md-12 q-pr-md">
             <q-radio
-              v-model="customerSevice.status"
+            
+              v-model="platforms.status"
               :val="1"
               :label="$t('active')"
             />
             <q-radio
-              v-model="customerSevice.status"
+              v-model="platforms.status"
               :val="0"
               :label="$t('inactive')"
             />
-          </div>
-        </div>
-        <div class="mt-3 row">
-          <div class="col-6 col-sm-4">
-            <label class="">{{ $t("icon") }}</label>
-            <div class="mt-3">
-              <label
-                class="pa-2 border"
-                :class="!iconRequired ? 'border' : 'border_red'"
-              >
-                <i class="fa fa-image"></i> {{ $t("choose_image") }}
-                <input
-                  class="mt-2"
-                  style="display: none"
-                  accept=".jpg, .png, .jpeg, .gif, .bmp, .tif"
-                  type="file"
-                  id="file-input"
-                  @change="uploadChange"
-                  max="200"
-                  name="image"
-                />
-              </label>
-              <p v-if="iconRequired" class="red mt-3">
-                {{ $t("image_is_required") }}
-              </p>
-              <div>
-                <img style="height: 90px" class="mt-3" :src="images_url" />
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-sm-4">
-            <label class="">{{ $t("app_display") }}</label>
-            <div class="mt-3">
-              <label
-                class="pa-2"
-                :class="!appDisplayRequired ? 'border' : 'border_red'"
-              >
-                <i class="fa fa-image"></i> {{ $t("choose_image") }}
-                <input
-                  class="mt-2"
-                  style="display: none"
-                  accept=".jpg, .png, .jpeg, .gif, .bmp, .tif"
-                  type="file"
-                  id="file-imageH5"
-                  @change="uploadChangeH5"
-                  name="imageH5"
-                />
-              </label>
-              <p v-if="appDisplayRequired" class="red mt-3">
-                {{ $t("image_is_required") }}
-              </p>
-              <div>
-                <img style="height: 90px" class="mt-3" :src="images_url_h5" />
-              </div>
-            </div>
           </div>
         </div>
       </q-form>
@@ -144,9 +91,7 @@
         >{{ $t(Utils.getKey("Save")) }}</q-btn
       >
     </q-card-section>
-    <div  v-if="showMedia">
-      <Media @back="showMedia = false, onGetMedia()" />
-    </div>
+
     <Loading :loading="isLoading" />
   </q-card>
 </template>
@@ -158,76 +103,39 @@ import usePlatfrom from "../../composables/usePlatfrom";
 import { useI18n } from "vue-i18n";
 import Loading from "src/components/Shared/Loading.vue";
 import Utils from "../../helpers/Utils";
+import useLanguage from "src/composables/useLanguage";
+
+const { all } = useLanguage();
 
 const form = ref(null);
 const { t } = useI18n();
-const props = defineProps({ data: Object, languages: Array });
+const props = defineProps({ languages: Array });
 const emit = defineEmits(["onClose", "onAdded"]);
 const $q = useQuasar();
 const { saving, add } = usePlatfrom();
-const customerSevice = ref({
-  service: "",
-  account: "",
+const platforms = ref({
+  name: "",
   status: 1,
-  social_media_id: "",
+  translation_name: {},
 });
 const isLoading = ref(false);
-const icon = ref("");
-const iconRequired = ref(false);
-const appDisplayRequired = ref(false);
-const images_url = ref("");
-const app_display = ref("");
-const images_url_h5 = ref("");
 const refForm = ref(null);
 const showMedia = ref(false);
-const mediaOptions = ref([])
-const accountLablel = ref('account')
+const languages = ref([]);
+// const languages = ref(props.languages);
 
+getLanguages();
+async function getLanguages() {
+  languages.value = await (await all()).data;
+  console.log(languages.value);
+}
 
-watch(()=> customerSevice.value.social_media_id , ()=> {
-  let type = mediaOptions.value.filter(sv => sv.id == customerSevice.value.social_media_id)[0]
-  let isPhone = ['Telephone', 'Telegram', 'telegram', 'whatsapp', 'WhatsApp', 'Phone', 'phone', 'telephone']
-  let isVidoe = ['Youtube', 'youtube', 'video']
-  if(isPhone.includes(type.name)){
-    accountLablel.value = "phone"
-  } else if (isVidoe.includes(type.name)){
-    accountLablel.value = "video_url"
-  }
-   else {
-    accountLablel.value = "account"
-  }
-})
+console.log(languages.value);
 
-const uploadChange = (e) => {
-  iconRequired.value = false;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    if (e.target.result) {
-      images_url.value = e.target.result;
-    }
-  };
-  icon.value = e.target.files[0];
-
-  reader.readAsDataURL(e.target.files[0]);
-};
-const onGetMedia = async () => {
-  let getAll = await all();
-  mediaOptions.value = getAll.data;
-};
-onGetMedia();
-
-const uploadChangeH5 = (e) => {
-  appDisplayRequired.value = false;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    if (e.target.result) {
-      images_url_h5.value = e.target.result;
-    }
-  };
-  app_display.value = e.target.files[0];
-
-  reader.readAsDataURL(e.target.files[0]);
-};
+watch(
+  () => platforms.value.name,
+  () => {}
+);
 
 async function onSubmit() {
   try {
@@ -235,23 +143,31 @@ async function onSubmit() {
     if (!validation) {
       return;
     }
-    if (icon.value == "") {
-      iconRequired.value = true;
-      return;
-    }
-    if (app_display.value == "") {
-      appDisplayRequired.value = true;
+    let platformData = []
+    let allFill = false;
+    languages.value.forEach((lg, index) => {
+      let cd = {};
+      if (platforms.value.translation_name[lg.locale] == "") {
+        allFill = true;
+      } else {
+        cd.language_id = lg.id;
+        cd.field_name = "name";
+        cd.translation = platforms.value.translation_name[lg.locale];
+      }
+      platformData.push(cd);
+    });
+
+    if (allFill == true) {
+      $q.notify({
+        position: "top-right",
+        type: "negative",
+        icon: "fas fa-exclamation-triangle",
+        message: t(Utils.getKey("please fill all translation fileld")),
+      });
       return;
     }
 
-    const FormData = require("form-data");
-    const fomrData = new FormData();
-    for (const key in customerSevice.value) {
-      fomrData.append(key, customerSevice.value[key]);
-    }
-    fomrData.append("icon", icon.value);
-    fomrData.append("app_display", app_display.value);
-    await add(fomrData);
+    await add({...platforms.value,  translation: platformData});
     $q.notify({
       position: "top-right",
       type: "positive",
