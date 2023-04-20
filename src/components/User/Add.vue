@@ -89,6 +89,25 @@
             ]"
           />
         </form>
+        <form autocomplete="off">
+          <q-select
+            v-model="user.platform_id"
+            :options="platformOptions"
+            :label="$t(Utils.getKey('Platform'))"
+            emit-value
+            map-options
+            option-label="name"
+            option-value="id"
+            dense
+            outlined
+            maxlength="20"
+            lazy-rules
+            :rules="[
+              (val) => !!val || $t(Utils.getKey('Field is required')),
+              (val) => val || $t(Utils.getKey('Please select Platform')),
+            ]"
+          />
+        </form>
       </q-form>
     </q-card-section>
 
@@ -115,10 +134,11 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, inject } from "vue";
 import { useQuasar } from "quasar";
 import useUser from "src/composables/useUser";
 import useACL from "src/composables/useACL";
+import usePlatfrom from "src/composables/usePlatfrom";
 
 import { useI18n } from "vue-i18n";
 import Utils from "src/helpers/Utils";
@@ -128,12 +148,16 @@ const refForm = ref(null);
 const $q = useQuasar();
 const { saving, add } = useUser();
 const { getAllRoles } = useACL();
+const { all } = usePlatfrom();
 const roleOptions = ref([]);
+const platformOptions = ref([]);
+const locale = inject("locale");
 const user = ref({
   name: "",
   email: "",
   password: "",
   role_id: "",
+  platform_id: "",
 });
 
 Promise.allSettled([fetchRoles()]);
@@ -146,13 +170,37 @@ watch(
     }
   }
 );
+// watch(
+//   () => user.value.platform_id,
+//   (newValue, oldValue) => {
+//     if (newValue !== oldValue) {
+//       let platform = platformOptions.value.find((item) => item.id == newValue);
+//     }
+//   }
+// );
 
 async function fetchRoles() {
   try {
     const response = await getAllRoles();
+    const response2 = await all();
     roleOptions.value = response.data;
+    response2.data.map((p) => {
+      let d = {};
+      d.id = p.id;
+      if (p.translates[locale.value]?.name != "") {
+        d.name = p.translates[locale.value]?.name;
+      } else {
+        d.name = p.name;
+      }
+      platformOptions.value.push(d);
+    });
+
     if (response.data.length) {
       user.value.role_id = response.data[0].id;
+    }
+
+    if (response2.data.length) {
+      user.value.platform_id = response2.data[0].id;
     }
   } catch (e) {}
 }

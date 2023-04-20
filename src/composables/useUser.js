@@ -44,6 +44,15 @@ export default function useUser() {
       align: "center",
       sortable: true,
     },
+
+    {
+      name: "platforms.name",
+      label: "Platform Name",
+      required: true,
+      field: (row) => row?.platforms?.name,
+      align: "center",
+      sortable: true,
+    },
     {
       name: "created_at",
       label: "CREATED AT",

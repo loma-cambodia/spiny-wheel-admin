@@ -66,6 +66,24 @@
           lazy-rules
           :rules="[(val) => !!val || $t(Utils.getKey('Field is required'))]"
         />
+
+        <q-select
+          v-model="user.platform_id"
+          :options="platformOptions"
+          :label="$t(Utils.getKey('Platform'))"
+          emit-value
+          map-options
+          option-label="name"
+          option-value="id"
+          dense
+          outlined
+          maxlength="20"
+          lazy-rules
+          :rules="[
+            (val) => !!val || $t(Utils.getKey('Field is required')),
+            (val) => val || $t(Utils.getKey('Please select Platform')),
+          ]"
+        />
       </q-form>
     </q-card-section>
 
@@ -91,10 +109,11 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, inject } from "vue";
 import { useQuasar } from "quasar";
 import useUser from "src/composables/useUser";
 import useACL from "src/composables/useACL";
+import usePlatfrom from "src/composables/usePlatfrom";
 import Utils from "../../helpers/Utils";
 
 import { useI18n } from "vue-i18n";
@@ -102,9 +121,12 @@ const { t } = useI18n();
 const props = defineProps({ data: Object });
 const emit = defineEmits(["onClose", "onUpdated"]);
 const $q = useQuasar();
+const locale = inject("locale");
 const { saving, update } = useUser();
 const { getAllRoles } = useACL();
+const { all } = usePlatfrom();
 const roleOptions = ref([]);
+const platformOptions = ref([]);
 const user = ref({
   ...props.data,
   role_id: props.data?.roles[0]?.id,
@@ -121,10 +143,22 @@ watch(
     }
   }
 );
+
 async function fetchRoles() {
   try {
     const response = await getAllRoles();
+    const response2 = await all();
     roleOptions.value = response.data;
+    response2.data.map((p) => {
+      let d = {};
+      d.id = p.id;
+      if (p.translates[locale.value]?.name != "") {
+        d.name = p.translates[locale.value]?.name;
+      } else {
+        d.name = p.name;
+      }
+      platformOptions.value.push(d);
+    });
   } catch (e) {}
 }
 
@@ -145,7 +179,12 @@ async function onSubmit() {
       });
       return;
     }
-    await update(user.value.id, { ...user.value });
+    const userData = {
+      name: user.value.name,
+      platform_id: user.value.platform_id,
+      role_id: user.value.role_id,
+    };
+    await update(user.value.id, { ...userData });
 
     emit("onUpdated");
     $q.notify({
