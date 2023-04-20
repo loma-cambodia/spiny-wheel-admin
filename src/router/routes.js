@@ -102,6 +102,12 @@ const routes = [
         component: () => import("src/pages/Game/Index.vue"),
         meta: { title: "game", subtitle: "game", permission: "Game: View" },
       },
+      {
+        name: "game-flatform",
+        path: "/game-flatform",
+        component: () => import("src/pages/Game/Platform.vue"),
+        meta: { title: "game", subtitle: "game", permission: "Game: View" },
+      },
 
       // PLATFROM MANAGEMENT
       {

@@ -19,42 +19,49 @@
         <q-tooltip>{{ $t(Utils.getKey("Close")) }}</q-tooltip>
       </q-btn>
     </q-bar>
-  <q-card-section class="q-pt-lg pb-0" v-if="!showMedia">
+
+    <q-card-section class="q-pt-lg pb-0" v-if="!showMedia">
       <q-form ref="refForm">
         <div class="row">
-          <div
-            class="col-12 col-md-3 q-pr-md"
-            v-for="lang in languages"
-            :key="lang.locale_web"
-          >
-            <label class="text-uppercase">{{ $t(lang.locale) }}</label>
-            <q-input
-              v-model="translation_name[lang.id]"
-              :label="$t(Utils.getKey('name'))"
-              dense
-              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
-              autogrow
-              type="textarea"
-              outlined
-            />
-          </div>
-          <!-- <q-btn style="height: 39px;" @click="showMedia = true">{{$t('new')}}</q-btn> -->
+            <div
+              class="col-12 col-md-3 q-pr-md"
+              v-for="lang in languages"
+              :key="lang.locale_web"
+            >
+              <label class="text-uppercase">{{ $t(lang.locale) }}</label>
+              <q-input
+                v-model="translation_name[lang.id]"
+                :label="$t(Utils.getKey('name'))"
+                dense
+                :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
+                autogrow
+                type="textarea"
+                outlined
+              />
+            </div>
+            <!-- <q-btn style="height: 39px;" @click="showMedia = true">{{$t('new')}}</q-btn> -->
           <!-- </div> -->
-
+          <!-- <div class="col-12 col-md-5 q-pr-md">
+            <label class="text-uppercase">{{ $t('type') }}</label>
+            <q-select
+              v-model="game.type"
+              dense
+              outlined
+              :options="['wheel', 'lucky']"
+              maxlength="500"
+              lazy-rules
+            />
+          </div> -->
           <div class="col-12 col-md-2 q-pr-md q-pt-sm">
-            <q-radio
-              v-model="game.status"
-              :val="'active'"
-              :label="$t('active')"
-            />
-            <q-radio
-              v-model="game.status"
-              :val="'inactive'"
-              :label="$t('inactive')"
-            />
+            <q-radio v-model="game.status" val="active" :label="$t('active')" />
+            <q-radio v-model="game.status" val="inactive" :label="$t('inactive')" />
           </div>
 
-          <!-- <div class="col-6 col-md-6 q-pr-md">
+                  <!-- time settingh -->
+          <div class="col-12 col-md-12 q-pr-md">
+            <p class="text-h6">{{ $t(Utils.getKey("time setting")) }}</p>
+          </div>
+          <div class="col-6 col-md-6 q-pr-md">
             <q-input
               v-model="time.rotation_speed"
               :label="$t(Utils.getKey('rotation speed'))"
@@ -75,10 +82,10 @@
               type="number"
               outlined
             />
-          </div> -->
+          </div>
           <!-- setting -->
           <div class="col-12 col-md-12 q-pr-md">
-            <p class="text-h6">{{ $t("attribute_setting") }}</p>
+            <p class="text-h6">{{ $t("settings") }}</p>
             <q-separator class="q-mb-md" />
             <q-table
               :columns="columns"
@@ -126,40 +133,55 @@
                   }}
                 </q-th>
               </template>
-              <template v-slot:body-cell-parameters="props">
+              <template v-slot:body-cell-segment="props">
                 <q-td>
                   <q-input
-                    class="q-pt-sm"
-                    v-model="props.row.parameters"
-                    :label="$t(Utils.getKey('parameters'))"
+                    v-model="props.row.segment"
+                    :label="$t(Utils.getKey('segment'))"
                     dense
-                    :oninput="evt => Utils.onlyLettersAndDashEvent(evt)"
-                    :rules="[
-                      (val) => !!val || $t(Utils.getKey('field is required')),
-                    ]"
+                    :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
                     outlined
                     maxlength="500"
                     lazy-rules
                   />
                 </q-td>
               </template>
-              <template v-slot:body-cell-type="props">
+              <template v-slot:body-cell-price="props">
                 <q-td>
-                  <div class="d-flex">
-                    <q-select
-                      v-model="props.row.type"
-                      dense
-                      class="q-pt-sm flex-1"
-                      outlined
-                      :rules="[
-                        (val) => !!val || $t(Utils.getKey('field is required')),
-                      ]"
-                      :options="['interger', 'number', 'string', 'boolean', 'object', 'array']"
-                      maxlength="500"
-                      lazy-rules
-                    />
-                    <q-btn @click="onShowProperty(props.row)" v-if="props.row.type == 'array' || props.row.type == 'object'" style="height: 40px; " class="q-mt-sm" color="primary"> + </q-btn>
-                  </div>
+                  <q-input
+                    v-model="props.row.price"
+                    :label="$t(Utils.getKey('price'))"
+                    dense
+                    outlined
+                    :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
+                    :oninput="evt => Utils.numberValidationWithDecimal(evt, 10)"
+                    type="number"
+                    maxlength="500"
+                    lazy-rules
+                  />
+                </q-td>
+              </template>
+              <template v-slot:body-cell-winning_percentage="props">
+                <q-td>
+                  <q-input
+                    v-model="props.row.winning_percentage"
+                    type="number"
+                    :label="$t(Utils.getKey('percentage'))"
+                    :oninput="evt => Utils.numberValidationWithDecimal(evt, 2)"
+                    dense
+                    :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
+                    outlined
+                    maxlength="500"
+                    lazy-rules
+                  />
+                </q-td>
+              </template>
+                 <template v-slot:body-cell-color="props">
+                <q-td class="text-center">
+                  <input
+                    v-model="props.row.color"
+                    type="color"
+                  />
                 </q-td>
               </template>
             </q-table>
@@ -176,7 +198,7 @@
       </q-form>
     </q-card-section>
 
-    <q-card-section class="text-right q-mt-md">
+    <q-card-section class="text-right q-mt-md" v-if="!showMedia">
       <q-btn
         flat
         color="negative"
@@ -194,13 +216,9 @@
         >{{ $t(Utils.getKey("Save")) }}</q-btn
       >
     </q-card-section>
-
-
-    <q-dialog  v-model="dialog">
-      <Property :data="pAttritures"    @onClose="dialog = false"
-        @add="onParamsAdd"/>
-    </q-dialog>
-
+    <div v-if="showMedia">
+      <Media @back="(showMedia = false), onGetMedia()" />
+    </div>
     <Loading :loading="isLoading" />
   </q-card>
 </template>
@@ -214,8 +232,6 @@ import { useI18n } from "vue-i18n";
 import Loading from "src/components/Shared/Loading.vue";
 import Utils from "../../helpers/Utils";
 import Auth from "src/store/auth";
-import Property from './Property'
-
 const form = ref(null);
 const { t } = useI18n();
 const props = defineProps({ data: Object });
@@ -227,20 +243,26 @@ const { all } = useLanguage();
 const game = ref({...props.data});
 const translation_name = ref({})
 const isLoading = ref(false);
-const dialog = ref(false)
 const columns = [
   {
-    name: "parameters",
-    field: (row) => row,
+    name: "segment",
+    field: (row) => row.name,
     align: "left",
-    label: "parameters",
+    label: "segment",
   },
-  { name: "type", field: (row) => row, align: "left", label: "type" },
+  { name: "price", field: (row) => row.name, align: "left", label: "price" },
+  {
+    name: "winning_percentage",
+    field: (row) => row.name,
+    align: "left",
+    label: "winning_percentage",
+  },
+  { name: "color", field: (row) => row.color, align: "center", label: "color" },
 
   { name: "actions", field: (row) => row, label: " Action", align: "center" },
 ];
 const refForm = ref(null);
-const rows = ref(props.data?.setting?.setting);
+const rows = ref(props.data?.setting?.setting?.segment);
 const time = ref(props.data?.setting?.setting?.setting || {
   rotation_speed: '',
   rotation_time: ''
@@ -250,8 +272,10 @@ const onAddRow = () => {
   incNum.value += 1;
   rows.value.push({
     id: incNum.value,
-    parameters: "",
-    type: "",
+    segment: "",
+    price: "",
+    winning_percentage: "",
+    color: "#808080",
   });
 };
 const languages = ref([]);
@@ -259,27 +283,6 @@ const languages = ref([]);
 const onRemove = (val) => {
   rows.value = rows.value.filter((row) => row.id != val.id);
 };
-
-const pAttritures = ref({});
-const onShowProperty = (r) => {
-  dialog.value = true
-  rows.value.map(rw => {
-
-  })
-  pAttritures.value = r
-};
-
-const onParamsAdd = (emitValue) => {
-  dialog.value = false
-  rows.value.map(rw => {
-    if(rw.id == pAttritures.value.id){
-      rw.value = emitValue
-    }
-    return rw
-  })
-  console.log('e event', rows);
-};
-
 getLanguages();
 async function getLanguages() {
   languages.value = await (await all()).data;
@@ -301,7 +304,8 @@ async function onSubmit() {
         translation: translation_name.value[key]
       })
     }
-    game.value.setting = rows.value;
+    game.value.setting.segment = rows.value;
+    game.value.setting.setting = time.value
     await update(game.value.id, {...game.value, translation_name: lang_data});
     $q.notify({
       position: "top-right",

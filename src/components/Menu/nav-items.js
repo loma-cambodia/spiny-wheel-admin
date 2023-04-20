@@ -58,10 +58,10 @@ export default {
       //   permissions: ["Deal: View Deal", "Deal: Edit/Update"],
       // },
       {
-        label: "Configure",
+        label: "Platform Game",
         icon: "mdi-cog",
-        to: { name: "members" },
-        permissions: ["Deal: View Deal", "Deal: Edit/Update"],
+        to: { name: "game-flatform" },
+        permissions: ["Game: View", "Game: Edit/Update"],
       },
     ],
   },
