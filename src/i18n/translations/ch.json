@@ -1232,5 +1232,9 @@
     "point": "Point",
     "spiny_wheel": "Spiny wheel",
     "game": "Game",
-    "game_managerment": "Game managerment"
+    "game_managerment": "Game managerment",
+    "time_setting": "Time setting",
+    "winning_percentage": "Winning percentage",
+    "color": "Color",
+    "percentage": "Percentage"
 }

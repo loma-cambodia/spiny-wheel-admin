@@ -167,6 +167,24 @@ export default class Utils {
     }
   };
 
+  static numberValidationWithDecimal = (event, length = 4) => {
+    let pattern = /^[0-9.]*$/;
+    if (!pattern.test(event.target.value)) {
+      if (event.target.value.length > length) {
+        event.target.value = event.target.value.slice(0, length);
+      } else {
+        event.target.value = event.target.value.slice(
+          0,
+          event.target.value.length - 1
+        );
+      }
+    }else {
+      if (event.target.value.length > length) {
+        event.target.value = event.target.value.slice(0, length);
+      }
+    }
+  };
+
   static clipboard = (val) => {
     navigator.clipboard.writeText(val);
   };
@@ -345,7 +363,7 @@ export default class Utils {
     return !ch;
   };
   static containsOnlyCharacterAllLanguageEvent = (evt) => {
-    let pattern =/[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]/;
+    let pattern = /[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]/;
     if (pattern.test(evt.target.value)) {
       evt.target.value = evt.target.value.slice(0, evt.target.value.length - 1);
     }
@@ -383,18 +401,26 @@ export default class Utils {
       evt.target.value = evt.target.value.slice(0, evt.target.value.length - 1);
     }
   };
+  static onlyLettersAndDashEvent = (evt) => {
+    let pattern = /^[A-Za-z_]*$/;
+    if (!pattern.test(evt.target.value)) {
+      evt.target.value = evt.target.value.slice(0, evt.target.value.length - 1);
+    }
+  };
 
   static onlyEmail = (str) => {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(str);
   };
 
   static urlValidation = (str) => {
-    let pattern = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+    let pattern =
+      /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
     return pattern.test(str);
   };
 
   static urlValidationEvent = (evt) => {
-    let pattern = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+    let pattern =
+      /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
     if (!pattern.test(evt.target.value)) {
       evt.target.value = evt.target.value.slice(0, evt.target.value.length - 1);
     }
