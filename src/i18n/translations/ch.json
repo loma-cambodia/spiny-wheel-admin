@@ -1236,5 +1236,17 @@
     "time_setting": "Time setting",
     "winning_percentage": "Winning percentage",
     "color": "Color",
-    "percentage": "Percentage"
+    "percentage": "Percentage",
+
+    "parameters": "Parameters",
+    "attribute": "Attribute",
+    "attribute_setting": "Attribute setting",
+    "attritue": "Attritue",
+    "page__login": "Page_ login",
+    "platform_game": "Platform game",
+    "attribute_setting_of": "Attribute setting of",
+    "game_flatform": "Game flatform",
+    "select_game": "Select game",
+    "winning_rate": "Winning rate",
+    "parameter": "Parameter"
 }
