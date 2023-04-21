@@ -204,7 +204,7 @@ const onDeleteClick = (row) => {
 };
 
 const getStatusColor = (props) => {
-  if (props.row.status === 1) {
+  if (props.row.status === "active") {
     return "positive";
   }
   return "negative";
