@@ -7,7 +7,7 @@
     }"
   >
     <q-bar dark class="bg-primary text-white">
-      <span class="text-body2">{{ $t(Utils.getKey("Update")) }}</span>
+      <span class="text-body2">{{ $t(Utils.getKey("update")) }}</span>
       <q-space />
       <q-btn
         dense
@@ -23,176 +23,144 @@
     <q-card-section class="q-pt-lg pb-0" v-if="!showMedia">
       <q-form ref="refForm">
         <div class="row">
-            <div
-              class="col-12 col-md-3 q-pr-md"
-              v-for="lang in languages"
-              :key="lang.locale_web"
-            >
-              <label class="text-uppercase">{{ $t(lang.locale) }}</label>
-              <q-input
-                v-model="translation_name[lang.id]"
-                :label="$t(Utils.getKey('name'))"
-                dense
-                :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
-                autogrow
-                type="textarea"
-                outlined
-              />
-            </div>
-            <!-- <q-btn style="height: 39px;" @click="showMedia = true">{{$t('new')}}</q-btn> -->
-          <!-- </div> -->
-          <!-- <div class="col-12 col-md-5 q-pr-md">
-            <label class="text-uppercase">{{ $t('type') }}</label>
+          <div class="col-6">
             <q-select
-              v-model="game.type"
+              v-model="gameSelect"
+              :options="games"
+              :option-label="(item) => item?.translates?.[locale].name"
+              option-value="id"
+              :label="$t(Utils.getKey('Select Game'))"
               dense
+              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
+              type="number"
               outlined
-              :options="['wheel', 'lucky']"
-              maxlength="500"
-              lazy-rules
             />
-          </div> -->
+          </div>
           <div class="col-12 col-md-2 q-pr-md q-pt-sm">
-            <q-radio v-model="game.status" val="active" :label="$t('active')" />
-            <q-radio v-model="game.status" val="inactive" :label="$t('inactive')" />
-          </div>
-
-                  <!-- time settingh -->
-          <div class="col-12 col-md-12 q-pr-md">
-            <p class="text-h6">{{ $t(Utils.getKey("time setting")) }}</p>
-          </div>
-          <div class="col-6 col-md-6 q-pr-md">
-            <q-input
-              v-model="time.rotation_speed"
-              :label="$t(Utils.getKey('rotation speed'))"
-              dense
-              :oninput="evt => Utils.numberValidation(evt, 3)"
-              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
-              type="number"
-              outlined
+            <q-radio
+              v-model="game.status"
+              :val="'active'"
+              :label="$t('active')"
             />
-          </div>
-          <div class="col-6 col-md-6 q-pr-md">
-            <q-input
-              v-model="time.rotation_time"
-              :label="$t(Utils.getKey('rotation time'))"
-              :oninput="evt => Utils.numberValidation(evt, 3)"
-              dense
-              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
-              type="number"
-              outlined
+            <q-radio
+              v-model="game.status"
+              :val="'inactive'"
+              :label="$t('inactive')"
             />
           </div>
           <!-- setting -->
-          <div class="col-12 col-md-12 q-pr-md">
-            <p class="text-h6">{{ $t("settings") }}</p>
-            <q-separator class="q-mb-md" />
-            <q-table
-              :columns="columns"
-              bordered
-              hide-pagination
-              flat
-              :rows-per-page-options="[500]"
-              :rows="rows"
-              row-key="name"
-              :rows-per-page-label="$t(Utils.getKey('Records per page'))"
-            >
-              <template v-slot:body-cell-actions="props">
-                <q-td class="text-center">
-                  <!-- <q-btn
-                    class="q-mr-sm"
-                    size="xs"
-                    rounded
-                    padding="5px"
-                    color="primary"
-                    icon="fas fa-pen"
-                    @click="onEditClick(props.row)"
-                  >
-                    <q-tooltip>{{ $t(Utils.getKey("Edit")) }}</q-tooltip>
-                  </q-btn> -->
-                  <q-btn
-                    class="q-mr-sm"
-                    size="xs"
-                    rounded
-                    padding="5px"
-                    color="red"
-                    icon="fas fa-trash"
-                    @click="onRemove(props.row)"
-                  >
-                    <q-tooltip>{{ $t(Utils.getKey("Edit")) }}</q-tooltip>
-                  </q-btn>
-                </q-td>
-              </template>
-              <!-- header column -->
-              <template v-slot:header-cell="props">
-                <q-th :props="props">
-                  {{
-                    props.col.label === "#"
-                      ? props.col.label
-                      : $t(Utils.getKey(props.col.label))
-                  }}
-                </q-th>
-              </template>
-              <template v-slot:body-cell-segment="props">
-                <q-td>
-                  <q-input
-                    v-model="props.row.segment"
-                    :label="$t(Utils.getKey('segment'))"
-                    dense
-                    :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
-                    outlined
-                    maxlength="500"
-                    lazy-rules
-                  />
-                </q-td>
-              </template>
-              <template v-slot:body-cell-price="props">
-                <q-td>
-                  <q-input
-                    v-model="props.row.price"
-                    :label="$t(Utils.getKey('price'))"
-                    dense
-                    outlined
-                    :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
-                    :oninput="evt => Utils.numberValidationWithDecimal(evt, 10)"
-                    type="number"
-                    maxlength="500"
-                    lazy-rules
-                  />
-                </q-td>
-              </template>
-              <template v-slot:body-cell-winning_percentage="props">
-                <q-td>
-                  <q-input
-                    v-model="props.row.winning_percentage"
-                    type="number"
-                    :label="$t(Utils.getKey('percentage'))"
-                    :oninput="evt => Utils.numberValidationWithDecimal(evt, 2)"
-                    dense
-                    :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
-                    outlined
-                    maxlength="500"
-                    lazy-rules
-                  />
-                </q-td>
-              </template>
-                 <template v-slot:body-cell-color="props">
-                <q-td class="text-center">
-                  <input
-                    v-model="props.row.color"
-                    type="color"
-                  />
-                </q-td>
-              </template>
-            </q-table>
-            <q-btn
-              size="sm"
-              icon="mdi-plus"
-              color="primary"
-              class="q-mt-sm"
-              @click="onAddRow"
-            >
-            </q-btn>
+          <div
+            class="col-12 col-md-12 q-pr-md"
+            v-for="(setting, index) in platformSetting"
+            :key="index"
+          >
+            <!-- for array -->
+            <div v-if="setting.type == 'array'">
+              <p class="font_18">
+                {{ $t("parameter") }}:
+                {{ setting.parameters }}
+                <q-checkbox v-model="setting.status" />
+                {{ $t("type") }}: <span class="red"> {{ setting.type }} </span>
+              </p>
+              <table class="my_table">
+                <thead>
+                  <tr>
+                    <th v-for="h in setting.value" :key="h.parameters">
+                      {{ h.parameters }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(row, index) in value_setting_row" :key="index">
+                    <td v-for="h in setting.value" :key="h.parameters">
+                      <q-input
+                        class="q-pt-sm"
+                        v-model="setting.setting_value[index][h.parameters]"
+                        :label="$t(Utils.getKey(h.parameters))"
+                        dense
+                        outlined
+                        :rules="[
+                          (val) =>
+                            !!val || $t(Utils.getKey('field is required')),
+                        ]"
+                        :type="h.type"
+                        maxlength="500"
+                        lazy-rules
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <q-btn
+                size="sm"
+                icon="mdi-plus"
+                color="primary"
+                class="q-mt-sm"
+                @click="onAddRow(setting)"
+              >
+              </q-btn>
+            </div>
+            <!-- for object mapping -->
+            <div v-else-if="setting.type == 'object'">
+              <q-separator class="q-my-md" />
+              <p class="font_18">
+                {{ $t("parameter") }}:
+                {{ setting.parameters }}
+                <q-checkbox v-model="setting.status" />
+                {{ $t("type") }}: <span class="red"> {{ setting.type }} </span>
+              </p>
+              <table class="my_table">
+                <thead>
+                  <tr>
+                    <th v-for="h in setting.value" :key="h.parameters">
+                      {{ h.parameters }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td v-for="h in setting.value" :key="h.parameters">
+                      <q-input
+                        class="q-pt-sm"
+                        v-model="h.value"
+                        :label="$t(Utils.getKey(h.parameters))"
+                        dense
+                        outlined
+                        :rules="[
+                          (val) =>
+                            !!val || $t(Utils.getKey('field is required')),
+                        ]"
+                        :type="h.type"
+                        maxlength="500"
+                        lazy-rules
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div v-else>
+              <q-separator class="q-my-md" />
+              <p class="font_18">
+                {{ $t("parameter") }}:
+                {{ setting.parameters }}
+                <q-checkbox v-model="setting.status" />
+                {{ $t("type") }}: <span class="red"> {{ setting.type }} </span>
+              </p>
+              <q-input
+                class="q-pt-sm"
+                v-model="setting.value"
+                :label="$t(Utils.getKey(setting.parameters))"
+                dense
+                outlined
+                :rules="[
+                  (val) => !!val || $t(Utils.getKey('field is required')),
+                ]"
+                :type="setting.type"
+                maxlength="500"
+                lazy-rules
+              />
+            </div>
           </div>
         </div>
       </q-form>
@@ -224,89 +192,99 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, inject } from "vue";
 import { useQuasar } from "quasar";
 import useGame from "../../composables/useGame";
+import useGameSetting from "../../composables/useGameSetting";
 import useLanguage from "src/composables/useLanguage";
 import { useI18n } from "vue-i18n";
 import Loading from "src/components/Shared/Loading.vue";
 import Utils from "../../helpers/Utils";
 import Auth from "src/store/auth";
+
+const locale = inject("locale");
 const form = ref(null);
 const { t } = useI18n();
 const props = defineProps({ data: Object });
-console.log(props.data?.setting?.setting, 'setting');
+console.log('props', props.data);
 const emit = defineEmits(["onClose", "onUpdated"]);
 const $q = useQuasar();
-const { saving, update } = useGame();
-const { all } = useLanguage();
-const game = ref({...props.data});
-const translation_name = ref({})
-const isLoading = ref(false);
-const columns = [
-  {
-    name: "segment",
-    field: (row) => row.name,
-    align: "left",
-    label: "segment",
-  },
-  { name: "price", field: (row) => row.name, align: "left", label: "price" },
-  {
-    name: "winning_percentage",
-    field: (row) => row.name,
-    align: "left",
-    label: "winning_percentage",
-  },
-  { name: "color", field: (row) => row.color, align: "center", label: "color" },
+const { saving, all } = useGame();
+const { update } = useGameSetting();
+const games = ref([]);
+const gameSelect = ref([]);
+const platformSetting = ref(props.data?.setting);
+const value_setting_row = ref(props.data?.setting?.setting_value);
 
-  { name: "actions", field: (row) => row, label: " Action", align: "center" },
-];
-const refForm = ref(null);
-const rows = ref(props.data?.setting?.setting?.segment);
-const time = ref(props.data?.setting?.setting?.setting || {
-  rotation_speed: '',
-  rotation_time: ''
+watch(
+  () => gameSelect.value,
+  () => {
+    platformSetting.value = gameSelect.value.setting?.setting;
+    game.value.game_id = gameSelect.value.id
+    platformSetting.value.map((el, index) => {
+      el.status = true;
+      return el;
+    });
+  }
+);
+
+const game = ref({
+  ...props.data
 });
+const translation_name = ref({});
+const time = ref({});
+const isLoading = ref(false);
+const refForm = ref(null);
+const rows = ref([]);
 const incNum = ref(0);
-const onAddRow = () => {
+
+const onAddRow = (st) => {
   incNum.value += 1;
-  rows.value.push({
-    id: incNum.value,
-    segment: "",
-    price: "",
-    winning_percentage: "",
-    color: "#808080",
+  let objsetting = {};
+  st.value.forEach((e) => {
+    objsetting[e.parameters] = "";
   });
+  value_setting_row.value.push({
+    id: incNum.value,
+    ...objsetting,
+  });
+  platformSetting.value.map((rw) => {
+    if (rw.id == st.id) {
+      rw.setting_value = value_setting_row.value;
+    }
+    return rw;
+  });
+  console.log("platformSetting =", platformSetting.value, "st", st);
 };
 const languages = ref([]);
 
 const onRemove = (val) => {
   rows.value = rows.value.filter((row) => row.id != val.id);
 };
-getLanguages();
-async function getLanguages() {
-  languages.value = await (await all()).data;
-  languages.value.forEach(item => {
-    translation_name.value[item.id] = props.data.translates[item.locale]?.name
-  });
-}
+
+const onLoadGames = async (val) => {
+  let allGame = await all();
+  games.value = allGame.data;
+  console.log(allGame, "all games");
+};
+onLoadGames();
+
 async function onSubmit() {
   try {
     let validation = await refForm.value.validate();
     if (!validation) {
       return;
     }
-    let lang_data = []
+    let lang_data = [];
     for (const key in translation_name.value) {
       lang_data.push({
         language_id: key,
-        field_name: 'name',
-        translation: translation_name.value[key]
-      })
+        field_name: "name",
+        translation: translation_name.value[key],
+      });
     }
-    game.value.setting.segment = rows.value;
-    game.value.setting.setting = time.value
-    await update(game.value.id, {...game.value, translation_name: lang_data});
+    game.value.setting = platformSetting;
+    await update(game.value.id, { ...game.value});
     $q.notify({
       position: "top-right",
       type: "positive",
@@ -325,5 +303,9 @@ async function onSubmit() {
     });
   }
 }
-onMounted(async () => {});
+onMounted(async () => {
+  platformSetting.value.forEach(st => {
+
+  })
+});
 </script>

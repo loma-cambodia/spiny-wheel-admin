@@ -154,7 +154,7 @@
                       :rules="[
                         (val) => !!val || $t(Utils.getKey('field is required')),
                       ]"
-                      :options="['interger', 'number', 'string', 'boolean', 'object', 'array']"
+                      :options="['interger', 'number', 'string', 'boolean', 'object', 'array', 'color']"
                       maxlength="500"
                       lazy-rules
                     />
@@ -272,7 +272,7 @@ const onShowProperty = (r) => {
 const onParamsAdd = (emitValue) => {
   dialog.value = false
   rows.value.map(rw => {
-    if(rw.id == pAttritures.value.id){
+    if (rw.id == pAttritures.value.id && rw.parameters == pAttritures.value.parameters) {
       rw.value = emitValue
     }
     return rw

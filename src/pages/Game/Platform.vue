@@ -74,7 +74,7 @@
           </template>
           <template v-slot:body-cell-name="props">
             <q-td class="text-center">
-              {{ props.row?.translates[locale]?.name }}
+              {{ props.row?.game?.translates[locale]?.name }}
             </q-td>
           </template>
           <template v-slot:body-cell-status="props">
@@ -158,7 +158,7 @@
 <script setup>
 import { onMounted, reactive, ref, inject } from "vue";
 import useTable from "../../composables/useTable";
-import useGame from "../../composables/useGame";
+import useGameSetting from "../../composables/useGameSetting";
 import Utils from "../../helpers/Utils";
 import Loading from "src/components/Shared/Loading.vue";
 import { store } from "../../store/store";
@@ -170,7 +170,7 @@ import useLanguage from "src/composables/useLanguage";
 
 const { all } = useLanguage();
 const locale = inject("locale");
-const { loading, columns, items, trash, paginate } = useGame();
+const { loading, columns, items, trash, paginate } = useGameSetting();
 const {
   showAdd,
   showEdit,

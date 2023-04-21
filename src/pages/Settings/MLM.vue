@@ -9,9 +9,9 @@
     <q-card-section>
       <q-form ref="settingForm">
         <div class="row q-pt-md">
-          <div class="col-12 col-md-8">
+          <div class="col-12 col-md-12">
             <div class="row">
-              <div class="col-12 col-md-4 q-pr-md">
+              <div class="col-12 col-md-3 q-pr-md">
                 <label>{{ $t(Utils.getKey("Level One Commision")) }}</label>
                 <q-input
                   :autofocus="true"
@@ -21,13 +21,15 @@
                   @change="onChange(1)"
                   maxlength="4"
                   lazy-rules
-                  :oninput="(evt) => Utils.validationOnlyNumberDecimalEvent(evt, 4)"
+                  :oninput="
+                    (evt) => Utils.validationOnlyNumberDecimalEvent(evt, 4)
+                  "
                   :rules="[
                     (val) => !!val || $t(Utils.getKey('Field is required')),
                   ]"
                 />
               </div>
-              <div class="col-12 col-md-4 q-pr-md">
+              <div class="col-12 col-md-3 q-pr-md">
                 <label>{{ $t(Utils.getKey("Level Two Commision")) }}</label>
                 <q-input
                   :autofocus="true"
@@ -37,13 +39,15 @@
                   maxlength="4"
                   @change="onChange(2)"
                   lazy-rules
-                  :oninput="(evt) => Utils.validationOnlyNumberDecimalEvent(evt, 4)"
+                  :oninput="
+                    (evt) => Utils.validationOnlyNumberDecimalEvent(evt, 4)
+                  "
                   :rules="[
                     (val) => !!val || $t(Utils.getKey('Field is required')),
                   ]"
                 />
               </div>
-              <div class="col-12 col-md-4 q-pr-md">
+              <div class="col-12 col-md-3 q-pr-md">
                 <label>{{ $t(Utils.getKey("Level Three Commision")) }}</label>
                 <q-input
                   :autofocus="true"
@@ -53,7 +57,29 @@
                   @change="onChange(3)"
                   maxlength="4"
                   lazy-rules
-                  :oninput="(evt) => Utils.validationOnlyNumberDecimalEvent(evt, 4)"
+                  :oninput="
+                    (evt) => Utils.validationOnlyNumberDecimalEvent(evt, 4)
+                  "
+                  :rules="[
+                    (val) => !!val || $t(Utils.getKey('Field is required')),
+                  ]"
+                />
+              </div>
+              <div class="col-12 col-md-3 q-pr-md">
+                <label>{{
+                  $t(Utils.getKey("Minimum Commision amount"))
+                }}</label>
+                <q-input
+                  :autofocus="true"
+                  v-model="mlm.minimun_commision_amount"
+                  dense
+                  outlined
+                  @change="onChange(3)"
+                  maxlength="4"
+                  lazy-rules
+                  :oninput="
+                    (evt) => Utils.validationOnlyNumberDecimalEvent(evt, 4)
+                  "
                   :rules="[
                     (val) => !!val || $t(Utils.getKey('Field is required')),
                   ]"
@@ -209,23 +235,22 @@ const onSubmit = async () => {
 const onChange = (val) => {
   switch (val) {
     case 1:
-      if(mlm.value.level_one_commission[0] == '.'){
-        mlm.value.level_one_commission = 0+mlm.value.level_one_commission
+      if (mlm.value.level_one_commission[0] == ".") {
+        mlm.value.level_one_commission = 0 + mlm.value.level_one_commission;
       }
       break;
-         case 2:
-      if(mlm.value.level_two_commission[0] == '.'){
-        mlm.value.level_two_commission = 0+mlm.value.level_two_commission
+    case 2:
+      if (mlm.value.level_two_commission[0] == ".") {
+        mlm.value.level_two_commission = 0 + mlm.value.level_two_commission;
       }
       break;
-         case 3:
-      if(mlm.value.level_three_commission[0] == '.'){
-        mlm.value.level_three_commission = 0+mlm.value.level_three_commission
+    case 3:
+      if (mlm.value.level_three_commission[0] == ".") {
+        mlm.value.level_three_commission = 0 + mlm.value.level_three_commission;
       }
       break;
   }
-
-}
+};
 
 const resetCodeBasic = async () => {
   mlm.value = mlmRes.value;

@@ -71,7 +71,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(row, index) in value_setting_row" :key="index">
+                  <tr v-for="(row, index) in setting.setting_value" :key="index">
                     <td v-for="h in setting.value" :key="h.parameters">
                       <q-input
                         class="q-pt-sm"
@@ -195,6 +195,7 @@
 import { onMounted, ref, watch, inject } from "vue";
 import { useQuasar } from "quasar";
 import useGame from "../../composables/useGame";
+import useGameSetting from "../../composables/useGameSetting";
 import useLanguage from "src/composables/useLanguage";
 import { useI18n } from "vue-i18n";
 import Loading from "src/components/Shared/Loading.vue";
@@ -208,18 +209,19 @@ const props = defineProps({ data: Object });
 const emit = defineEmits(["onClose", "onAdded"]);
 const $q = useQuasar();
 const { saving, all } = useGame();
+const { add } = useGameSetting();
 const games = ref([]);
 const gameSelect = ref({});
 const platformSetting = ref([]);
 const settingSelect = ref({});
 
 const value_setting = ref({});
-const value_setting_row = ref([]);
 
 watch(
   () => gameSelect.value,
   () => {
     platformSetting.value = gameSelect.value.setting?.setting;
+    game.value.game_id = gameSelect.value.id
     platformSetting.value.map((el, index) => {
       el.status = true;
       return el;
@@ -229,12 +231,9 @@ watch(
 
 const game = ref({
   id: "",
-  type: "",
+  game_id: "",
   user_id: Auth.state?.user?.id,
-  setting: {
-    setting: {},
-    segment: [],
-  },
+  setting: {},
   status: "active",
 });
 const translation_name = ref({});
@@ -263,22 +262,32 @@ const rows = ref([]);
 const incNum = ref(0);
 
 const onAddRow = (st) => {
+    console.log('st==', st)
+
   incNum.value += 1;
+  incNum.value
   let objsetting = {};
   st.value.forEach((e) => {
     objsetting[e.parameters] = "";
   });
-  value_setting_row.value.push({
+  console.log('objsetting==', objsetting)
+  let value_setting_row ={
     id: incNum.value,
     ...objsetting,
-  });
+  };
   platformSetting.value.map((rw) => {
-    if (rw.id == st.id) {
-      rw.setting_value = value_setting_row.value;
+    console.log('row', rw)
+    if (rw.id == st.id && rw.parameters == st.parameters) {
+    console.log('rw.id == st.id', rw.id == st.id)
+
+      if(rw.setting_value == undefined){
+        rw.setting_value = []
+      }
+      rw.setting_value.push(value_setting_row);
     }
     return rw;
   });
-  console.log("platformSetting =", platformSetting.value, "st", st);
+  // console.log("platformSetting =", platformSetting.value, "st", st);
 };
 const languages = ref([]);
 
@@ -307,9 +316,8 @@ async function onSubmit() {
         translation: translation_name.value[key],
       });
     }
-    game.value.setting.segment = rows.value;
-    game.value.setting.setting = time.value;
-    await add({ ...game.value, translation_name: lang_data });
+    game.value.setting = platformSetting;
+    await add({ ...game.value});
     $q.notify({
       position: "top-right",
       type: "positive",

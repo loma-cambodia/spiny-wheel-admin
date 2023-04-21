@@ -134,7 +134,7 @@
                     v-model="props.row.parameters"
                     :label="$t(Utils.getKey('parameters'))"
                     dense
-                    :oninput="evt => Utils.onlyLettersAndDashEvent(evt)"
+                    :oninput="(evt) => Utils.onlyLettersAndDashEvent(evt)"
                     :rules="[
                       (val) => !!val || $t(Utils.getKey('field is required')),
                     ]"
@@ -145,7 +145,7 @@
                 </q-td>
               </template>
               <template v-slot:body-cell-type="props">
-                <q-td >
+                <q-td>
                   <div class="d-flex">
                     <q-select
                       v-model="props.row.type"
@@ -155,11 +155,29 @@
                       :rules="[
                         (val) => !!val || $t(Utils.getKey('field is required')),
                       ]"
-                      :options="['interger', 'number', 'string', 'boolean', 'object', 'array', 'color']"
+                      :options="[
+                        'interger',
+                        'number',
+                        'string',
+                        'boolean',
+                        'object',
+                        'array',
+                        'color',
+                      ]"
                       maxlength="500"
                       lazy-rules
                     />
-                    <q-btn @click="onShowProperty(props.row)" v-if="props.row.type == 'array' || props.row.type == 'object'" style="height: 40px; " class="q-mt-sm" color="primary"> + </q-btn>
+                    <q-btn
+                      @click="onShowProperty(props.row)"
+                      v-if="
+                        props.row.type == 'array' || props.row.type == 'object'
+                      "
+                      style="height: 40px"
+                      class="q-mt-sm"
+                      color="primary"
+                    >
+                      +
+                    </q-btn>
                   </div>
                 </q-td>
               </template>
@@ -197,12 +215,13 @@
     </q-card-section>
     <Loading :loading="isLoading" />
 
-    <q-dialog  v-model="dialog">
-      <Property :data="pAttritures"    @onClose="dialog = false"
-        @add="onParamsAdd"/>
+    <q-dialog v-model="dialog">
+      <Property
+        :data="pAttritures"
+        @onClose="dialog = false"
+        @add="onParamsAdd"
+      />
     </q-dialog>
-
-
   </q-card>
 </template>
 
@@ -215,7 +234,7 @@ import { useI18n } from "vue-i18n";
 import Loading from "src/components/Shared/Loading.vue";
 import Utils from "../../helpers/Utils";
 import Auth from "src/store/auth";
-import Property from './Property'
+import Property from "./Property";
 
 const form = ref(null);
 const { t } = useI18n();
@@ -225,13 +244,12 @@ const $q = useQuasar();
 const { saving, add } = useGame();
 const { all } = useLanguage();
 
-const dialog = ref(false)
+const dialog = ref(false);
 const game = ref({
   name: "",
   type: "",
   user_id: Auth.state?.user?.id,
-  setting: {
-  },
+  setting: {},
   status: "active",
 });
 const translation_name = ref({});
@@ -257,7 +275,7 @@ const onAddRow = () => {
     id: incNum.value,
     parameters: "",
     type: "",
-    value: ""
+    value: "",
   });
 };
 const languages = ref([]);
@@ -268,22 +286,20 @@ const onRemove = (val) => {
 
 const pAttritures = ref({});
 const onShowProperty = (r) => {
-  dialog.value = true
-  rows.value.map(rw => {
-
-  })
-  pAttritures.value = r
+  dialog.value = true;
+  rows.value.map((rw) => {});
+  pAttritures.value = r;
 };
 
 const onParamsAdd = (emitValue) => {
-  dialog.value = false
-  rows.value.map(rw => {
-    if(rw.id == pAttritures.value.id){
-      rw.value = emitValue
+  dialog.value = false;
+  rows.value.map((rw) => {
+    if (rw.id == pAttritures.value.id && rw.parameters == pAttritures.value.parameters) {
+      rw.value = emitValue;
     }
-    return rw
-  })
-  console.log('e event', rows);
+    return rw;
+  });
+  console.log("e event", rows);
 };
 
 getLanguages();
@@ -307,12 +323,25 @@ async function onSubmit() {
       });
     }
     game.value.setting = rows.value;
+    for (var i = 0; i < rows.value.length; i++) {
+      if (rows.value[i].type == "object" || rows.value[i].type == "array") {
+        if (rows.value[i].value == "") {
+          $q.notify({
+            position: "top-right",
+            type: "negative",
+            icon: "fas fa-exclamation-triangle",
+            message: t(Utils.getKey('attribute is required for object or array')),
+          });
+          return;
+        }
+      }
+    }
     await add({ ...game.value, translation_name: lang_data });
     $q.notify({
       position: "top-right",
       type: "positive",
       icon: "fas fa-check",
-      message: t(Utils.getKey("updated successfully")),
+      message: t(Utils.getKey("created successfully")),
     });
     isLoading.value = false;
     emit("onAdded");
