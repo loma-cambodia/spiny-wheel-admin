@@ -11,16 +11,14 @@ export default {
     label: "Intergration",
     icon: "mdi-chip",
     permissions: [
-      "Deal: View",
-      "Deal: Create",
-      "Deal: Edit/Update",
+      "Platform: View",
     ],
     children: [
       {
         label: "Platform",
         icon: "mdi-application",
         to: { name: "platform" },
-        permissions: ["Deal: View Deal", "Deal: Edit/Update"],
+        permissions: ["Platform: View", "Platform: Edit/Update"],
       },
       {
         label: "Configure",
@@ -34,16 +32,15 @@ export default {
     label: "Game Managerment",
     icon: "mdi-segment",
     permissions: [
-      "Deal: View",
-      "Deal: Create",
-      "Deal: Edit/Update",
+      "Game: View",
+      "Game Platform Setting: View"
     ],
     children: [
       {
         label: "game",
         icon: "mdi-gamepad-circle-outline",
         to: { name: "game" },
-        permissions: ["Deal: View Deal", "Deal: Edit/Update"],
+        permissions: ["Game: View", "Game: Edit/Update"],
       },
       // {
       //   label: "Segment",
@@ -61,7 +58,7 @@ export default {
         label: "Platform Game",
         icon: "mdi-cog",
         to: { name: "game-flatform" },
-        permissions: ["Game: View", "Game: Edit/Update"],
+        permissions: ["Game Platform Setting: View", "Game Platform Setting: Edit/Update"],
       },
     ],
   },
