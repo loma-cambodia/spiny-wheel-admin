@@ -42,25 +42,14 @@ export default {
         to: { name: "game-flatform" },
         permissions: ["Game Platform Setting: View", "Game Platform Setting: Edit/Update"],
       },
-    ],
-  },
-
-  game_play_rule: {
-    label: "Game Play Rule",
-    icon: "mdi-gamepad-circle-left",
-    permissions: [
-      "Game: View",
-    ],
-    children: [
       {
-        label: "Point",
+        label: "Game Point",
         icon: "mdi-star-four-points",
-        to: { name: "" },
-        permissions: ["Game: View"],
-      }
+        to: { name: "game-flatform" },
+        permissions: ["Game Platform Setting: View", "Game Platform Setting: Edit/Update"],
+      },
     ],
   },
-
   admin_management: {
     label: "Admin Management",
     icon: "mdi-chart-donut-variant",
@@ -95,20 +84,21 @@ export default {
     label: "Logs",
     icon: "mdi-cogs",
     permissions: [
-      "Game: View",
+      "Logs: View Activity",
+      "Logs: View Login"
     ],
     children: [
       {
         label: "Activity Logs",
         icon: "mdi-clipboard-pulse-outline",
         to: { name: "audit-logs" },
-        permissions: ["Game: View"],
+        permissions: ["Logs: View Activity"],
       },
       {
         label: "Admin Login",
         icon: "mdi-clipboard-list-outline",
         to: { name: "admin-logins" },
-        permissions: ["Game: View"],
+        permissions: ["Logs: View Login"],
       },
     ],
   },

@@ -29,6 +29,14 @@ export default function useGameSetting() {
       sortable: true,
     },
     {
+      name: "user",
+      label: "user",
+      required: true,
+      field: (row) => row?.user?.name,
+      align: "center",
+      sortable: true,
+    },
+    {
       name: "created_at",
       label: "created_at",
       required: true,

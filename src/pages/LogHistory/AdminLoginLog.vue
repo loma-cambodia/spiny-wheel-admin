@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <q-card class="">
+    <q-card class="no_shawdow q-mt-md">
       <q-card-section>
         <q-table
           flat

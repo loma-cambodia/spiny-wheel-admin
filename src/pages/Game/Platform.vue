@@ -41,7 +41,7 @@
             <q-space />
 
             <add-button
-              v-if="Utils.hasPermissions(['Game: Create'])"
+              v-if="Utils.hasPermissions(['Game Platform Setting: Create'])"
               :disable="loading"
               @click="showAdd = true"
               tooltip-text="Add"
@@ -92,7 +92,7 @@
           <template v-slot:body-cell-actions="props">
             <q-td class="text-center">
               <q-btn
-                v-if="Utils.hasPermissions(['Game: Edit/Update'])"
+                v-if="Utils.hasPermissions(['Game Platform Setting: Edit/Update'])"
                 class="q-mr-sm"
                 size="xs"
                 rounded
@@ -107,7 +107,7 @@
               <q-btn
                 v-if="
                   Utils.hasPermissions([
-                    'CustomerServiceSetting: Create CustomerServiceSetting',
+                    'Game Platform Setting: Delete',
                   ])
                 "
                 class="q-mr-sm"

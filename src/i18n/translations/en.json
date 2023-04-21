@@ -1262,7 +1262,8 @@
     "game_flatform": "Game flatform",
     "select_game": "Select game",
     "winning_rate": "Winning rate",
-    "parameter": "Parameter"
-
+    "parameter": "Parameter",
+    "game_platform_setting": "Game platform setting",
+    "game_setting": "Game setting"
   }
 

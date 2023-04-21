@@ -1,7 +1,7 @@
 <template>
   <q-card
     :style="{
-      width: $q.platform.is.mobile ? '100%' : '700px',
+      width: $q.platform.is.mobile ? '100%' : '900px',
       maxWidth: '100%',
     }"
   >
