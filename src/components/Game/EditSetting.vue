@@ -71,7 +71,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(row, index) in value_setting_row" :key="index">
+                  <tr v-for="(row, index) in setting.setting_value" :key="index">
                     <td v-for="h in setting.value" :key="h.parameters">
                       <q-input
                         class="q-pt-sm"
@@ -240,22 +240,26 @@ const incNum = ref(0);
 
 const onAddRow = (st) => {
   incNum.value += 1;
+  incNum.value
   let objsetting = {};
   st.value.forEach((e) => {
     objsetting[e.parameters] = "";
   });
-  value_setting_row.value.push({
+  let value_setting_row ={
     id: incNum.value,
     ...objsetting,
-  });
+  };
   platformSetting.value.map((rw) => {
-    if (rw.id == st.id) {
-      rw.setting_value = value_setting_row.value;
+    if (rw.id == st.id && rw.parameters == st.parameters) {
+      if(rw.setting_value == undefined){
+        rw.setting_value = []
+      }
+      rw.setting_value.push(value_setting_row);
     }
     return rw;
   });
-  console.log("platformSetting =", platformSetting.value, "st", st);
 };
+
 const languages = ref([]);
 
 const onRemove = (val) => {
@@ -305,7 +309,7 @@ async function onSubmit() {
 }
 onMounted(async () => {
   platformSetting.value.forEach(st => {
-
+      console.log("udpate date", st);
   })
 });
 </script>

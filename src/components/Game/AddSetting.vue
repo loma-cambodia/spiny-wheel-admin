@@ -262,24 +262,18 @@ const rows = ref([]);
 const incNum = ref(0);
 
 const onAddRow = (st) => {
-    console.log('st==', st)
-
   incNum.value += 1;
   incNum.value
   let objsetting = {};
   st.value.forEach((e) => {
     objsetting[e.parameters] = "";
   });
-  console.log('objsetting==', objsetting)
   let value_setting_row ={
     id: incNum.value,
     ...objsetting,
   };
   platformSetting.value.map((rw) => {
-    console.log('row', rw)
     if (rw.id == st.id && rw.parameters == st.parameters) {
-    console.log('rw.id == st.id', rw.id == st.id)
-
       if(rw.setting_value == undefined){
         rw.setting_value = []
       }
@@ -287,7 +281,6 @@ const onAddRow = (st) => {
     }
     return rw;
   });
-  // console.log("platformSetting =", platformSetting.value, "st", st);
 };
 const languages = ref([]);
 

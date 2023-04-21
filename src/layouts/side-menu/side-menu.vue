@@ -20,31 +20,33 @@
       /></MenuItem>
 
       <div v-for="(modul, key, j) in items" :key="j">
-        <MenuItem
-          v-if="modul.children.length == 0"
-          :name="j"
-          :to="modul.to.name"
-          :key="modul.label"
-          class="capitalize"
-        >
-          <q-icon :name="modul.icon" size="xs" />
-          {{ $t(Utils.getKey(modul.label)) }}
-        </MenuItem>
-        <Submenu :name="modul.label" v-if="modul.children.length > 0">
-          <template #title>
+        <div v-if="modul.permissions.some((p) => permissions.includes(p))">
+          <MenuItem
+            v-if="modul.children.length == 0"
+            :name="j"
+            :to="modul.to.name"
+            :key="modul.label"
+            class="capitalize"
+          >
             <q-icon :name="modul.icon" size="xs" />
             {{ $t(Utils.getKey(modul.label)) }}
-          </template>
-          <MenuItem
-            :name="modul.label + '-' + index"
-            :to="child.to.name"
-            v-for="(child, index) in modul.children"
-            :key="child.label"
-          >
-            <q-icon :name="child.icon" size="xs" />
-            {{ $t(Utils.getKey(child.label)) }}
           </MenuItem>
-        </Submenu>
+        </div>
+        <div v-if="modul.permissions.some((p) => permissions.includes(p))">
+          <Submenu :name="modul.label" v-if="modul.children.length > 0">
+            <template #title>
+              <q-icon :name="modul.icon" size="xs" />
+              {{ $t(Utils.getKey(modul.label)) }}
+            </template>
+
+            <div v-for="(child, index) in modul.children" :key="child.label">
+              <MenuItem v-if="child.permissions.some((p) => permissions.includes(p))" :name="modul.label + '-' + index" :to="child.to.name">
+                <q-icon :name="child.icon" size="xs" />
+                {{ $t(Utils.getKey(child.label)) }}
+              </MenuItem>
+            </div>
+          </Submenu>
+        </div>
       </div>
     </Menu>
   </div>
@@ -55,6 +57,7 @@ import { useRoute, useRouter } from "vue-router";
 import navItems from "components/Menu/nav-items";
 import Utils from "src/helpers/Utils";
 import { computed, onMounted, watch, ref } from "vue";
+import auth from "src/store/auth";
 
 const openMenu = ref([""]);
 const activeNameValue = ref("");
@@ -69,6 +72,13 @@ const routePath = computed(() => route.path);
 const updateOpened = (e) => {
   console.log("updateOpened", e);
 };
+
+const permissions = computed(() => {
+  if (auth.state.user) {
+    return auth.state.user.permissions;
+  }
+  return [];
+});
 
 watch(
   () => routePath.value,
@@ -117,8 +127,8 @@ onMounted(() => {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
-.ivu-menu-item>i {
-    margin-right: 6px;
-    margin-top: -5px;
+.ivu-menu-item > i {
+  margin-right: 6px;
+  margin-top: -5px;
 }
 </style>

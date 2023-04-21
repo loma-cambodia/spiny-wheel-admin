@@ -20,12 +20,6 @@ export default {
         to: { name: "platform" },
         permissions: ["Platform: View", "Platform: Edit/Update"],
       },
-      {
-        label: "Configure",
-        icon: "mdi-cog",
-        to: { name: "members" },
-        permissions: ["Deal: View Deal", "Deal: Edit/Update"],
-      },
     ],
   },
   segments: {
@@ -42,18 +36,6 @@ export default {
         to: { name: "game" },
         permissions: ["Game: View", "Game: Edit/Update"],
       },
-      // {
-      //   label: "Segment",
-      //   icon: "mdi-group",
-      //   to: { name: "segment" },
-      //   permissions: ["Deal: View Deal", "Deal: Edit/Update"],
-      // },
-      // {
-      //   label: "Price",
-      //   icon: "mdi-cash",
-      //   to: { name: "members" },
-      //   permissions: ["Deal: View Deal", "Deal: Edit/Update"],
-      // },
       {
         label: "Platform Game",
         icon: "mdi-cog",
@@ -67,16 +49,14 @@ export default {
     label: "Game Play Rule",
     icon: "mdi-gamepad-circle-left",
     permissions: [
-      "Agent: View",
-      "Agent: Create",
-      "Agent: Edit/Update",
+      "Game: View",
     ],
     children: [
       {
         label: "Point",
         icon: "mdi-star-four-points",
-        to: { name: "agents" },
-        permissions: ["Agent: View", "Agent: Edit/Update"],
+        to: { name: "" },
+        permissions: ["Game: View"],
       }
     ],
   },
@@ -87,14 +67,15 @@ export default {
     permissions: [
       "User: View",
       "Role: View",
-      "Permission: View"
+      "Permission: View",
+      "User: View User"
     ],
     children: [
       {
         label: "Users",
         icon: "mdi-account-multiple-outline",
         to: { name: "users" },
-        permissions: ["User: View", "User: Create"],
+        permissions: ["User: View", "User: Create", "User: View User"],
       },
       {
         label: "Roles",
@@ -114,22 +95,20 @@ export default {
     label: "Logs",
     icon: "mdi-cogs",
     permissions: [
-      "Deal: View Deal",
-      "Deal: Create Deal",
-      "Deal: Edit/Update Deal",
+      "Game: View",
     ],
     children: [
       {
         label: "Activity Logs",
         icon: "mdi-clipboard-pulse-outline",
         to: { name: "audit-logs" },
-        permissions: ["Report: View Audit Logs"],
+        permissions: ["Game: View"],
       },
       {
         label: "Admin Login",
         icon: "mdi-clipboard-list-outline",
         to: { name: "admin-logins" },
-        permissions: ["Report: View Audit Logs"],
+        permissions: ["Game: View"],
       },
     ],
   },
