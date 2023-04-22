@@ -23,7 +23,7 @@
             :class="
               $q.dark.isActive
                 ? 'bg-grey-8 pl-0 text-theme'
-                : 'style_bg pl-0 text-theme'
+                : 'style_bg_login pl-0 text-theme'
             "
             class="p-3"
             outlined="0"
@@ -317,12 +317,13 @@ const resetFilters = () => {
 <style scoped>
 .style_bg {
   background: rgb(2, 0, 36);
-  background: linear-gradient(
-    3deg,
-    rgba(2, 0, 36, 1) 0%,
-    rgba(9, 79, 121, 1) 35%,
-    rgba(0, 212, 255, 1) 100%
-  );
+  /* background: linear-gradient( 3deg, rgb(189 136 24) 0%, rgb(169 123 27) 35%, rgb(255 225 180) 100% ); */
+  background-image: url('../assets/bg.jpg');
+  background-size: cover;
+  color: white;;
+}
+.style_bg_login{
+  background: rgb(243, 167, 25, .85);
 }
 .agent {
   font-size: 26px;

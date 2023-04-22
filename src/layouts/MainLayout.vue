@@ -267,8 +267,8 @@ async function getLanguages() {
 
 const logout = async () => {
   try {
-    await auth.logout();
     router.push("/auth/login");
+    await auth.logout();
   } catch (error) {}
 };
 const isSame = ref("");
