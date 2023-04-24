@@ -187,10 +187,6 @@ const filters = reactive({
   search: "",
 });
 
-// getLanguages();
-// async function getLanguages() {
-//   languages.value = await (await all()).data;
-// }
 
 const getUserName = (row) => {
   let users = "";
