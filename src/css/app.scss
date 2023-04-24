@@ -1153,3 +1153,9 @@ p {
 .no_shawdow{
   box-shadow: none !important;
 }
+
+.q-field--labeled.q-field--dense .q-field__native {
+  padding-top: 14px;
+  padding-bottom: 2px;
+  height: 40px;
+}

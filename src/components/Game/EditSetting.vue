@@ -224,7 +224,7 @@ const locale = inject("locale");
 const form = ref(null);
 const { t } = useI18n();
 const props = defineProps({ data: Object });
-console.log("props", props.data);
+// console.log("props", props.data);
 const emit = defineEmits(["onClose", "onUpdated"]);
 const $q = useQuasar();
 const { saving, all } = useGame();
@@ -298,7 +298,20 @@ const onRemove = (val) => {
 const onLoadGames = async (val) => {
   let allGame = await all();
   games.value = allGame.data;
-  console.log(allGame, "all games");
+  let checkIsnewSetting = allGame.data.filter(ns => ns.id == props.data.game_id)
+  if(checkIsnewSetting.length > 0){
+    let oldSetting = props.data.setting.length
+    let newSetting = checkIsnewSetting[0].setting?.setting.length
+    // check is game add new parameter
+    if(newSetting  != oldSetting){
+      let diff = newSetting -  oldSetting
+      for(let i = 0 ; i<diff ; i++) {
+        let stObj = checkIsnewSetting[0].setting?.setting[oldSetting+i];
+        platformSetting.value.push(stObj)
+      }
+    }
+
+  }
 };
 onLoadGames();
 
@@ -338,7 +351,7 @@ async function onSubmit() {
 }
 onMounted(async () => {
   platformSetting.value.forEach((st) => {
-    console.log("udpate date", st);
+    // console.log("udpate date", st);
   });
 });
 </script>
