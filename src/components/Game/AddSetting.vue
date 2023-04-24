@@ -68,10 +68,16 @@
                     <th v-for="h in setting.value" :key="h.parameters">
                       {{ h.parameters }}
                     </th>
+                    <th>
+                      {{ $t("action") }}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(row, index) in setting.setting_value" :key="index">
+                  <tr
+                    v-for="(row, index) in setting.setting_value"
+                    :key="index"
+                  >
                     <td v-for="h in setting.value" :key="h.parameters">
                       <q-input
                         class="q-pt-sm"
@@ -87,6 +93,18 @@
                         maxlength="500"
                         lazy-rules
                       />
+                    </td>
+                    <td class="text-center">
+                      <q-btn
+                        class="q-mr-sm"
+                        size="xs"
+                        rounded
+                        padding="5px"
+                        color="red"
+                        icon="fas fa-trash"
+                        @click="onRemoveRow(row, setting)"
+                      >
+                      </q-btn>
                     </td>
                   </tr>
                 </tbody>
@@ -221,7 +239,7 @@ watch(
   () => gameSelect.value,
   () => {
     platformSetting.value = gameSelect.value.setting?.setting;
-    game.value.game_id = gameSelect.value.id
+    game.value.game_id = gameSelect.value.id;
     platformSetting.value.map((el, index) => {
       el.status = true;
       return el;
@@ -261,21 +279,29 @@ const refForm = ref(null);
 const rows = ref([]);
 const incNum = ref(0);
 
+const onRemoveRow = (row, parent) => {
+    platformSetting.value.map((rw) => {
+    if (rw.id == parent.id && rw.parameters == parent.parameters) {
+      rw.setting_value =  rw.setting_value.filter(remove => remove.id != row.id);
+    }
+    return rw;
+  });
+};
 const onAddRow = (st) => {
   incNum.value += 1;
-  incNum.value
+  incNum.value;
   let objsetting = {};
   st.value.forEach((e) => {
     objsetting[e.parameters] = "";
   });
-  let value_setting_row ={
+  let value_setting_row = {
     id: incNum.value,
     ...objsetting,
   };
   platformSetting.value.map((rw) => {
     if (rw.id == st.id && rw.parameters == st.parameters) {
-      if(rw.setting_value == undefined){
-        rw.setting_value = []
+      if (rw.setting_value == undefined) {
+        rw.setting_value = [];
       }
       rw.setting_value.push(value_setting_row);
     }
@@ -310,7 +336,7 @@ async function onSubmit() {
       });
     }
     game.value.setting = platformSetting;
-    await add({ ...game.value});
+    await add({ ...game.value });
     $q.notify({
       position: "top-right",
       type: "positive",
