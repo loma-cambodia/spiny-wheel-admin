@@ -29,6 +29,14 @@ export default function usePlatfrom() {
       sortable: true,
     },
     {
+      name: "user",
+      label: "user",
+      required: true,
+      field: (row) => row,
+      align: "center",
+      sortable: true,
+    },
+    {
       name: "created_at",
       label: "created_at",
       required: true,

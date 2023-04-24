@@ -72,6 +72,11 @@
               {{ props.rowIndex + 1 }}
             </q-td>
           </template>
+          <template v-slot:body-cell-user="props">
+            <q-td class="text-center">
+              {{ getUserName(props.row) }}
+            </q-td>
+          </template>
 
           <template v-slot:body-cell-name="props">
             <q-td class="text-center">
@@ -106,7 +111,11 @@
               </q-btn>
 
               <q-btn
-                v-if="Utils.hasPermissions(['CustomerServiceSetting: Create CustomerServiceSetting'])"
+                v-if="
+                  Utils.hasPermissions([
+                    'CustomerServiceSetting: Create CustomerServiceSetting',
+                  ])
+                "
                 class="q-mr-sm"
                 size="xs"
                 rounded
@@ -182,6 +191,18 @@ const filters = reactive({
 // async function getLanguages() {
 //   languages.value = await (await all()).data;
 // }
+
+const getUserName = (row) => {
+  let users = "";
+  row.plateform_user.forEach((u, index) => {
+    if (row.plateform_user.length == index + 1) {
+      users += u.name;
+    } else {
+      users += u.name + ", ";
+    }
+  });
+  return users;
+};
 
 onMounted(async () => {
   onRequest({

@@ -77,6 +77,7 @@
               {{ props.row?.game?.translates[locale]?.name }}
             </q-td>
           </template>
+
           <template v-slot:body-cell-status="props">
             <q-td class="text-center">
               <q-chip
@@ -194,6 +195,8 @@ async function getData() {
     languages.value = response.data;
   } catch (error) {}
 }
+
+
 
 onMounted(() => {
   onRequest({
