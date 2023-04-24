@@ -20,10 +20,10 @@
       </q-btn>
     </q-bar>
 
-    <q-card-section class="q-pt-lg pb-0">
+    <q-card-section class=" pb-0">
       <q-form ref="refForm">
         <div class="row">
-          <div class="col-12 col-md-12 q-pr-md d-flex">
+          <div class="col-12 col-md-12 d-flex q-pr-sm q-pb-sm">
             <q-input
               v-model="platforms.name"
               :label="$t(Utils.getKey('name'))"
@@ -36,10 +36,9 @@
             />
           </div>
 
-          <q-card-section class="q-pt-none">
             <div class="row">
               <div
-                class="col-12 col-md-6 q-pr-md"
+                class="col-12 col-md-6 q-pr-sm q-pb-sm"
                 v-for="lang in languages"
                 :key="lang.locale"
               >
@@ -54,11 +53,10 @@
                 />
               </div>
             </div>
-          </q-card-section>
 
-          <div class="col-12 col-md-12 q-pr-md">
+          <div class="col-12 col-md-12">
             <q-radio
-            
+
               v-model="platforms.status"
               :val="1"
               :label="$t('active')"

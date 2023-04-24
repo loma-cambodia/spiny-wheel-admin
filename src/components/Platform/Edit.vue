@@ -36,10 +36,9 @@
             />
           </div>
 
-          <q-card-section class="q-pt-none">
             <div class="row">
               <div
-                class="col-12 col-md-6 q-pr-md"
+                class="col-12 col-md-6 q-pr-md q-pb-sm"
                 v-for="lang in languages"
                 :key="lang.locale"
               >
@@ -54,7 +53,6 @@
                 />
               </div>
             </div>
-          </q-card-section>
 
           <div class="col-12 col-md-12 q-pr-md">
             <q-radio v-model="platforms.status" val="active" :label="$t('active')" />
