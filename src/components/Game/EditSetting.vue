@@ -57,7 +57,7 @@
             <!-- for array -->
             <div v-if="setting.type == 'array'">
               <p class="font_18">
-                {{ $t("parameter") }}:
+                <!-- {{ $t("parameter") }}: -->
                 {{ setting.parameters }}
                 <q-checkbox v-model="setting.status" />
                 {{ $t("type") }}: <span class="red"> {{ setting.type }} </span>
@@ -79,20 +79,43 @@
                     :key="index"
                   >
                     <td v-for="h in setting.value" :key="h.parameters">
-                      <q-input
-                        class="q-pt-sm"
-                        v-model="setting.setting_value[index][h.parameters]"
-                        :label="$t(Utils.getKey(h.parameters))"
-                        dense
-                        outlined
-                        :rules="[
-                          (val) =>
-                            !!val || $t(Utils.getKey('field is required')),
-                        ]"
-                        :type="h.type"
-                        maxlength="500"
-                        lazy-rules
-                      />
+                      {{ h.type }}
+
+                      <div v-if="h.type == 'object'">
+                        <!-- for subchild obect -->
+                          <div v-for="child in h.value" :key="child.parameters" >
+                       <q-input
+                          class="q-pt-sm"
+                          v-model="child.value"
+                          :label="$t(Utils.getKey(child.parameters))"
+                          dense
+                          outlined
+                          :rules="[
+                            (val) =>
+                              !!val || $t(Utils.getKey('field is required')),
+                          ]"
+                          :type="child.type"
+                          maxlength="500"
+                          lazy-rules
+                        />
+                          </div>
+                      </div>
+                      <div v-else>
+                        <q-input
+                          class="q-pt-sm"
+                          v-model="setting.setting_value[index][h.parameters]"
+                          :label="$t(Utils.getKey(h.parameters))"
+                          dense
+                          outlined
+                          :rules="[
+                            (val) =>
+                              !!val || $t(Utils.getKey('field is required')),
+                          ]"
+                          :type="h.type"
+                          maxlength="500"
+                          lazy-rules
+                        />
+                      </div>
                     </td>
                     <td class="text-center">
                       <q-btn
@@ -122,7 +145,7 @@
             <div v-else-if="setting.type == 'object'">
               <q-separator class="q-my-md" />
               <p class="font_18">
-                {{ $t("parameter") }}:
+                <!-- {{ $t("parameter") }}: -->
                 {{ setting.parameters }}
                 <q-checkbox v-model="setting.status" />
                 {{ $t("type") }}: <span class="red"> {{ setting.type }} </span>
@@ -160,7 +183,7 @@
             <div v-else>
               <q-separator class="q-my-md" />
               <p class="font_18">
-                {{ $t("parameter") }}:
+                <!-- {{ $t("parameter") }}: -->
                 {{ setting.parameters }}
                 <q-checkbox v-model="setting.status" />
                 {{ $t("type") }}: <span class="red"> {{ setting.type }} </span>
@@ -298,19 +321,20 @@ const onRemove = (val) => {
 const onLoadGames = async (val) => {
   let allGame = await all();
   games.value = allGame.data;
-  let checkIsnewSetting = allGame.data.filter(ns => ns.id == props.data.game_id)
-  if(checkIsnewSetting.length > 0){
-    let oldSetting = props.data.setting.length
-    let newSetting = checkIsnewSetting[0].setting?.setting.length
+  let checkIsnewSetting = allGame.data.filter(
+    (ns) => ns.id == props.data.game_id
+  );
+  if (checkIsnewSetting.length > 0) {
+    let oldSetting = props.data.setting.length;
+    let newSetting = checkIsnewSetting[0].setting?.setting.length;
     // check is game add new parameter
-    if(newSetting  != oldSetting){
-      let diff = newSetting -  oldSetting
-      for(let i = 0 ; i<diff ; i++) {
-        let stObj = checkIsnewSetting[0].setting?.setting[oldSetting+i];
-        platformSetting.value.push(stObj)
+    if (newSetting != oldSetting) {
+      let diff = newSetting - oldSetting;
+      for (let i = 0; i < diff; i++) {
+        let stObj = checkIsnewSetting[0].setting?.setting[oldSetting + i];
+        platformSetting.value.push(stObj);
       }
     }
-
   }
 };
 onLoadGames();
@@ -329,6 +353,11 @@ async function onSubmit() {
         translation: translation_name.value[key],
       });
     }
+
+    platformSetting.value.map((rw) => {
+
+    });
+
     game.value.setting = platformSetting;
     await update(game.value.id, { ...game.value });
     $q.notify({

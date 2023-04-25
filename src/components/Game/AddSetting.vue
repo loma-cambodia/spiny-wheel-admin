@@ -57,7 +57,7 @@
             <!-- for array -->
             <div v-if="setting.type == 'array'">
               <p class="font_18">
-                {{ $t("parameter") }}:
+                <!-- {{ $t("parameter") }}: -->
                 {{ setting.parameters }}
                 <q-checkbox v-model="setting.status" />
                 {{ $t("type") }}: <span class="red"> {{ setting.type }} </span>
