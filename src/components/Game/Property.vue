@@ -2,7 +2,7 @@
   <q-card
     id="cardScrolling"
     :style="{
-      width: $q.platform.is.mobile ? '100%' : '900px',
+      width: $q.platform.is.mobile ? '100%' : '1200px',
       maxWidth: '100%',
     }"
   >
@@ -24,7 +24,9 @@
       <q-form ref="refForm">
         <div class="row">
           <div class="col-12 col-md-12 q-pr-md">
-            <p class="text-h6">{{ $t("attribute_setting_of") }} {{props.data.parameters}}</p>
+            <p class="text-h6">
+              {{ $t("attribute_setting_of") }} {{ props.data.parameters }}
+            </p>
             <q-separator class="q-mb-md" />
             <q-table
               :columns="columns"
@@ -47,7 +49,6 @@
                     icon="fas fa-trash"
                     @click="onRemove(props.row)"
                   >
-                    <q-tooltip>{{ $t(Utils.getKey("Edit")) }}</q-tooltip>
                   </q-btn>
                 </q-td>
               </template>
@@ -62,13 +63,13 @@
                 </q-th>
               </template>
               <template v-slot:body-cell-parameters="props">
-                <q-td>
+                <q-td style="vertical-align: top">
                   <q-input
                     class="q-pt-sm"
                     v-model="props.row.parameters"
                     :label="$t(Utils.getKey('parameters'))"
                     dense
-                    :oninput="evt => Utils.onlyLettersAndDashEvent(evt)"
+                    :oninput="(evt) => Utils.onlyLettersAndDashEvent(evt)"
                     :rules="[
                       (val) => !!val || $t(Utils.getKey('field is required')),
                     ]"
@@ -79,21 +80,111 @@
                 </q-td>
               </template>
               <template v-slot:body-cell-type="props">
-                <q-td >
+                <q-td style="vertical-align: top">
                   <div class="d-flex">
-                  <q-select
-                    v-model="props.row.type"
-                    dense
-                    class="q-pt-sm flex-1"
-                    outlined
-                    :rules="[
-                      (val) => !!val || $t(Utils.getKey('field is required')),
-                    ]"
-                    :options="['interger', 'number', 'string', 'boolean', 'color']"
-                    maxlength="500"
-                    lazy-rules
-                  />
-                  <q-btn v-if="props.row.type == 'array' || props.row.type == 'object'" style="height: 40px; " class="q-mt-sm" color="primary"> + </q-btn>
+                    <q-select
+                      v-model="props.row.type"
+                      dense
+                      class="q-pt-sm flex-1"
+                      outlined
+                      :rules="[
+                        (val) => !!val || $t(Utils.getKey('field is required')),
+                      ]"
+                      :options="[
+                        'interger',
+                        'number',
+                        'string',
+                        'boolean',
+                        'color',
+                        'object',
+                      ]"
+                      maxlength="500"
+                      lazy-rules
+                    />
+                    <q-btn
+                      v-if="
+                        props.row.type == 'array' || props.row.type == 'object'
+                      "
+                      style="height: 40px"
+                      class="q-mt-sm"
+                      color="primary"
+                    >
+                      +
+                    </q-btn>
+                  </div>
+                  <div
+                    v-if="
+                      props.row.type == 'array' || props.row.type == 'object'
+                    "
+                  >
+                    <table style="width: 100%">
+                      <thead>
+                        <tr>
+                          <th class="text-left text-bold bt">
+                            {{ $t("parameters") }}
+                          </th>
+                          <th class="text-left text-bold">{{ $t("type") }}</th>
+                          <th class="text-left text-bold">
+                            {{ $t("action") }}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tr v-for="ch in props.row.value" :key="ch.id">
+                        <td>
+                          <q-input
+                            class="q-pt-sm"
+                            v-model="ch.parameters"
+                            :label="$t(Utils.getKey('parameters'))"
+                            dense
+                            :oninput="
+                              (evt) => Utils.onlyLettersAndDashEvent(evt)
+                            "
+                            :rules="[
+                              (val) =>
+                                !!val || $t(Utils.getKey('field is required')),
+                            ]"
+                            outlined
+                            maxlength="500"
+                            lazy-rules
+                          />
+                        </td>
+                        <td>
+                          <q-select
+                            v-model="ch.type"
+                            dense
+                            class="q-pt-sm flex-1"
+                            outlined
+                            :rules="[
+                              (val) =>
+                                !!val || $t(Utils.getKey('field is required')),
+                            ]"
+                            :options="['interger', 'number', 'string', 'color']"
+                            maxlength="500"
+                            lazy-rules
+                          />
+                        </td>
+                        <td>
+                          <q-btn
+                            class="q-mr-sm"
+                            size="xs"
+                            rounded
+                            padding="5px"
+                            color="red"
+                            icon="fas fa-trash"
+                            @click="onRemoveSub(ch, props.row)"
+                          >
+                          </q-btn>
+                        </td>
+                      </tr>
+                    </table>
+                    <q-btn
+                      style="height: 40px"
+                      @click="onAddSubRow(props.row)"
+                      class="q-mt-sm"
+                      color="primary"
+                    >
+                      +
+                    </q-btn>
                   </div>
                 </q-td>
               </template>
@@ -140,13 +231,12 @@ const $q = useQuasar();
 const { saving, add } = useGame();
 const { all } = useLanguage();
 
-const dialog = ref(false)
+const dialog = ref(false);
 const game = ref({
   name: "",
   type: "",
   user_id: Auth.state?.user?.id,
-  setting: {
-  },
+  setting: {},
   status: "active",
 });
 const translation_name = ref({});
@@ -164,8 +254,8 @@ const columns = [
   { name: "actions", field: (row) => row, label: " Action", align: "center" },
 ];
 const refForm = ref(null);
-console.log('props', props.data.value);
-const rows = ref(props.data.value ? props.data.value : [] );
+console.log("props", props.data.value);
+const rows = ref(props.data.value ? props.data.value : []);
 const incNum = ref(0);
 const onAddRow = () => {
   incNum.value += 1;
@@ -175,15 +265,49 @@ const onAddRow = () => {
     type: "",
   });
 };
+
+const subRows = ref([]);
+const incNum2 = ref(0);
+
+const onAddSubRow = (inRow) => {
+  incNum2.value += 2;
+  console.log('incNum2', incNum2.value);
+  rows.value.map((rw) => {
+    if (rw.id == inRow.id && rw.parameters == inRow.parameters) {
+      if (rw.value == undefined) {
+        rw.value = [];
+      }
+      rw.value.push({
+        id: incNum2.value,
+        parameters: "",
+        type: "",
+      });
+    }
+    return rw;
+  });
+};
 const languages = ref([]);
 
 const onRemove = (val) => {
-  rows.value = rows.value.filter((row) => row.id != val.id);
+  rows.value = rows.value.filter(
+    (row) => row.id != val.id && row.parameters != val.parameters
+  );
+};
+
+const onRemoveSub = (val, parent) => {
+  rows.value.map((rw) => {
+    if (rw.id == parent.id && rw.parameters == parent.parameters) {
+      rw.value = rw.value.filter(
+        (sub) => sub.id != val.id
+      );
+    }
+    return rw;
+  });
 };
 
 getLanguages();
 async function getLanguages() {
   languages.value = await (await all()).data;
-  console.log(languages.value);
+  rows.value.forEach((element) => {});
 }
 </script>

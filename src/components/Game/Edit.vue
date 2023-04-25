@@ -1,7 +1,6 @@
 <template>
   <q-card
     id="cardScrolling"
-
     class="no_shawdow border"
     :style="{
       width: $q.platform.is.mobile ? '100%' : '100%',
@@ -21,7 +20,7 @@
         <q-tooltip>{{ $t(Utils.getKey("Close")) }}</q-tooltip>
       </q-btn>
     </q-bar>
-  <q-card-section class="q-pt-lg pb-0">
+    <q-card-section class="q-pt-lg pb-0">
       <q-form ref="refForm">
         <div class="row">
           <div class="col-12 col-md-12">
@@ -58,7 +57,7 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-2  q-pr-md q-mb-md">
+          <div class="col-12 col-md-2 q-pr-md q-mb-md">
             <q-radio
               v-model="game.status"
               :val="'active'"
@@ -144,13 +143,13 @@
                 </q-th>
               </template>
               <template v-slot:body-cell-parameters="props">
-                <q-td style="vertical-align: top;">
+                <q-td style="vertical-align: top">
                   <q-input
                     class="q-pt-sm"
                     v-model="props.row.parameters"
                     :label="$t(Utils.getKey('parameters'))"
                     dense
-                    :oninput="evt => Utils.onlyLettersAndDashEvent(evt)"
+                    :oninput="(evt) => Utils.onlyLettersAndDashEvent(evt)"
                     :rules="[
                       (val) => !!val || $t(Utils.getKey('field is required')),
                     ]"
@@ -161,8 +160,8 @@
                 </q-td>
               </template>
               <template v-slot:body-cell-type="props">
-                <q-td style="vertical-align: top;">
-                  <div >
+                <q-td style="vertical-align: top">
+                  <div>
                     <div class="d-flex">
                       <q-select
                         v-model="props.row.type"
@@ -170,28 +169,83 @@
                         class="q-pt-sm flex-1"
                         outlined
                         :rules="[
-                          (val) => !!val || $t(Utils.getKey('field is required')),
+                          (val) =>
+                            !!val || $t(Utils.getKey('field is required')),
                         ]"
-                        :options="['interger', 'number', 'string', 'boolean', 'object', 'array', 'color']"
+                        :options="[
+                          'interger',
+                          'number',
+                          'string',
+                          'boolean',
+                          'object',
+                          'array',
+                          'color',
+                        ]"
                         maxlength="500"
                         lazy-rules
                       />
-                      <q-btn @click="onShowProperty(props.row)" v-if="props.row.type == 'array' || props.row.type == 'object'" style="height: 40px; " class="q-mt-sm" color="primary"> + </q-btn>
+                      <q-btn
+                        @click="onShowProperty(props.row)"
+                        v-if="
+                          props.row.type == 'array' ||
+                          props.row.type == 'object'
+                        "
+                        style="height: 40px"
+                        class="q-mt-sm"
+                        color="primary"
+                      >
+                        +
+                      </q-btn>
                     </div>
-                    <div v-if="props.row.type == 'array' || props.row.type == 'object'">
-                      <table style="width: 100%;">
+                    <div
+                      v-if="
+                        props.row.type == 'array' || props.row.type == 'object'
+                      "
+                    >
+                      <table style="width: 100%">
                         <thead>
-                           <tr>
-                          <th class="text-left text-bold bt">{{$t('parameters')}}</th>
-                          <th class="text-left text-bold">{{$t('type')}}</th>
-                        </tr>
+                          <tr>
+                            <th class="text-left text-bold bt">
+                              {{ $t("parameters") }}
+                            </th>
+                            <th class="text-left text-bold">
+                              {{ $t("type") }}
+                            </th>
+                          </tr>
                         </thead>
-                        <tr v-for="ch in props.row.value" :key="ch.id" >
-                          <td >
-                            {{ ch.parameters}}
+                        <tr v-for="ch in props.row.value" :key="ch.id">
+                          <td>
+                            {{ ch.parameters }}
                           </td>
-                           <td>
-                            {{ ch.type}}
+                          <td>
+                            {{ ch.type }}
+                            <div
+                              v-if="
+                                ch.type == 'object' ||
+                                ch.type == 'array'
+                              "
+                            >
+                              <table style="width: 100%">
+                                <thead>
+                                  <tr>
+                                    <th class="text-left text-bold bt">
+                                      {{ $t("parameters") }}
+                                    </th>
+                                    <th class="text-left text-bold">
+                                      {{ $t("type") }}
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tr v-for="subC in ch.value" :key="subC.id">
+                                  <td>
+                                    {{ subC.parameters }}
+                                  </td>
+                                  <td>
+                                    {{ subC.type }}
+                                  </td>
+                                </tr>
+                              </table>
+                            </div>
                           </td>
                         </tr>
                       </table>
@@ -232,10 +286,12 @@
       >
     </q-card-section>
 
-
-    <q-dialog  v-model="dialog">
-      <Property :data="pAttritures"    @onClose="dialog = false"
-        @add="onParamsAdd"/>
+    <q-dialog v-model="dialog">
+      <Property
+        :data="pAttritures"
+        @onClose="dialog = false"
+        @add="onParamsAdd"
+      />
     </q-dialog>
 
     <Loading :loading="isLoading" />
@@ -251,22 +307,22 @@ import { useI18n } from "vue-i18n";
 import Loading from "src/components/Shared/Loading.vue";
 import Utils from "../../helpers/Utils";
 import Auth from "src/store/auth";
-import Property from './Property'
+import Property from "./Property";
 
 const form = ref(null);
 const { t } = useI18n();
 const props = defineProps({ data: Object });
-console.log(props.data?.setting?.setting, 'setting');
+console.log(props.data?.setting?.setting, "setting");
 const emit = defineEmits(["onClose", "onUpdated"]);
 const $q = useQuasar();
 const { saving, update } = useGame();
 const { all } = useLanguage();
-const game = ref({...props.data});
-const translation_name = ref({})
+const game = ref({ ...props.data });
+const translation_name = ref({});
 const isLoading = ref(false);
-const dialog = ref(false)
-const locale = inject('locale')
-const tab2 = ref(locale.value)
+const dialog = ref(false);
+const locale = inject("locale");
+const tab2 = ref(locale.value);
 const columns = [
   {
     name: "parameters",
@@ -280,10 +336,12 @@ const columns = [
 ];
 const refForm = ref(null);
 const rows = ref(props.data?.setting?.setting);
-const time = ref(props.data?.setting?.setting?.setting || {
-  rotation_speed: '',
-  rotation_time: ''
-});
+const time = ref(
+  props.data?.setting?.setting?.setting || {
+    rotation_speed: "",
+    rotation_time: "",
+  }
+);
 const incNum = ref(0);
 const onAddRow = () => {
   incNum.value += 1;
@@ -301,29 +359,30 @@ const onRemove = (val) => {
 
 const pAttritures = ref({});
 const onShowProperty = (r) => {
-  dialog.value = true
-  rows.value.map(rw => {
-
-  })
-  pAttritures.value = r
+  dialog.value = true;
+  rows.value.map((rw) => {});
+  pAttritures.value = r;
 };
 
 const onParamsAdd = (emitValue) => {
-  dialog.value = false
-  rows.value.map(rw => {
-    if (rw.id == pAttritures.value.id && rw.parameters == pAttritures.value.parameters) {
-      rw.value = emitValue
+  dialog.value = false;
+  rows.value.map((rw) => {
+    if (
+      rw.id == pAttritures.value.id &&
+      rw.parameters == pAttritures.value.parameters
+    ) {
+      rw.value = emitValue;
     }
-    return rw
-  })
-  console.log('e event', rows);
+    return rw;
+  });
+  console.log("e event", rows);
 };
 
 getLanguages();
 async function getLanguages() {
   languages.value = await (await all()).data;
-  languages.value.forEach(item => {
-    translation_name.value[item.id] = props.data.translates[item.locale]?.name
+  languages.value.forEach((item) => {
+    translation_name.value[item.id] = props.data.translates[item.locale]?.name;
   });
 }
 async function onSubmit() {
@@ -332,16 +391,16 @@ async function onSubmit() {
     if (!validation) {
       return;
     }
-    let lang_data = []
+    let lang_data = [];
     for (const key in translation_name.value) {
       lang_data.push({
         language_id: key,
-        field_name: 'name',
-        translation: translation_name.value[key]
-      })
+        field_name: "name",
+        translation: translation_name.value[key],
+      });
     }
     game.value.setting = rows.value;
-    await update(game.value.id, {...game.value, translation_name: lang_data});
+    await update(game.value.id, { ...game.value, translation_name: lang_data });
     $q.notify({
       position: "top-right",
       type: "positive",
