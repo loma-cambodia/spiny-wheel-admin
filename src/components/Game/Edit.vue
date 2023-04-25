@@ -1,6 +1,8 @@
 <template>
   <q-card
     id="cardScrolling"
+
+    class="no_shawdow border"
     :style="{
       width: $q.platform.is.mobile ? '100%' : '100%',
       maxWidth: '100%',
@@ -19,29 +21,44 @@
         <q-tooltip>{{ $t(Utils.getKey("Close")) }}</q-tooltip>
       </q-btn>
     </q-bar>
-  <q-card-section class="q-pt-lg pb-0" v-if="!showMedia">
+  <q-card-section class="q-pt-lg pb-0">
       <q-form ref="refForm">
         <div class="row">
-          <div
-            class="col-12 col-md-3 q-pr-md"
-            v-for="lang in languages"
-            :key="lang.locale_web"
-          >
-            <label class="text-uppercase">{{ $t(lang.locale) }}</label>
-            <q-input
-              v-model="translation_name[lang.id]"
-              :label="$t(Utils.getKey('name'))"
+          <div class="col-12 col-md-12">
+            <q-tabs
+              v-model="tab2"
               dense
-              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
-              autogrow
-              type="textarea"
-              outlined
-            />
+              class="text-grey"
+              active-color="white"
+              indicator-color="primary"
+              align="left"
+            >
+              <q-tab
+                v-for="lang in languages"
+                :key="lang.locale"
+                :name="lang.locale"
+                :label="$t(lang.locale)"
+              ></q-tab>
+            </q-tabs>
+            <!-- tabs content -->
+            <div class="mt-1" v-for="lang in languages" :key="lang.locale">
+              <div v-show="tab2 == lang.locale">
+                <q-input
+                  v-model="translation_name[lang.id]"
+                  :label="$t(Utils.getKey('name'))"
+                  dense
+                  :rules="[
+                    (val) => !!val || $t(Utils.getKey('field is required')),
+                  ]"
+                  autogrow
+                  type="textarea"
+                  outlined
+                />
+              </div>
+            </div>
           </div>
-          <!-- <q-btn style="height: 39px;" @click="showMedia = true">{{$t('new')}}</q-btn> -->
-          <!-- </div> -->
 
-          <div class="col-12 col-md-2 q-pr-md q-pt-sm">
+          <div class="col-12 col-md-2  q-pr-md q-mb-md">
             <q-radio
               v-model="game.status"
               :val="'active'"
@@ -127,7 +144,7 @@
                 </q-th>
               </template>
               <template v-slot:body-cell-parameters="props">
-                <q-td>
+                <q-td style="vertical-align: top;">
                   <q-input
                     class="q-pt-sm"
                     v-model="props.row.parameters"
@@ -144,21 +161,41 @@
                 </q-td>
               </template>
               <template v-slot:body-cell-type="props">
-                <q-td>
-                  <div class="d-flex">
-                    <q-select
-                      v-model="props.row.type"
-                      dense
-                      class="q-pt-sm flex-1"
-                      outlined
-                      :rules="[
-                        (val) => !!val || $t(Utils.getKey('field is required')),
-                      ]"
-                      :options="['interger', 'number', 'string', 'boolean', 'object', 'array', 'color']"
-                      maxlength="500"
-                      lazy-rules
-                    />
-                    <q-btn @click="onShowProperty(props.row)" v-if="props.row.type == 'array' || props.row.type == 'object'" style="height: 40px; " class="q-mt-sm" color="primary"> + </q-btn>
+                <q-td style="vertical-align: top;">
+                  <div >
+                    <div class="d-flex">
+                      <q-select
+                        v-model="props.row.type"
+                        dense
+                        class="q-pt-sm flex-1"
+                        outlined
+                        :rules="[
+                          (val) => !!val || $t(Utils.getKey('field is required')),
+                        ]"
+                        :options="['interger', 'number', 'string', 'boolean', 'object', 'array', 'color']"
+                        maxlength="500"
+                        lazy-rules
+                      />
+                      <q-btn @click="onShowProperty(props.row)" v-if="props.row.type == 'array' || props.row.type == 'object'" style="height: 40px; " class="q-mt-sm" color="primary"> + </q-btn>
+                    </div>
+                    <div v-if="props.row.type == 'array' || props.row.type == 'object'">
+                      <table style="width: 100%;">
+                        <thead>
+                           <tr>
+                          <th class="text-left text-bold bt">{{$t('parameters')}}</th>
+                          <th class="text-left text-bold">{{$t('type')}}</th>
+                        </tr>
+                        </thead>
+                        <tr v-for="ch in props.row.value" :key="ch.id" >
+                          <td >
+                            {{ ch.parameters}}
+                          </td>
+                           <td>
+                            {{ ch.type}}
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
                   </div>
                 </q-td>
               </template>
@@ -206,7 +243,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, inject } from "vue";
 import { useQuasar } from "quasar";
 import useGame from "../../composables/useGame";
 import useLanguage from "src/composables/useLanguage";
@@ -228,6 +265,8 @@ const game = ref({...props.data});
 const translation_name = ref({})
 const isLoading = ref(false);
 const dialog = ref(false)
+const locale = inject('locale')
+const tab2 = ref(locale.value)
 const columns = [
   {
     name: "parameters",

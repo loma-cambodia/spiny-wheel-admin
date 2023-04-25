@@ -1,6 +1,7 @@
 <template>
   <q-card
     id="cardScrolling"
+    class="no_shawdow border"
     :style="{
       width: $q.platform.is.mobile ? '100%' : '100%',
       maxWidth: '100%',
@@ -20,29 +21,43 @@
       </q-btn>
     </q-bar>
 
-    <q-card-section class="q-pt-lg pb-0" v-if="!showMedia">
+    <q-card-section class="q-pt-lg pb-0">
       <q-form ref="refForm">
         <div class="row">
-          <div
-            class="col-12 col-md-3 q-pr-md"
-            v-for="lang in languages"
-            :key="lang.locale_web"
-          >
-            <label class="text-uppercase">{{ $t(lang.locale) }}</label>
-            <q-input
-              v-model="translation_name[lang.id]"
-              :label="$t(Utils.getKey('name'))"
+          <div class="col-12 col-md-12">
+            <q-tabs
+              v-model="tab2"
               dense
-              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
-              autogrow
-              type="textarea"
-              outlined
-            />
+              class="text-grey"
+              active-color="white"
+              indicator-color="primary"
+              align="left"
+            >
+              <q-tab
+                v-for="lang in languages"
+                :key="lang.locale"
+                :name="lang.locale"
+                :label="$t(lang.locale)"
+              ></q-tab>
+            </q-tabs>
+            <!-- tabs content -->
+            <div class="mt-1" v-for="lang in languages" :key="lang.locale">
+              <div v-show="tab2 == lang.locale">
+                <q-input
+                  v-model="translation_name[lang.id]"
+                  :label="$t(Utils.getKey('name'))"
+                  dense
+                  :rules="[
+                    (val) => !!val || $t(Utils.getKey('field is required')),
+                  ]"
+                  autogrow
+                  type="textarea"
+                  outlined
+                />
+              </div>
+            </div>
           </div>
-          <!-- <q-btn style="height: 39px;" @click="showMedia = true">{{$t('new')}}</q-btn> -->
-          <!-- </div> -->
-
-          <div class="col-12 col-md-2 q-pr-md q-pt-sm">
+          <div class="col-12 col-md-12 q-pr-md q-mb-md">
             <q-radio
               v-model="game.status"
               :val="'active'"
@@ -54,30 +69,6 @@
               :label="$t('inactive')"
             />
           </div>
-
-          <!-- <div class="col-6 col-md-6 q-pr-md">
-            <q-input
-              v-model="time.rotation_speed"
-              :label="$t(Utils.getKey('rotation speed'))"
-              dense
-              :oninput="evt => Utils.numberValidation(evt, 3)"
-              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
-              type="number"
-              outlined
-            />
-          </div>
-          <div class="col-6 col-md-6 q-pr-md">
-            <q-input
-              v-model="time.rotation_time"
-              :label="$t(Utils.getKey('rotation time'))"
-              :oninput="evt => Utils.numberValidation(evt, 3)"
-              dense
-              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
-              type="number"
-              outlined
-            />
-          </div> -->
-          <!-- setting -->
           <div class="col-12 col-md-12 q-pr-md">
             <p class="text-h6">{{ $t("attribute_setting") }}</p>
             <q-separator class="q-mb-md" />
@@ -128,7 +119,7 @@
                 </q-th>
               </template>
               <template v-slot:body-cell-parameters="props">
-                <q-td>
+                <q-td style="vertical-align: top">
                   <q-input
                     class="q-pt-sm"
                     v-model="props.row.parameters"
@@ -145,7 +136,7 @@
                 </q-td>
               </template>
               <template v-slot:body-cell-type="props">
-                <q-td>
+                <q-td style="vertical-align: top">
                   <div class="d-flex">
                     <q-select
                       v-model="props.row.type"
@@ -178,6 +169,28 @@
                     >
                       +
                     </q-btn>
+                  </div>
+                  <div
+                    v-if="
+                      props.row.type == 'array' || props.row.type == 'object'
+                    "
+                  >
+                    <table style="width: 100%">
+                      <tr>
+                        <th class="text-left text-bold">
+                          {{ $t("parameters") }}
+                        </th>
+                        <th class="text-left text-bold">{{ $t("type") }}</th>
+                      </tr>
+                      <tr v-for="ch in props.row.value" :key="ch.id">
+                        <td>
+                          {{ ch.parameters }}
+                        </td>
+                        <td>
+                          {{ ch.type }}
+                        </td>
+                      </tr>
+                    </table>
                   </div>
                 </q-td>
               </template>
@@ -243,7 +256,7 @@ const emit = defineEmits(["onClose", "onAdded"]);
 const $q = useQuasar();
 const { saving, add } = useGame();
 const { all } = useLanguage();
-
+const tab2 = ref("en");
 const dialog = ref(false);
 const game = ref({
   name: "",
@@ -294,7 +307,10 @@ const onShowProperty = (r) => {
 const onParamsAdd = (emitValue) => {
   dialog.value = false;
   rows.value.map((rw) => {
-    if (rw.id == pAttritures.value.id && rw.parameters == pAttritures.value.parameters) {
+    if (
+      rw.id == pAttritures.value.id &&
+      rw.parameters == pAttritures.value.parameters
+    ) {
       rw.value = emitValue;
     }
     return rw;
@@ -305,13 +321,23 @@ const onParamsAdd = (emitValue) => {
 getLanguages();
 async function getLanguages() {
   languages.value = await (await all()).data;
-  console.log(languages.value);
+  languages.value.forEach((lg) => {
+    translation_name.value[lg.id] = "";
+  });
 }
 
 async function onSubmit() {
   try {
     let validation = await refForm.value.validate();
     if (!validation) {
+      for (const keyLng in translation_name.value) {
+        if (translation_name.value[keyLng] == "") {
+          let gLocal = languages.value.filter((l) => l.id == keyLng);
+          let lolc = gLocal.length > 0 ? gLocal[0].locale : "en";
+          tab2.value = lolc;
+          return;
+        }
+      }
       return;
     }
     let lang_data = [];
@@ -330,7 +356,9 @@ async function onSubmit() {
             position: "top-right",
             type: "negative",
             icon: "fas fa-exclamation-triangle",
-            message: t(Utils.getKey('attribute is required for object or array')),
+            message: t(
+              Utils.getKey("attribute is required for object or array")
+            ),
           });
           return;
         }

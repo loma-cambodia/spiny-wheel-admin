@@ -7,7 +7,7 @@ import {
 } from "vue-router";
 import routes from "./routes";
 import { store } from "src/store/store";
-
+import auth from "../store/auth";
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;
@@ -43,15 +43,16 @@ export default route(function (/* { store, ssrContext } */) {
         path: to.path,
       });
     }
-
-    // console.log(to, "=to");
-    // if (to.matched.some(record => record.meta.requiresAuth) && !store.getters['auth/isSignedIn']) {
-    //   next({ name: 'account-signin', query: { next: to.fullPath } })
-    // } else {
-    //   next()
-    // }
-    next();
+    // authenticate
+    if(to.meta.permission){
+      if(auth.state?.user?.permissions.includes(to.meta.permission)){
+        next();
+      } else {
+        next({name: 'home'});
+      }
+    } else {
+      next();
+    }
   });
-
   return Router;
 });
