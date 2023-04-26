@@ -101,16 +101,6 @@
                       maxlength="500"
                       lazy-rules
                     />
-                    <q-btn
-                      v-if="
-                        props.row.type == 'array' || props.row.type == 'object'
-                      "
-                      style="height: 40px"
-                      class="q-mt-sm"
-                      color="primary"
-                    >
-                      +
-                    </q-btn>
                   </div>
                   <div
                     v-if="
