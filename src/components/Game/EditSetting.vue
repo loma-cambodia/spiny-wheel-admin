@@ -83,22 +83,22 @@
 
                       <div v-if="h.type == 'object'">
                         <!-- for subchild obect -->
-                          <div v-for="child in h.value" :key="child.parameters" >
-                       <q-input
-                          class="q-pt-sm"
-                          v-model="child.value"
-                          :label="$t(Utils.getKey(child.parameters))"
-                          dense
-                          outlined
-                          :rules="[
-                            (val) =>
-                              !!val || $t(Utils.getKey('field is required')),
-                          ]"
-                          :type="child.type"
-                          maxlength="500"
-                          lazy-rules
-                        />
-                          </div>
+                        <div v-for="child in h.value" :key="child.parameters">
+                          <q-input
+                            class="q-pt-sm"
+                            v-model="setting.setting_value[index][h.parameters][child.parameters]"
+                            :label="$t(Utils.getKey(child.parameters))"
+                            dense
+                            outlined
+                            :rules="[
+                              (val) =>
+                                !!val || $t(Utils.getKey('field is required')),
+                            ]"
+                            :type="child.type"
+                            maxlength="500"
+                            lazy-rules
+                          />
+                        </div>
                       </div>
                       <div v-else>
                         <q-input
@@ -291,11 +291,17 @@ const onRemoveRow = (row, parent) => {
 };
 
 const onAddRow = (st) => {
-  incNum.value += 1;
-  incNum.value;
+  incNum.value = Utils.randomString(8);
   let objsetting = {};
   st.value.forEach((e) => {
-    objsetting[e.parameters] = "";
+    if(e.type == "object"){
+      objsetting[e.parameters] = {};
+      e.value.forEach(chil => {
+        objsetting[e.parameters][chil.parameters] = "";
+      })
+    } else {
+      objsetting[e.parameters] = "";
+    }
   });
   let value_setting_row = {
     id: incNum.value,
@@ -310,6 +316,7 @@ const onAddRow = (st) => {
     }
     return rw;
   });
+  console.log('platformSetting', platformSetting.value)
 };
 
 const languages = ref([]);
@@ -354,10 +361,22 @@ async function onSubmit() {
       });
     }
 
-    platformSetting.value.map((rw) => {
+    // platformSetting.value.map((rw) => {
+    //   if (rw.type == "array") {
+    //     rw.value.forEach((irow) => {
+    //       let obj = {}
+    //       if(irow.type == "object"){
+    //         irow.value.forEach(rowChild => {
+    //           obj[rowChild.parameters] = rowChild.value
+    //         })
+    //       }
 
-    });
-
+    //       console.log('obj', obj)
+    //     });
+    //     console.log('rw', rw)
+    //   }
+    // });
+    // return;
     game.value.setting = platformSetting;
     await update(game.value.id, { ...game.value });
     $q.notify({
