@@ -1,5 +1,8 @@
 <template>
   <q-page :class="!store.leftDrawerOpen ? 'ml-5' : ''">
+    <div    v-if="!showAdd && !showEdit">
+    <game-table/>
+    </div>
     <q-card
       class="mt-3"
       v-if="!showAdd && !showEdit"
@@ -167,6 +170,7 @@ import EditGame from "../../components/Game/Edit.vue";
 import AddGame from "../../components/Game/Add.vue";
 import Confirm from "../../components/Shared/Confirm.vue";
 import useLanguage from "src/composables/useLanguage";
+import GameTable from "./game.vue"
 
 const { all } = useLanguage();
 const locale = inject("locale");
