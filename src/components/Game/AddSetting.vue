@@ -20,7 +20,7 @@
       </q-btn>
     </q-bar>
 
-    <q-card-section class="q-pt-lg pb-0" v-if="!showMedia">
+    <q-card-section class="q-pt-lg pb-0">
       <q-form ref="refForm">
         <div class="row">
           <div class="col-6">
@@ -55,7 +55,7 @@
             :key="index"
           >
             <!-- for array -->
-                <div v-if="setting.type == 'array'">
+            <div v-if="setting.type == 'list'">
               <p class="font_18">
                 <!-- {{ $t("parameter") }}: -->
                 {{ setting.parameters }}
@@ -81,9 +81,11 @@
                     <td v-for="h in setting.value" :key="h.parameters">
                       {{ h.type }}
 
-                      <div v-if="h.type == 'object'">
+                      <div v-if="h.type == 'group'">
                         <!-- for subchild obect -->
                         <div v-for="child in h.value" :key="child.parameters">
+                                            =============== {{child}}
+
                           <q-input
                             class="q-pt-sm"
                             v-model="setting.setting_value[index][h.parameters][child.parameters]"
@@ -142,7 +144,8 @@
               </q-btn>
             </div>
             <!-- for object mapping -->
-            <div v-else-if="setting.type == 'object'">
+            <div v-else-if="setting.type == 'group'">
+              <!-- {{setting.value}} -->
               <q-separator class="q-my-md" />
               <p class="font_18">
                 {{ $t("parameter") }}:
@@ -150,35 +153,54 @@
                 <q-checkbox v-model="setting.status" />
                 {{ $t("type") }}: <span class="red"> {{ setting.type }} </span>
               </p>
-              <table class="my_table">
-                <thead>
-                  <tr>
-                    <th v-for="h in setting.value" :key="h.parameters">
-                      {{ h.parameters }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td v-for="h in setting.value" :key="h.parameters">
-                      <q-input
-                        class="q-pt-sm"
-                        v-model="h.value"
-                        :label="$t(Utils.getKey(h.parameters))"
-                        dense
-                        outlined
-                        :rules="[
-                          (val) =>
-                            !!val || $t(Utils.getKey('field is required')),
-                        ]"
-                        :type="h.type"
-                        maxlength="500"
-                        lazy-rules
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <div v-for="groupValue in setting.value" :key="groupValue.id">
+                <div v-if="groupValue.type == 'group'">
+                  <table class="my_table">
+                    <thead>
+                      <tr>
+                        <th v-for="h in groupValue.value" :key="h.parameters">
+                          {{ h.parameters }}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td v-for="h in groupValue.value" :key="h.parameters">
+                          <q-input
+                            class="q-pt-sm"
+                            v-model="h.value"
+                            :label="$t(Utils.getKey(h.parameters))"
+                            dense
+                            outlined
+                            :rules="[
+                              (val) =>
+                                !!val || $t(Utils.getKey('field is required')),
+                            ]"
+                            :type="h.type"
+                            maxlength="500"
+                            lazy-rules
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div v-else>
+                  <q-input
+                    class="q-pt-sm"
+                    v-model="groupValue.value"
+                    :label="$t(Utils.getKey(groupValue.parameters))"
+                    dense
+                    outlined
+                    :rules="[
+                      (val) => !!val || $t(Utils.getKey('field is required')),
+                    ]"
+                    :type="groupValue.type"
+                    maxlength="500"
+                    lazy-rules
+                  />
+                </div>
+              </div>
             </div>
             <div v-else>
               <q-separator class="q-my-md" />
@@ -207,7 +229,7 @@
       </q-form>
     </q-card-section>
 
-    <q-card-section class="text-right q-mt-md" v-if="!showMedia">
+    <q-card-section class="text-right q-mt-md">
       <q-btn
         flat
         color="negative"
@@ -225,9 +247,6 @@
         >{{ $t(Utils.getKey("Save")) }}</q-btn
       >
     </q-card-section>
-    <div v-if="showMedia">
-      <Media @back="(showMedia = false), onGetMedia()" />
-    </div>
     <Loading :loading="isLoading" />
   </q-card>
 </template>
@@ -303,9 +322,11 @@ const rows = ref([]);
 const incNum = ref(0);
 
 const onRemoveRow = (row, parent) => {
-    platformSetting.value.map((rw) => {
+  platformSetting.value.map((rw) => {
     if (rw.id == parent.id && rw.parameters == parent.parameters) {
-      rw.setting_value =  rw.setting_value.filter(remove => remove.id != row.id);
+      rw.setting_value = rw.setting_value.filter(
+        (remove) => remove.id != row.id
+      );
     }
     return rw;
   });
@@ -332,24 +353,25 @@ const onRemoveRow = (row, parent) => {
 //   });
 // };
 const onAddRow = (st) => {
-  incNum.value = Utils.randomString(8);
+  incNum.value = Utils.randomString(16);
   let objsetting = {};
   st.value.forEach((e) => {
-    if(e.type == "object"){
+    if (e.type == "group") {
       objsetting[e.parameters] = {};
-      e.value.forEach(chil => {
+      e.value.forEach((chil) => {
         objsetting[e.parameters][chil.parameters] = "";
-      })
+      });
     } else {
       objsetting[e.parameters] = "";
     }
   });
   let value_setting_row = {
-    id: incNum.value,
+    id: Utils.randomString(16),
     ...objsetting,
   };
+  console.log('value_setting_row', value_setting_row)
   platformSetting.value.map((rw) => {
-    if (rw.id == st.id && rw.parameters == st.parameters) {
+    if (rw.id == st.id) {
       if (rw.setting_value == undefined) {
         rw.setting_value = [];
       }
@@ -357,7 +379,7 @@ const onAddRow = (st) => {
     }
     return rw;
   });
-  console.log('platformSetting', platformSetting.value)
+  console.log("platformSetting", platformSetting.value);
 };
 
 const languages = ref([]);

@@ -1264,6 +1264,14 @@ table.parameter-type {
   display: flex;
   align-items: center;
 }
+.outer-list-display_dark {
+  background: #646363;
+  border: 1px solid #ddd;
+  padding: 10px 20px;
+  border-radius: 5px 5px 0 0;
+  display: flex;
+  align-items: center;
+}
 .hash-space {
   width: 37px;
 }

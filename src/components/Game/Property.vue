@@ -92,12 +92,10 @@
                         (val) => !!val || $t(Utils.getKey('field is required')),
                       ]"
                       :options="[
-                        'interger',
                         'number',
-                        'string',
-                        'boolean',
+                        'text',
                         'color',
-                        'object',
+                        'group',
                       ]"
                       maxlength="500"
                       lazy-rules
@@ -105,7 +103,7 @@
                   </div>
                   <div
                     v-if="
-                      props.row.type == 'array' || props.row.type == 'object'
+                      props.row.type == 'array' || props.row.type == 'group'
                     "
                   >
                     <table style="width: 100%">
@@ -149,7 +147,7 @@
                               (val) =>
                                 !!val || $t(Utils.getKey('field is required')),
                             ]"
-                            :options="['interger', 'number', 'string', 'color']"
+                            :options="['number', 'text', 'color']"
                             maxlength="500"
                             lazy-rules
                           />
@@ -249,9 +247,8 @@ console.log("props", props.data.value);
 const rows = ref(props.data.value ? props.data.value : []);
 const incNum = ref(0);
 const onAddRow = () => {
-  incNum.value += 1;
   rows.value.push({
-    id: incNum.value,
+    id: Utils.randomString(16),
     parameters: "",
     type: "",
   });
@@ -261,15 +258,13 @@ const subRows = ref([]);
 const incNum2 = ref(0);
 
 const onAddSubRow = (inRow) => {
-  incNum2.value += 2;
-  console.log('incNum2', incNum2.value);
   rows.value.map((rw) => {
-    if (rw.id == inRow.id && rw.parameters == inRow.parameters) {
+    if (rw.id == inRow.id) {
       if (rw.value == undefined) {
         rw.value = [];
       }
       rw.value.push({
-        id: incNum2.value,
+        id: Utils.randomString(16),
         parameters: "",
         type: "",
       });
@@ -281,13 +276,13 @@ const languages = ref([]);
 
 const onRemove = (val) => {
   rows.value = rows.value.filter(
-    (row) => row.id != val.id && row.parameters != val.parameters
+    (row) => row.id != val.id
   );
 };
 
 const onRemoveSub = (val, parent) => {
   rows.value.map((rw) => {
-    if (rw.id == parent.id && rw.parameters == parent.parameters) {
+    if (rw.id == parent.id) {
       rw.value = rw.value.filter(
         (sub) => sub.id != val.id
       );

@@ -20,7 +20,7 @@
       </q-btn>
     </q-bar>
 
-    <q-card-section class="q-pt-lg pb-0" v-if="!showMedia">
+    <q-card-section class="q-pt-lg pb-0">
       <q-form ref="refForm">
         <div class="row">
           <div class="col-6">
@@ -207,7 +207,7 @@
       </q-form>
     </q-card-section>
 
-    <q-card-section class="text-right q-mt-md" v-if="!showMedia">
+    <q-card-section class="text-right q-mt-md">
       <q-btn
         flat
         color="negative"
@@ -225,9 +225,6 @@
         >{{ $t(Utils.getKey("Save")) }}</q-btn
       >
     </q-card-section>
-    <div v-if="showMedia">
-      <Media @back="(showMedia = false), onGetMedia()" />
-    </div>
     <Loading :loading="isLoading" />
   </q-card>
 </template>
