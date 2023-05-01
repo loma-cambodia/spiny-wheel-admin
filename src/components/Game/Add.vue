@@ -159,7 +159,7 @@
                           (val) =>
                             !!val || $t(Utils.getKey('field is required')),
                         ]"
-                        :options="['number', 'text', 'group', 'list', 'color']"
+                        :options="['group', 'list']"
                         maxlength="500"
                         lazy-rules
                       />
