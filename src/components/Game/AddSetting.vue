@@ -84,8 +84,6 @@
                       <div v-if="h.type == 'group'">
                         <!-- for subchild obect -->
                         <div v-for="child in h.value" :key="child.parameters">
-                                            =============== {{child}}
-
                           <q-input
                             class="q-pt-sm"
                             v-model="setting.setting_value[index][h.parameters][child.parameters]"

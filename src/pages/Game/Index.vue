@@ -1,8 +1,8 @@
 <template>
   <q-page :class="!store.leftDrawerOpen ? 'ml-5' : ''">
-    <div    v-if="!showAdd && !showEdit">
+    <!-- <div    v-if="!showAdd && !showEdit">
     <game-table/>
-    </div>
+    </div> -->
     <q-card
       class="mt-3"
       v-if="!showAdd && !showEdit"

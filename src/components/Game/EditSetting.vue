@@ -1,13 +1,14 @@
 <template>
   <q-card
     id="cardScrolling"
+    class="myTb"
     :style="{
       width: $q.platform.is.mobile ? '100%' : '100%',
       maxWidth: '100%',
     }"
   >
     <q-bar dark class="bg-primary text-white">
-      <span class="text-body2">{{ $t(Utils.getKey("update")) }}</span>
+      <span class="text-body2">{{ $t(Utils.getKey("New")) }}</span>
       <q-space />
       <q-btn
         dense
@@ -55,7 +56,7 @@
             :key="index"
           >
             <!-- for array -->
-            <div v-if="setting.type == 'array'">
+            <div v-if="setting.type == 'list'">
               <p class="font_18">
                 <!-- {{ $t("parameter") }}: -->
                 {{ setting.parameters }}
@@ -81,7 +82,7 @@
                     <td v-for="h in setting.value" :key="h.parameters">
                       {{ h.type }}
 
-                      <div v-if="h.type == 'object'">
+                      <div v-if="h.type == 'group'">
                         <!-- for subchild obect -->
                         <div v-for="child in h.value" :key="child.parameters">
                           <q-input
@@ -142,48 +143,68 @@
               </q-btn>
             </div>
             <!-- for object mapping -->
-            <div v-else-if="setting.type == 'object'">
+            <div v-else-if="setting.type == 'group'">
+              <!-- {{setting.value}} -->
               <q-separator class="q-my-md" />
               <p class="font_18">
-                <!-- {{ $t("parameter") }}: -->
+                {{ $t("parameter") }}:
                 {{ setting.parameters }}
                 <q-checkbox v-model="setting.status" />
                 {{ $t("type") }}: <span class="red"> {{ setting.type }} </span>
               </p>
-              <table class="my_table">
-                <thead>
-                  <tr>
-                    <th v-for="h in setting.value" :key="h.parameters">
-                      {{ h.parameters }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td v-for="h in setting.value" :key="h.parameters">
-                      <q-input
-                        class="q-pt-sm"
-                        v-model="h.value"
-                        :label="$t(Utils.getKey(h.parameters))"
-                        dense
-                        outlined
-                        :rules="[
-                          (val) =>
-                            !!val || $t(Utils.getKey('field is required')),
-                        ]"
-                        :type="h.type"
-                        maxlength="500"
-                        lazy-rules
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <div v-for="groupValue in setting.value" :key="groupValue.id">
+                <div v-if="groupValue.type == 'group'">
+                  <table class="my_table">
+                    <thead>
+                      <tr>
+                        <th v-for="h in groupValue.value" :key="h.parameters">
+                          {{ h.parameters }}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td v-for="h in groupValue.value" :key="h.parameters">
+                          <q-input
+                            class="q-pt-sm"
+                            v-model="h.value"
+                            :label="$t(Utils.getKey(h.parameters))"
+                            dense
+                            outlined
+                            :rules="[
+                              (val) =>
+                                !!val || $t(Utils.getKey('field is required')),
+                            ]"
+                            :type="h.type"
+                            maxlength="500"
+                            lazy-rules
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div v-else>
+                  <q-input
+                    class="q-pt-sm"
+                    v-model="groupValue.value"
+                    :label="$t(Utils.getKey(groupValue.parameters))"
+                    dense
+                    outlined
+                    :rules="[
+                      (val) => !!val || $t(Utils.getKey('field is required')),
+                    ]"
+                    :type="groupValue.type"
+                    maxlength="500"
+                    lazy-rules
+                  />
+                </div>
+              </div>
             </div>
             <div v-else>
               <q-separator class="q-my-md" />
               <p class="font_18">
-                <!-- {{ $t("parameter") }}: -->
+                {{ $t("parameter") }}:
                 {{ setting.parameters }}
                 <q-checkbox v-model="setting.status" />
                 {{ $t("type") }}: <span class="red"> {{ setting.type }} </span>
@@ -244,11 +265,10 @@ const locale = inject("locale");
 const form = ref(null);
 const { t } = useI18n();
 const props = defineProps({ data: Object });
-// console.log("props", props.data);
-const emit = defineEmits(["onClose", "onUpdated"]);
+const emit = defineEmits(["onClose", "onAdded"]);
 const $q = useQuasar();
 const { saving, all } = useGame();
-const { update } = useGameSetting();
+const { add } = useGameSetting();
 const games = ref([]);
 const gameSelect = ref([]);
 const platformSetting = ref(props.data?.setting);
@@ -267,11 +287,33 @@ watch(
 );
 
 const game = ref({
-  ...props.data,
+  id: "",
+  game_id: "",
+  user_id: Auth.state?.user?.id,
+  setting: {},
+  status: "active",
 });
 const translation_name = ref({});
 const time = ref({});
 const isLoading = ref(false);
+const columns = [
+  {
+    name: "segment",
+    field: (row) => row.name,
+    align: "left",
+    label: "segment",
+  },
+  { name: "price", field: (row) => row.name, align: "left", label: "price" },
+  {
+    name: "winning_percentage",
+    field: (row) => row.name,
+    align: "left",
+    label: "winning_percentage",
+  },
+  { name: "color", field: (row) => row.color, align: "center", label: "color" },
+
+  { name: "actions", field: (row) => row, label: " Action", align: "center" },
+];
 const refForm = ref(null);
 const rows = ref([]);
 const incNum = ref(0);
@@ -286,26 +328,47 @@ const onRemoveRow = (row, parent) => {
     return rw;
   });
 };
-
+// const onAddRow = (st) => {
+//   incNum.value += 1;
+//   incNum.value;
+//   let objsetting = {};
+//   st.value.forEach((e) => {
+//     objsetting[e.parameters] = "";
+//   });
+//   let value_setting_row = {
+//     id: incNum.value,
+//     ...objsetting,
+//   };
+//   platformSetting.value.map((rw) => {
+//     if (rw.id == st.id && rw.parameters == st.parameters) {
+//       if (rw.setting_value == undefined) {
+//         rw.setting_value = [];
+//       }
+//       rw.setting_value.push(value_setting_row);
+//     }
+//     return rw;
+//   });
+// };
 const onAddRow = (st) => {
-  incNum.value = Utils.randomString(8);
+  incNum.value = Utils.randomString(16);
   let objsetting = {};
   st.value.forEach((e) => {
-    if(e.type == "object"){
+    if (e.type == "group") {
       objsetting[e.parameters] = {};
-      e.value.forEach(chil => {
+      e.value.forEach((chil) => {
         objsetting[e.parameters][chil.parameters] = "";
-      })
+      });
     } else {
       objsetting[e.parameters] = "";
     }
   });
   let value_setting_row = {
-    id: incNum.value,
+    id: Utils.randomString(16),
     ...objsetting,
   };
+  console.log('value_setting_row', value_setting_row)
   platformSetting.value.map((rw) => {
-    if (rw.id == st.id && rw.parameters == st.parameters) {
+    if (rw.id == st.id) {
       if (rw.setting_value == undefined) {
         rw.setting_value = [];
       }
@@ -313,7 +376,7 @@ const onAddRow = (st) => {
     }
     return rw;
   });
-  console.log('platformSetting', platformSetting.value)
+  console.log("platformSetting", platformSetting.value);
 };
 
 const languages = ref([]);
@@ -325,21 +388,7 @@ const onRemove = (val) => {
 const onLoadGames = async (val) => {
   let allGame = await all();
   games.value = allGame.data;
-  let checkIsnewSetting = allGame.data.filter(
-    (ns) => ns.id == props.data.game_id
-  );
-  if (checkIsnewSetting.length > 0) {
-    let oldSetting = props.data.setting.length;
-    let newSetting = checkIsnewSetting[0].setting?.setting.length;
-    // check is game add new parameter
-    if (newSetting != oldSetting) {
-      let diff = newSetting - oldSetting;
-      for (let i = 0; i < diff; i++) {
-        let stObj = checkIsnewSetting[0].setting?.setting[oldSetting + i];
-        platformSetting.value.push(stObj);
-      }
-    }
-  }
+  console.log(allGame, "all games");
 };
 onLoadGames();
 
@@ -357,23 +406,6 @@ async function onSubmit() {
         translation: translation_name.value[key],
       });
     }
-
-    // platformSetting.value.map((rw) => {
-    //   if (rw.type == "array") {
-    //     rw.value.forEach((irow) => {
-    //       let obj = {}
-    //       if(irow.type == "object"){
-    //         irow.value.forEach(rowChild => {
-    //           obj[rowChild.parameters] = rowChild.value
-    //         })
-    //       }
-
-    //       console.log('obj', obj)
-    //     });
-    //     console.log('rw', rw)
-    //   }
-    // });
-    // return;
     game.value.setting = platformSetting;
     await update(game.value.id, { ...game.value });
     $q.notify({
@@ -383,7 +415,7 @@ async function onSubmit() {
       message: t(Utils.getKey("updated successfully")),
     });
     isLoading.value = false;
-    emit("onUpdated");
+    emit("onAdded");
     emit("onClose");
   } catch (err) {
     $q.notify({
@@ -394,9 +426,11 @@ async function onSubmit() {
     });
   }
 }
-onMounted(async () => {
-  platformSetting.value.forEach((st) => {
-    // console.log("udpate date", st);
-  });
-});
+onMounted(async () => {});
 </script>
+
+<style scoped>
+  .myTb table th {
+    text-align: left;
+  }
+</style>
