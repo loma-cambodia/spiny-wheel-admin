@@ -212,7 +212,7 @@ watch(locale, (newValue, _) => {
 
 async function getLanguages() {
   try {
-    const response = await all();
+    const response = await api.get("/lang/all");
     localeOptions.value = response.data;
   } catch (error) {}
 }
