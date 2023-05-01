@@ -77,11 +77,11 @@
           <div
             class="col-12 col-md-6 q-pr-md"
             v-for="lang in languages"
-            :key="lang.locale_web"
+            :key="lang.locale"
           >
             <label class="text-uppercase">{{ $t(lang.locale) }}</label>
             <q-input
-              v-model="cities.translation_name[lang.locale_web]"
+              v-model="cities.translation_name[lang.locale]"
               :label="$t(Utils.getKey('name'))"
               dense
               autogrow
@@ -207,12 +207,12 @@ async function onSubmit() {
     let allFill = false;
     languages.value.forEach((lg, index) => {
       let cd = {};
-      if (cities.value.translation_name[lg.locale_web] == "") {
+      if (cities.value.translation_name[lg.locale] == "") {
         allFill = true;
       } else {
         cd.language_id = lg.id;
         cd.field_name = "name";
-        cd.translation = cities.value.translation_name[lg.locale_web];
+        cd.translation = cities.value.translation_name[lg.locale];
       }
       currencyData.push(cd);
     });
@@ -247,7 +247,7 @@ async function onSubmit() {
 }
 onMounted(() => {
   languages.value.forEach((lg) => {
-    cities.value.translation_name[lg.locale_web] = "";
+    cities.value.translation_name[lg.locale] = "";
   });
 });
 </script>

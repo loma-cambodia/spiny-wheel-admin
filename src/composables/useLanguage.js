@@ -38,10 +38,10 @@ export default function useLanguage() {
     },
 
     {
-      name: "locale_web",
+      name: "locale",
       label: "Locale Web",
       required: true,
-      field: (row) => row.locale_web,
+      field: (row) => row.locale,
       align: "center",
       sortable: true,
     },

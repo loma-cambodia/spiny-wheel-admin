@@ -57,7 +57,7 @@
           :class="$q.dark.isActive ? '' : 'select_dark'"
           map-options
           option-label="name"
-          option-value="locale_web"
+          option-value="locale"
           options-dense
           outlined
           :style="{

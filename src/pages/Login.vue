@@ -40,7 +40,7 @@
                 emit-value
                 map-options
                 option-label="name"
-                option-value="locale_web"
+                option-value="locale"
                 outlined
                 lazy-rules
                 @update:model-value="resetFilters()"

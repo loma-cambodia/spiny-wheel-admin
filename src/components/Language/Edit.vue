@@ -56,7 +56,7 @@
     <q-card-section class="q-pt-none">
       <q-input
         :autofocus="true"
-        v-model="language.locale_web"
+        v-model="language.locale"
         :label="$t(Utils.getKey('Locale Web'))"
         dense
         readonly
@@ -113,14 +113,14 @@ async function onSubmit() {
     if (
       language.value.name == "" ||
       language.value.locale == "" ||
-      language.value.locale_web == ""
+      language.value.locale == ""
     ) {
       let message = '';
       if(language.value.name == "")
          message = 'the name field is required!';
       else if(language.value.locale == "")
         message = 'the locale field is required!';
-      else if(language.value.locale_web == "")
+      else if(language.value.locale == "")
         message = 'the locale web field is required!';
       $q.notify({
         position: "top-right",
@@ -133,7 +133,7 @@ async function onSubmit() {
     if (
       !Utils.containsOnlyCharacterAllLanguage(language.value.name) ||
       !Utils.containsOnlyCharacterExeptDash(language.value.locale) ||
-      !Utils.containsOnlyCharacterAllLanguage(language.value.locale_web)
+      !Utils.containsOnlyCharacterAllLanguage(language.value.locale)
     ) {
       $q.notify({
         position: "top-right",
