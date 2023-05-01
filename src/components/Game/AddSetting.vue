@@ -1,6 +1,7 @@
 <template>
   <q-card
     id="cardScrolling"
+    class="myTb color_setting"
     :style="{
       width: $q.platform.is.mobile ? '100%' : '100%',
       maxWidth: '100%',

@@ -1,7 +1,7 @@
 <template>
   <q-card
     id="cardScrolling"
-    class="myTb"
+    class="myTb color_setting"
     :style="{
       width: $q.platform.is.mobile ? '100%' : '100%',
       maxWidth: '100%',
@@ -268,7 +268,7 @@ const props = defineProps({ data: Object });
 const emit = defineEmits(["onClose", "onAdded"]);
 const $q = useQuasar();
 const { saving, all } = useGame();
-const { add } = useGameSetting();
+const { update } = useGameSetting();
 const games = ref([]);
 const gameSelect = ref([]);
 const platformSetting = ref(props.data?.setting);
@@ -287,11 +287,7 @@ watch(
 );
 
 const game = ref({
-  id: "",
-  game_id: "",
-  user_id: Auth.state?.user?.id,
-  setting: {},
-  status: "active",
+  ...props.data
 });
 const translation_name = ref({});
 const time = ref({});
