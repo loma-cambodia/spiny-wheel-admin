@@ -359,9 +359,11 @@ const onAddRow = (st) => {
       objsetting[e.parameters] = {};
       e.value.forEach((chil) => {
         objsetting[e.parameters][chil.parameters] = "";
+        objsetting[e.parameters]['label'] = chil.label;
       });
     } else {
       objsetting[e.parameters] = "";
+      objsetting['label'] = e.label;
     }
   });
   let value_setting_row = {

@@ -21,9 +21,8 @@
           <json-viewer
             :theme="  $q.dark.isActive ? 'dark' : 'light'"
             :value="props.data"
-            :expand-depth="5"
+            :expand-depth="3"
             copyable
-            sort
           ></json-viewer>
         </q-card-section>
       </q-card>
