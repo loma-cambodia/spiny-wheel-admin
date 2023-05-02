@@ -121,7 +121,7 @@
                       :rules="[
                         (val) => !!val || $t(Utils.getKey('field is required')),
                       ]"
-                      :options="['number', 'text', 'color']"
+                      :options="['number', 'text', 'color', 'group']"
                       maxlength="500"
                       lazy-rules
                     />
