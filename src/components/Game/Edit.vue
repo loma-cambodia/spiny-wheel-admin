@@ -100,7 +100,7 @@
 
             <q-card style="box-shadow: none">
               <div class="row" style="margin-left: -15px; margin-right: -15px">
-                      <q-form ref="refFormGroup" class="col-12">
+                <q-form ref="refFormGroup" class="col-12">
                   <div class="row">
                     <div class="col-md-4 col-sm-12 col-12 padding-left-right">
                       <q-tabs
@@ -129,7 +129,7 @@
                           lazy-rules
                           outlined
                           v-model="groupName[lang.locale]"
-                          label="Add new group"
+                          :label="$t('list_or_group')"
                           dense
                         />
                       </div>
@@ -152,6 +152,7 @@
                       <q-select
                         v-model="groupType"
                         dense
+                        :label="$t('type')"
                         style="margin-top: 20px"
                         class="flex-1"
                         outlined
@@ -159,7 +160,7 @@
                           (val) =>
                             !!val || $t(Utils.getKey('field is required')),
                         ]"
-                        :options="[ 'group', 'list']"
+                        :options="['group', 'list']"
                         maxlength="500"
                         lazy-rules
                       />
@@ -169,10 +170,10 @@
                         <div class="spacer-div-2"></div>
                         <!-- <q-btn outline color="primary" label="Add new group" /> -->
                         <q-btn
-                      color="primary"
-                      :label="isUpdate ? 'update' : 'add'"
-                      @click="onAddRow"
-                    />
+                          color="primary"
+                          :label="isUpdate ? 'update' : 'add'"
+                          @click="onAddRow"
+                        />
                       </div>
                     </div>
                   </div>
@@ -293,6 +294,7 @@
                       <q-list bordered class="bg-light-blue2">
                         <q-expansion-item
                           switch-toggle-side
+
                           v-for="child in row.value"
                           :key="child.value"
                         >
@@ -311,12 +313,7 @@
                                     </div>
                                     <div class="heading-label">
                                       <!-- <a href="#">Edit</a> -->
-                                      <a
-                                        @click="
-                                          onRemove(child),
-                                            event.preventDefault()
-                                        "
-                                        >Delete</a
+                                      <a @click="onRemove(row, child)">{{ $t('delete')}} </a
                                       >
                                     </div>
                                   </div>
@@ -383,7 +380,7 @@
                                       />
                                     </div>
                                   </div>
-                                  <div class="form-group">
+                                  <div class="form-group q-mt-md">
                                     <q-input
                                       outlined
                                       :oninput="
@@ -404,7 +401,10 @@
                                   <div class="form-group">
                                     <q-select
                                       v-model="child.type"
-                                      v-if="child.type != 'list' && child.type != 'group'"
+                                      v-if="
+                                        child.type != 'list' ||
+                                        child.type != 'group'
+                                      "
                                       dense
                                       class="q-pt-sm flex-1"
                                       outlined
@@ -416,9 +416,9 @@
                                       :options="[
                                         'number',
                                         'text',
-                                        'group',
                                         'list',
                                         'color',
+                                        'group'
                                       ]"
                                       maxlength="500"
                                       lazy-rules
@@ -826,10 +826,10 @@ const onAddRow = () => {
       label: groupName.value,
       parameters: parametersGroup.value,
       type: groupType.value,
-      value: groupType.value == 'list' || groupType.value == 'group' ? [] : "",
+      value: groupType.value == "list" || groupType.value == "group" ? [] : "",
     };
     rows.value.push(ro);
-    addField(ro);
+    // addField(ro);
     groupName.value = "";
   }
 };
@@ -847,10 +847,10 @@ const addField = (row) => {
   };
   rows.value.map((r1) => {
     if (r1.id == row.id) {
-      if(row.type == 'list' || row.type == 'group'){
+      if (row.type == "list" || row.type == "group") {
         r1.value.push(field);
       } else {
-         r1.value = ""
+        r1.value = "";
       }
     }
   });
@@ -858,12 +858,14 @@ const addField = (row) => {
 
 const languages = ref([]);
 
-const onRemove = (val) => {
+const onRemove = (row, val) => {
   rows.value.map((r1) => {
-    if (r1.id == val.id) {
+    if (r1.id == row.id) {
       r1.value = r1.value.filter((child) => child.id != val.id);
     }
+    return r1;
   });
+  console.log("rows", rows);
 };
 
 const onRemoveGroup = (val) => {

@@ -129,7 +129,7 @@
                           lazy-rules
                           outlined
                           v-model="groupName[lang.locale]"
-                          label="Add new group"
+                          :label="$t('list_or_group')"
                           dense
                         />
                       </div>
@@ -152,6 +152,7 @@
                       <q-select
                         v-model="groupType"
                         dense
+                        :label="$t('type')"
                         style="margin-top: 20px"
                         class="flex-1"
                         outlined
@@ -235,6 +236,7 @@
                         <q-expansion-item
                           switch-toggle-side
                           v-for="child in row.value"
+                          default-opened
                           :key="child.value"
                         >
                           <template v-slot:header>
@@ -350,7 +352,6 @@
                                       :options="[
                                         'number',
                                         'text',
-                                        'group',
                                         'list',
                                         'color',
                                       ]"

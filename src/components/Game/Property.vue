@@ -95,7 +95,6 @@
                         'number',
                         'text',
                         'color',
-                        'group',
                       ]"
                       maxlength="500"
                       lazy-rules
