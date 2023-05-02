@@ -354,6 +354,7 @@
                                         'text',
                                         'list',
                                         'color',
+                                        'group'
                                       ]"
                                       maxlength="500"
                                       lazy-rules
@@ -755,11 +756,12 @@ const onAddRow = async () => {
     label: groupName.value,
     parameters: parametersGroup.value,
     type: groupType.value,
-    value: groupType.value == 'list' || groupType.value == 'group' ? [] : "",
+    value: groupType.value == "list" || groupType.value == "group" ? [] : "",
   };
   rows.value.push(ro);
   addField(ro);
   groupName.value = {};
+  refFormGroup.value.reset();
 };
 
 const addField = (row) => {
@@ -829,6 +831,10 @@ async function onSubmit() {
   try {
     let validation = await refForm.value.validate();
     if (!validation) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
       return;
     }
     let lang_data = [];

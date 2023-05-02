@@ -42,12 +42,12 @@ export default {
         to: { name: "game-flatform" },
         permissions: ["Game Platform Setting: View", "Game Platform Setting: Edit/Update"],
       },
-      {
-        label: "Game Point",
-        icon: "mdi-star-four-points",
-        to: { name: "game-flatform" },
-        permissions: ["Game Platform Setting: View", "Game Platform Setting: Edit/Update"],
-      },
+      // {
+      //   label: "Game Point",
+      //   icon: "mdi-star-four-points",
+      //   to: { name: "game-flatform" },
+      //   permissions: ["Game Platform Setting: View", "Game Platform Setting: Edit/Update"],
+      // },
     ],
   },
   admin_management: {

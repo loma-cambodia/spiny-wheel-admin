@@ -110,7 +110,7 @@
               <q-btn
                 v-if="
                   Utils.hasPermissions([
-                    'CustomerServiceSetting: Create CustomerServiceSetting',
+                    'Game: Delete',
                   ])
                 "
                 class="q-mr-sm"
@@ -121,7 +121,6 @@
                 icon="fas fa-trash"
                 @click="onDeleteClick(props.row)"
               >
-                <q-tooltip>{{ $t(Utils.getKey("Edit")) }}</q-tooltip>
               </q-btn>
             </q-td>
           </template>
