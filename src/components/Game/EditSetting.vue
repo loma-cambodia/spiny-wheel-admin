@@ -8,7 +8,7 @@
     }"
   >
     <q-bar dark class="bg-primary text-white">
-      <span class="text-body2">{{ $t(Utils.getKey("New")) }}</span>
+      <span class="text-body2">{{ $t(Utils.getKey("Edit")) }}</span>
       <q-space />
       <q-btn
         dense
@@ -475,7 +475,7 @@ const onAddRow = (st) => {
     id: Utils.randomString(16),
     ...objsetting,
   };
-  console.log("value_setting_row", value_setting_row);
+  // console.log("value_setting_row", value_setting_row);
   platformSetting.value.map((rw) => {
     if (rw.id == st.id) {
       if (rw.setting_value == undefined) {
@@ -485,14 +485,14 @@ const onAddRow = (st) => {
     }
     return rw;
   });
-  console.log("platformSetting", platformSetting.value);
+  // console.log("platformSetting", platformSetting.value);
 };
 
 const onAddRowListinGroup = (child, setting) => {
   incNum.value = Utils.randomString(16);
   let objsetting = {};
   child.value.forEach((e) => {
-    console.log("e type", e);
+    // console.log("e type", e);
     if (e.type == "group") {
       objsetting[e.parameters] = {};
       e.value.forEach((chil) => {
@@ -511,7 +511,7 @@ const onAddRowListinGroup = (child, setting) => {
 
   platformSetting.value.map((rw) => {
     if (rw.id == setting.id) {
-      console.log("row list in group", rw);
+      // console.log("row list in group", rw);
       rw.value.map((listIn) => {
         if (listIn.id == child.id) {
           if (listIn.setting_value == undefined) {
