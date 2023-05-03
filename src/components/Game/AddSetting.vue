@@ -24,7 +24,7 @@
     <q-card-section class="q-pt-lg pb-0">
       <q-form ref="refForm">
         <div class="row">
-          <div class="col-6">
+          <div class="col-6 option">
             <q-select
               v-model="gameSelect"
               :options="games"
@@ -35,6 +35,7 @@
               :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
               type="number"
               outlined
+              :loading="isLoading"
             />
           </div>
           <div class="col-12 col-md-2 q-pr-md q-pt-sm">
@@ -148,7 +149,7 @@
               <p class="font_18">
                 <!-- {{ $t("parameter") }}: -->
                 {{ setting.label[locale] }}
-                <q-checkbox v-model="setting.status" />
+                <!-- <q-checkbox v-model="setting.status" /> -->
                 <!-- {{ $t("type") }}: <span class="red"> {{ setting.type }} </span> -->
               </p>
               <div v-for="groupValue in setting.value" :key="groupValue.id">
@@ -338,7 +339,7 @@
         >{{ $t(Utils.getKey("Save")) }}</q-btn
       >
     </q-card-section>
-    <Loading :loading="isLoading" />
+    <!-- <Loading :loading="isLoading" /> -->
   </q-card>
 </template>
 
@@ -537,8 +538,10 @@ const onRemoveRowChild = (subChild, child, parent) => {
 
 
 const onLoadGames = async (val) => {
+  isLoading.value= true
   let allGame = await all();
   games.value = allGame.data;
+  isLoading.value= false
   console.log(allGame, "all games");
 };
 onLoadGames();

@@ -903,10 +903,12 @@ const onParamsAdd = (emitValue) => {
 
 getLanguages();
 async function getLanguages() {
+  isLoading.value = true;
   languages.value = await (await all()).data;
   languages.value.forEach((item) => {
     translation_name.value[item.id] = props.data.translates[item.locale]?.name;
   });
+  isLoading.value = false;
 }
 async function onSubmit() {
   try {

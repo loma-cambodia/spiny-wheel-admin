@@ -113,7 +113,7 @@
                 <q-td style="vertical-align: top">
                   <div class="d-flex">
                     <q-select
-                    style="margin-top:36px;"
+                      style="margin-top: 36px"
                       v-model="props.row.type"
                       dense
                       class="q-pt-sm flex-1"
@@ -220,7 +220,7 @@
       <q-btn
         color="primary"
         class="q-px-md q-ml-md"
-        @click="emit('add', rows)"
+        @click="onSaveRow"
         :disable="saving"
         >{{ $t(Utils.getKey("save")) }}</q-btn
       >
@@ -284,6 +284,14 @@ const onAddRow = () => {
   });
 };
 
+const onSaveRow = async () => {
+  let validation = await refForm.value.validate();
+  if (!validation) {
+    return;
+  }
+  emit("add", rows.value);
+};
+
 const subRows = ref([]);
 const incNum2 = ref(0);
 
@@ -321,13 +329,11 @@ getLanguages();
 async function getLanguages() {
   languages.value = await (await all()).data;
   rows.value.map((row) => {
-    if(!row.label){
-      row.label = {
-
-      }
+    if (!row.label) {
+      row.label = {};
     }
     return row;
   });
-  console.log('row', rows.value)
+  console.log("row", rows.value);
 }
 </script>

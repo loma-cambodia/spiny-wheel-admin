@@ -1291,7 +1291,14 @@ table.parameter-type {
   background: #009f27;
 }
 .color_setting .q-field--labeled.q-field--dense .q-field__native {
-  padding-top: 14px;
+  padding-top: 4px;
   padding-bottom: 2px;
   height: 40px;
+}
+
+
+.option .q-field--labeled.q-field--dense .q-field__native {
+  padding-top: 0px;
+  padding-bottom: 2px;
+  height: 20px !important;
 }

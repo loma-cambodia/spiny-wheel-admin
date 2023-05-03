@@ -704,7 +704,9 @@ const emit = defineEmits(["onClose", "onAdded"]);
 const $q = useQuasar();
 const { saving, add } = useGame();
 const { all } = useLanguage();
-const game = ref({});
+const game = ref({
+  status: "active",
+});
 const translation_name = ref({});
 const isLoading = ref(false);
 const dialog = ref(false);
@@ -734,7 +736,7 @@ const time = ref(
 );
 const groupName = ref({});
 const parametersGroup = ref("");
-const groupType = ref("");
+const groupType = ref("group");
 watch(
   () => groupName.value?.en,
   () => {
@@ -822,10 +824,12 @@ const onParamsAdd = (emitValue) => {
 
 getLanguages();
 async function getLanguages() {
+  isLoading.value = true;
   languages.value = await (await all()).data;
   languages.value.forEach((item) => {
     // translation_name.value[item.id] = props.data.translates[item.locale]?.name;
   });
+  isLoading.value = false;
 }
 async function onSubmit() {
   try {
