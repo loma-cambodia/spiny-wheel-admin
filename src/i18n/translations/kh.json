@@ -1251,5 +1251,13 @@
   "winning_rate": "Winning rate",
   "parameter": "Parameter",
   "game_platform_setting": "Game platform setting",
-  "game_setting": "Game setting"
+  "game_setting": "Game setting",
+  "group": "Group",
+  "vt": "Vt",
+  "ph": "Ph",
+  "list_or_group": "List or group",
+  "list": "List",
+  "label": "Label",
+  "text": "Text",
+  "number": "Number"
 }

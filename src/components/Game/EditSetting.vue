@@ -24,7 +24,7 @@
     <q-card-section class="q-pt-lg pb-0">
       <q-form ref="refForm">
         <div class="row">
-          <div class="col-6">
+          <div class="col-6 option">
             <q-select
               v-model="gameSelect"
               :options="games"

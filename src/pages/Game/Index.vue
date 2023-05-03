@@ -108,11 +108,7 @@
               </q-btn>
 
               <q-btn
-                v-if="
-                  Utils.hasPermissions([
-                    'Game: Delete',
-                  ])
-                "
+                v-if="Utils.hasPermissions(['Game: Delete'])"
                 class="q-mr-sm"
                 size="xs"
                 rounded
@@ -124,6 +120,13 @@
               </q-btn>
             </q-td>
           </template>
+          <!-- <template v-slot:bottom-row>
+            <q-tr>
+              <q-td > Bottom row </q-td>
+              <q-td > Bottom row </q-td>
+              <q-td > Bottom row </q-td>
+            </q-tr>
+          </template> -->
         </q-table>
       </q-card-section>
       <Loading :loading="loading" />
@@ -169,7 +172,7 @@ import EditGame from "../../components/Game/Edit.vue";
 import AddGame from "../../components/Game/Add.vue";
 import Confirm from "../../components/Shared/Confirm.vue";
 import useLanguage from "src/composables/useLanguage";
-import GameTable from "./game.vue"
+import GameTable from "./game.vue";
 
 const { all } = useLanguage();
 const locale = inject("locale");

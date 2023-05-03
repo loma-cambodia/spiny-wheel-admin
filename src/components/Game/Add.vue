@@ -162,6 +162,7 @@
                         ]"
                         :options="['group', 'list']"
                         maxlength="500"
+                        :option-label="name => $t(name)"
                         lazy-rules
                       />
                     </div>
@@ -344,6 +345,7 @@
                                       dense
                                       class="q-pt-sm flex-1"
                                       outlined
+                                      :option-label="name => $t(name)"
                                       :rules="[
                                         (val) =>
                                           !!val ||
@@ -795,7 +797,7 @@ const onRemove = (val) => {
 };
 
 const onRemoveGroup = (val) => {
-  console.log(rows.value, val);
+  // console.log(rows.value, val);
   rows.value = rows.value.filter((row) => row.id != val.id);
 };
 

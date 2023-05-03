@@ -832,6 +832,7 @@ const onAddRow = () => {
     // addField(ro);
     groupName.value = "";
   }
+  refFormGroup.value.reset();
 };
 
 const addField = (row) => {
