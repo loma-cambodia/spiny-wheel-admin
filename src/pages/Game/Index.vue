@@ -77,7 +77,7 @@
           </template>
           <template v-slot:body-cell-name="props">
             <q-td class="text-center">
-              {{ props.row?.translates[locale].name }}
+              {{ props.row.translates ?  props.row?.translates[locale].name : ''}}
             </q-td>
           </template>
           <template v-slot:body-cell-status="props">

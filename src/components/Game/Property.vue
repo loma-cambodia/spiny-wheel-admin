@@ -145,6 +145,38 @@
                       </thead>
                       <tr v-for="ch in props.row.value" :key="ch.id">
                         <td>
+                          <div>
+                            <q-tabs
+                              dense
+                              v-model="tabFieldChild"
+                              active-color="white"
+                              indicator-color="primary"
+                              align="left"
+                              bordered
+                              class="text-grey q-mb-sm"
+                            >
+                              <q-tab
+                                v-for="lang in languages"
+                                :key="lang.locale"
+                                :name="lang.locale"
+                                :label="$t(lang.locale)"
+                              ></q-tab>
+                            </q-tabs>
+                            <div
+                              class="form-group"
+                              v-for="lang in languages"
+                              :key="lang.locale"
+                            >
+                              <div v-if="tabFieldChild == lang.locale">
+                                <q-input
+                                  outlined
+                                  v-model="ch.label[lang.locale]"
+                                  label="Field Label"
+                                  dense
+                                />
+                              </div>
+                            </div>
+                          </div>
                           <q-input
                             class="q-pt-sm"
                             v-model="ch.parameters"
@@ -246,7 +278,7 @@ const { saving, add } = useGame();
 const { all } = useLanguage();
 const locale = inject("locale");
 const tabField = ref(locale.value);
-
+const tabFieldChild = ref(locale.value);
 const dialog = ref(false);
 const game = ref({
   name: "",
@@ -290,6 +322,7 @@ const onSaveRow = async () => {
     return;
   }
   emit("add", rows.value);
+  console.log('on AddRow', rows.value	)
 };
 
 const subRows = ref([]);
@@ -304,6 +337,9 @@ const onAddSubRow = (inRow) => {
       rw.value.push({
         id: Utils.randomString(16),
         parameters: "",
+        label: {
+          en: "",
+        },
         type: "",
       });
     }
@@ -329,8 +365,21 @@ getLanguages();
 async function getLanguages() {
   languages.value = await (await all()).data;
   rows.value.map((row) => {
+    console.log("typeof row.label ",   )
+
     if (!row.label) {
       row.label = {};
+    }
+    if(row.label.length == 0) {
+      row.label = {};
+    }
+    if (row.type == "group") {
+      row.value.map((rw) => {
+        if (!rw.label) {
+          rw.label = {};
+        }
+        return rw;
+      });
     }
     return row;
   });

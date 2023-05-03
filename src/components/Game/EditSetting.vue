@@ -150,7 +150,7 @@
               <p class="font_18">
                 <!-- {{ $t("parameter") }}: -->
                 {{ setting.label[locale] }}
-                <q-checkbox v-model="setting.status" />
+                <!-- <q-checkbox v-model="setting.status" /> -->
                 <!-- {{ $t("type") }}: <span class="red"> {{ setting.type }} </span> -->
               </p>
               <div v-for="groupValue in setting.value" :key="groupValue.id">
@@ -159,27 +159,52 @@
                     <thead>
                       <tr>
                         <th v-for="h in groupValue.value" :key="h.parameters">
-                          {{ h.parameters }}
+                          {{ h?.label[locale] }}
                         </th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
                         <td v-for="h in groupValue.value" :key="h.parameters">
-                          <q-input
-                            class="q-pt-sm"
-                            v-model="h.value"
-                            :label="$t(Utils.getKey(h.parameters))"
-                            dense
-                            outlined
-                            :rules="[
-                              (val) =>
-                                !!val || $t(Utils.getKey('field is required')),
-                            ]"
-                            :type="h.type"
-                            maxlength="500"
-                            lazy-rules
-                          />
+                          <div v-if="h.type == 'group'">
+                            <div
+                              v-for="child in h.value"
+                              :key="child.parameters"
+                            >
+                              <q-input
+                                class="q-pt-sm"
+                                v-model="child.value"
+                                :label="child?.label[locale]"
+                                dense
+                                outlined
+                                :rules="[
+                                  (val) =>
+                                    !!val ||
+                                    $t(Utils.getKey('field is required')),
+                                ]"
+                                :type="child.type"
+                                maxlength="500"
+                                lazy-rules
+                              />
+                            </div>
+                          </div>
+                          <div v-else>
+                            <q-input
+                              class="q-pt-sm"
+                              v-model="h.value"
+                              :label="h?.label[locale]"
+                              dense
+                              outlined
+                              :rules="[
+                                (val) =>
+                                  !!val ||
+                                  $t(Utils.getKey('field is required')),
+                              ]"
+                              :type="h.type"
+                              maxlength="500"
+                              lazy-rules
+                            />
+                          </div>
                         </td>
                       </tr>
                     </tbody>
@@ -195,7 +220,7 @@
                     <thead>
                       <tr>
                         <th v-for="h in groupValue.value" :key="h.parameters">
-                          {{ h.parameters }}
+                          {{ h?.label[locale] }}
                         </th>
                         <th>
                           {{ $t("action") }}
@@ -220,7 +245,7 @@
                                     hc.parameters
                                   ][child.parameters]
                                 "
-                                :label="$t(Utils.getKey(child.parameters))"
+                                :label="child?.label[locale]"
                                 dense
                                 outlined
                                 :rules="[
@@ -240,7 +265,7 @@
                               v-model="
                                 groupValue.setting_value[index][hc.parameters]
                               "
-                              :label="$t(Utils.getKey(hc.parameters))"
+                              :label="hc?.label[locale]"
                               dense
                               outlined
                               :rules="[
@@ -282,7 +307,7 @@
                   <q-input
                     class="q-pt-sm"
                     v-model="groupValue.value"
-                    :label="$t(Utils.getKey(groupValue.parameters))"
+                    :label="groupValue?.label[locale]"
                     dense
                     outlined
                     :rules="[
@@ -298,15 +323,15 @@
             <div v-else>
               <q-separator class="q-my-md" />
               <p class="font_18">
-                {{ $t("parameter") }}:
-                {{ setting.parameters }}
-                <q-checkbox v-model="setting.status" />
-                {{ $t("type") }}: <span class="red"> {{ setting.type }} </span>
+                <!-- {{ $t("parameter") }}: -->
+                {{ setting?.label[locale] }}
+                <!-- <q-checkbox v-model="setting.status" /> -->
+                <!-- {{ $t("type") }}: <span class="red"> {{ setting.type }} </span> -->
               </p>
               <q-input
                 class="q-pt-sm"
                 v-model="setting.value"
-                :label="$t(Utils.getKey(setting.parameters))"
+                :label="setting?.label[locale]"
                 dense
                 outlined
                 :rules="[
@@ -386,24 +411,6 @@ const game = ref({
 const translation_name = ref({});
 const time = ref({});
 const isLoading = ref(false);
-const columns = [
-  {
-    name: "segment",
-    field: (row) => row.name,
-    align: "left",
-    label: "segment",
-  },
-  { name: "price", field: (row) => row.name, align: "left", label: "price" },
-  {
-    name: "winning_percentage",
-    field: (row) => row.name,
-    align: "left",
-    label: "winning_percentage",
-  },
-  { name: "color", field: (row) => row.color, align: "center", label: "color" },
-
-  { name: "actions", field: (row) => row, label: " Action", align: "center" },
-];
 const refForm = ref(null);
 const rows = ref([]);
 const incNum = ref(0);
@@ -464,11 +471,11 @@ const onAddRow = (st) => {
       objsetting[e.parameters] = {};
       e.value.forEach((chil) => {
         objsetting[e.parameters][chil.parameters] = "";
-        objsetting[e.parameters]["label"] = chil.label;
+        objsetting[e.parameters]["label_"+e.parameters  ] = chil.label;
       });
     } else {
       objsetting[e.parameters] = "";
-      objsetting["label"] = e.label;
+      objsetting["label_"+e.parameters] = e.label;
     }
   });
   let value_setting_row = {
@@ -497,11 +504,11 @@ const onAddRowListinGroup = (child, setting) => {
       objsetting[e.parameters] = {};
       e.value.forEach((chil) => {
         objsetting[e.parameters][chil.parameters] = "";
-        objsetting[e.parameters]["label"] = chil.label;
+        objsetting[e.parameters]["label_"+e.parameters] = chil.label;
       });
     } else {
       objsetting[e.parameters] = "";
-      objsetting["label"] = e.label;
+      objsetting["label_"+e.parameters] = e.label;
     }
   });
   let value_setting_row = {
