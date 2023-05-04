@@ -149,7 +149,7 @@
               <q-separator class="q-my-md" />
               <p class="font_18">
                 <!-- {{ $t("parameter") }}: -->
-                {{ setting.label[locale] }}
+                {{ setting.label[locale] ? setting.label[locale] : setting.parameters }}
                 <!-- <q-checkbox v-model="setting.status" /> -->
                 <!-- {{ $t("type") }}: <span class="red"> {{ setting.type }} </span> -->
               </p>
@@ -159,7 +159,7 @@
                     <thead>
                       <tr>
                         <th v-for="h in groupValue.value" :key="h.parameters">
-                          {{ h?.label[locale] }}
+                          {{ h?.label[locale] ? h?.label[locale] : h.parameters }}
                         </th>
                       </tr>
                     </thead>
@@ -174,7 +174,7 @@
                               <q-input
                                 class="q-pt-sm"
                                 v-model="child.value"
-                                :label="child?.label[locale]"
+                                :label="child.label ? child?.label[locale] : child.parameters"
                                 dense
                                 outlined
                                 :rules="[
@@ -245,7 +245,7 @@
                                     hc.parameters
                                   ][child.parameters]
                                 "
-                                :label="child?.label[locale]"
+                                :label="child.label ? child?.label[locale] : child.parameters"
                                 dense
                                 outlined
                                 :rules="[
@@ -265,7 +265,7 @@
                               v-model="
                                 groupValue.setting_value[index][hc.parameters]
                               "
-                              :label="hc?.label[locale]"
+                              :label="hc.label ? hc?.label[locale] : hc.parameters"
                               dense
                               outlined
                               :rules="[
@@ -307,7 +307,7 @@
                   <q-input
                     class="q-pt-sm"
                     v-model="groupValue.value"
-                    :label="groupValue?.label[locale]"
+                    :label="groupValue.label ? groupValue?.label[locale] : groupValue.parameters"
                     dense
                     outlined
                     :rules="[
@@ -324,14 +324,14 @@
               <q-separator class="q-my-md" />
               <p class="font_18">
                 <!-- {{ $t("parameter") }}: -->
-                {{ setting?.label[locale] }}
+                {{ setting.label ? setting?.label[locale] : setting.parameters }}
                 <!-- <q-checkbox v-model="setting.status" /> -->
                 <!-- {{ $t("type") }}: <span class="red"> {{ setting.type }} </span> -->
               </p>
               <q-input
                 class="q-pt-sm"
                 v-model="setting.value"
-                :label="setting?.label[locale]"
+                :label="setting.label ? setting?.label[locale] : setting.parameters "
                 dense
                 outlined
                 :rules="[

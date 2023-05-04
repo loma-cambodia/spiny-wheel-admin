@@ -177,7 +177,7 @@
                               <q-input
                                 class="q-pt-sm"
                                 v-model="child.value"
-                                :label="child?.label[locale] "
+                                :label="child.label ? child?.label[locale] : child.parameters"
                                 dense
                                 outlined
                                 :rules="[
@@ -248,7 +248,7 @@
                                     hc.parameters
                                   ][child.parameters]
                                 "
-                                :label="child?.label[locale]"
+                                :label="child.label ?  child?.label[locale] : child.parameters"
                                 dense
                                 outlined
                                 :rules="[
