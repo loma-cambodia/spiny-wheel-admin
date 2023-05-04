@@ -3,6 +3,14 @@ import { date } from "quasar";
 import { api } from "../boot/axios";
 import Utils from "../helpers/Utils";
 
+import axios from "axios";
+
+const axoisInstance = axios.create({
+  baseURL: process.env.API_URL,
+  headers: { "X-Requested-With": "XMLHttpRequest",   'Content-Type': 'application/x-www-form-urlencoded' },
+  withCredentials: true,
+});
+
 export default function useGame() {
   const state = reactive({
     loading: false,
@@ -56,7 +64,8 @@ export default function useGame() {
   const add = async (data) => {
     try {
       state.saving = true;
-      await api.post("/games", data);
+      const response = await api.post("/games", data);
+      return response;
     } catch (err) {
       //throw Error(Utils.getErrorMessage(err));
       throw Utils.getErrorMessage(err);
@@ -69,6 +78,18 @@ export default function useGame() {
     try {
       state.saving = true;
       await api.patch(`/games/${id}`, data);
+    } catch (err) {
+      //throw Error(Utils.getErrorMessage(err));
+      throw Utils.getErrorMessage(err);
+    } finally {
+      state.saving = false;
+    }
+  };
+
+  const updateImage = async (data) => {
+    try {
+      state.saving = true;
+      await axoisInstance.post(`/games/game-image`, data);
     } catch (err) {
       //throw Error(Utils.getErrorMessage(err));
       throw Utils.getErrorMessage(err);
@@ -136,5 +157,6 @@ export default function useGame() {
     get,
     paginate,
     all,
+    updateImage
   };
 }

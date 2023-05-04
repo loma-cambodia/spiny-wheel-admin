@@ -58,6 +58,41 @@
             </div>
           </div>
 
+          <div class="col-12">
+            <div class="row">
+              <div
+                v-for="lang in languages"
+                :key="lang.locale"
+                class="col-4 pr-3"
+              >
+                <label class="text-uppercase">{{ $t(lang?.locale) }}</label>
+                <q-separator />
+                <div class="py-3 ml-2 mt-2">
+                  <label class="pa-2 border">
+                    <i class="fa fa-image"></i> {{ $t("choose_image") }}
+                    <input
+                      class="mt-2"
+                      accept=".jpg, .png, .jpeg, .gif, .bmp, .tif"
+                      type="file"
+                      id="file-input"
+                      style="display: none"
+                      @change="uploadChange"
+                      max="10"
+                      :name="lang?.locale"
+                    />
+                  </label>
+                </div>
+                <div class="">
+                  <img
+                    style="height: 200px"
+                    class="cropped"
+                    :src="images_url[lang.locale]"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="col-12 col-md-6 q-pr-md q-mb-md">
             <div class="spacer-div-1"></div>
             <q-radio
@@ -162,7 +197,7 @@
                         ]"
                         :options="['group', 'list']"
                         maxlength="500"
-                        :option-label="name => $t(name)"
+                        :option-label="(name) => $t(name)"
                         lazy-rules
                       />
                     </div>
@@ -345,7 +380,7 @@
                                       dense
                                       class="q-pt-sm flex-1"
                                       outlined
-                                      :option-label="name => $t(name)"
+                                      :option-label="(name) => $t(name)"
                                       :rules="[
                                         (val) =>
                                           !!val ||
@@ -356,7 +391,7 @@
                                         'text',
                                         'list',
                                         'color',
-                                        'group'
+                                        'group',
                                       ]"
                                       maxlength="500"
                                       lazy-rules
@@ -485,173 +520,6 @@
                 </div>
               </div>
             </q-card>
-
-            <!-- <q-table
-              :columns="columns"
-              bordered
-              hide-pagination
-              flat
-              :rows-per-page-options="[500]"
-              :rows="rows"
-              row-key="name"
-              :rows-per-page-label="$t(Utils.getKey('Records per page'))"
-            >
-              <template v-slot:body-cell-actions="props">
-                <q-td class="text-center">
-                  <q-btn
-                    class="q-mr-sm"
-                    size="xs"
-                    rounded
-                    padding="5px"
-                    color="primary"
-                    icon="fas fa-pen"
-                    @click="onEditClick(props.row)"
-                  >
-                    <q-tooltip>{{ $t(Utils.getKey("Edit")) }}</q-tooltip>
-                  </q-btn>
-                  <q-btn
-                    class="q-mr-sm"
-                    size="xs"
-                    rounded
-                    padding="5px"
-                    color="red"
-                    icon="fas fa-trash"
-                    @click="onRemove(props.row)"
-                  >
-                    <q-tooltip>{{ $t(Utils.getKey("Edit")) }}</q-tooltip>
-                  </q-btn>
-                </q-td>
-              </template>
-
-              <template v-slot:header-cell="props">
-                <q-th :props="props">
-                  {{
-                    props.col.label === "#"
-                      ? props.col.label
-                      : $t(Utils.getKey(props.col.label))
-                  }}
-                </q-th>
-              </template>
-              <template v-slot:body-cell-parameters="props">
-                <q-td style="vertical-align: top">
-                  <q-input
-                    class="q-pt-sm"
-                    v-model="props.row.parameters"
-                    :label="$t(Utils.getKey('parameters'))"
-                    dense
-                    :oninput="(evt) => Utils.onlyLettersAndDashEvent(evt)"
-                    :rules="[
-                      (val) => !!val || $t(Utils.getKey('field is required')),
-                    ]"
-                    outlined
-                    maxlength="500"
-                    lazy-rules
-                  />
-                </q-td>
-              </template>
-              <template v-slot:body-cell-type="props">
-                <q-td style="vertical-align: top">
-                  <div>
-                    <div class="d-flex">
-                      <q-select
-                        v-model="props.row.type"
-                        dense
-                        class="q-pt-sm flex-1"
-                        outlined
-                        :rules="[
-                          (val) =>
-                            !!val || $t(Utils.getKey('field is required')),
-                        ]"
-                        :options="[
-                          'interger',
-                          'number',
-                          'string',
-                          'boolean',
-                          'object',
-                          'array',
-                          'color',
-                        ]"
-                        maxlength="500"
-                        lazy-rules
-                      />
-                      <q-btn
-                        @click="onShowProperty(props.row)"
-                        v-if="
-                          props.row.type == 'array' ||
-                          props.row.type == 'object'
-                        "
-                        style="height: 40px"
-                        class="q-mt-sm"
-                        color="primary"
-                      >
-                        +
-                      </q-btn>
-                    </div>
-                    <div
-                      v-if="
-                        props.row.type == 'array' || props.row.type == 'object'
-                      "
-                    >
-                      <table style="width: 100%">
-                        <thead>
-                          <tr>
-                            <th class="text-left text-bold bt">
-                              {{ $t("parameters") }}
-                            </th>
-                            <th class="text-left text-bold">
-                              {{ $t("type") }}
-                            </th>
-                          </tr>
-                        </thead>
-                        <tr v-for="ch in props.row.value" :key="ch.id">
-                          <td>
-                            {{ ch.parameters }}
-                          </td>
-                          <td>
-                            {{ ch.type }}
-                            <div
-                              v-if="
-                                ch.type == 'object' ||
-                                ch.type == 'array'
-                              "
-                            >
-                              <table style="width: 100%">
-                                <thead>
-                                  <tr>
-                                    <th class="text-left text-bold bt">
-                                      {{ $t("parameters") }}
-                                    </th>
-                                    <th class="text-left text-bold">
-                                      {{ $t("type") }}
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tr v-for="subC in ch.value" :key="subC.id">
-                                  <td>
-                                    {{ subC.parameters }}
-                                  </td>
-                                  <td>
-                                    {{ subC.type }}
-                                  </td>
-                                </tr>
-                              </table>
-                            </div>
-                          </td>
-                        </tr>
-                      </table>
-                    </div>
-                  </div>
-                </q-td>
-              </template>
-            </q-table>
-            <q-btn
-              size="sm"
-              icon="mdi-plus"
-              color="primary"
-              class="q-mt-sm"
-              @click="onAddRow"
-            >
-            </q-btn> -->
           </div>
         </div>
       </q-form>
@@ -705,7 +573,7 @@ const { t } = useI18n();
 const props = defineProps({ data: Object });
 const emit = defineEmits(["onClose", "onAdded"]);
 const $q = useQuasar();
-const { saving, add } = useGame();
+const { saving, add, updateImage } = useGame();
 const { all } = useLanguage();
 const game = ref({
   status: "active",
@@ -717,17 +585,6 @@ const locale = inject("locale");
 const tab2 = ref(locale.value);
 const tabLable = ref(locale.value);
 const tabField = ref(locale.value);
-const columns = [
-  {
-    name: "parameters",
-    field: (row) => row,
-    align: "left",
-    label: "parameters",
-  },
-  { name: "type", field: (row) => row, align: "left", label: "type" },
-
-  { name: "actions", field: (row) => row, label: " Action", align: "center" },
-];
 const refForm = ref(null);
 const refFormGroup = ref(null);
 const rows = ref([]);
@@ -740,6 +597,26 @@ const time = ref(
 const groupName = ref({});
 const parametersGroup = ref("");
 const groupType = ref("group");
+
+const images = ref([]);
+const images_url = ref({});
+const cropper = ref({});
+
+const uploadChange = (e) => {
+  let lang = e.target.name;
+  if (e.target.files.length) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target.result) {
+        images_url.value[lang] = e.target.result;
+      }
+    };
+    images.value[lang] = e.target.files[0];
+
+    reader.readAsDataURL(e.target.files[0]);
+  }
+};
+
 watch(
   () => groupName.value?.en,
   () => {
@@ -808,7 +685,7 @@ const onShowProperty = (r) => {
   rows.value.map((rw) => {});
   pAttritures.value = r;
 
-  console.log("rows", rows.value);
+  // console.log("rows", rows.value);
 };
 
 const onParamsAdd = (emitValue) => {
@@ -822,7 +699,20 @@ const onParamsAdd = (emitValue) => {
     }
     return rw;
   });
-  console.log("row ==== row", rows.value);
+  // console.log("row ==== row", rows.value);
+};
+
+const onUploadIamge = async (id) => {
+  const FormData = require("form-data");
+  const fomrData = new FormData();
+  languages.value.forEach((lg, index) => {
+      if(images.value[lg.locale]){
+        fomrData.append(`images[${lg.id}]`, images.value[lg.locale]);
+      }
+  });
+  fomrData.append(`id`, id);
+  await updateImage(fomrData)
+  isLoading.value = false;
 };
 
 getLanguages();
@@ -853,14 +743,16 @@ async function onSubmit() {
       });
     }
     game.value.setting = rows.value;
-    await add({ ...game.value, translation_name: lang_data });
+    let response = await add({ ...game.value, translation_name: lang_data });
+    console.log(response.data, 'data');
+    await onUploadIamge(response.data.data.game_id)
     $q.notify({
       position: "top-right",
       type: "positive",
       icon: "fas fa-check",
       message: t(Utils.getKey("updated successfully")),
     });
-    isLoading.value = false;
+
     emit("onAdded");
     emit("onClose");
   } catch (err) {
@@ -871,6 +763,8 @@ async function onSubmit() {
       message: t(Utils.getKey(err.message.toString())),
     });
   }
+  isLoading.value = false;
 }
+
 onMounted(async () => {});
 </script>
