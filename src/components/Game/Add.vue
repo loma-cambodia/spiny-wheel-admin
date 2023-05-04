@@ -679,6 +679,7 @@
     <q-dialog v-model="dialog">
       <Property
         :data="pAttritures"
+        :isedit="false"
         @onClose="dialog = false"
         @add="onParamsAdd"
       />

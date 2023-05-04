@@ -97,6 +97,7 @@
                   <q-input
                     class="q-pt-sm"
                     v-model="props.row.parameters"
+                    :disable="isEdit"
                     :label="$t(Utils.getKey('parameters'))"
                     dense
                     :oninput="(evt) => Utils.onlyLettersAndDashEvent(evt)"
@@ -180,6 +181,7 @@
                           <q-input
                             class="q-pt-sm"
                             v-model="ch.parameters"
+                            :disable="isEdit"
                             :label="$t(Utils.getKey('parameters'))"
                             dense
                             :oninput="
@@ -271,7 +273,7 @@ import Utils from "../../helpers/Utils";
 import Auth from "src/store/auth";
 const form = ref(null);
 const { t } = useI18n();
-const props = defineProps({ data: Object });
+const props = defineProps({ data: Object, isedit: Boolean });
 const emit = defineEmits(["onClose", "onAdded"]);
 const $q = useQuasar();
 const { saving, add } = useGame();
@@ -287,6 +289,8 @@ const game = ref({
   setting: {},
   status: "active",
 });
+const isEdit = ref(props.isedit);
+console.log('isEdit', props.isedit)
 const translation_name = ref({});
 const time = ref({});
 const isLoading = ref(false);
