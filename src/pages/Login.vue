@@ -214,6 +214,7 @@ async function getLanguages() {
   try {
     const response = await api.get("/lang/all");
     localeOptions.value = response.data;
+    locale.value = response.data["0"]?.locale || 'en'
   } catch (error) {}
 }
 
