@@ -57,7 +57,7 @@
               </div>
             </div>
           </div>
-          <div class="col-12">
+          <div class="col-12 q-pr-sm">
             <div class="row">
               <div
                 v-for="lang in languages"
@@ -81,10 +81,9 @@
                     />
                   </label>
                 </div>
-                <div v-if="!images_url[lang.locale]" class="box-2 img-result">
+                <div v-if="!images_url[lang.locale]" class="box-2 img-result q-mr-sm" style="max-height: 240px;">
                   <img
-                    style="height: 200px"
-                    class="cropped"
+                    style="height: 230px;object-fit: cover;    width: 100%;"
                     :src="
                       game.images.filter((img) => img.purpose == lang.id)?.[0]
                         ?.path
@@ -94,8 +93,8 @@
                 </div>
                 <div v-else>
                   <img
-                    style="height: 200px"
-                    class="cropped"
+                    style="height: 230px;object-fit: cover;    width: 100%;"
+                    class="cropped q-mr-sm"
                     :src="images_url[lang.locale]"
                   />
                 </div>

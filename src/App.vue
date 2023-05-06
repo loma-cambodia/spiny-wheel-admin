@@ -45,7 +45,7 @@ const onCheckTheme = async () => {
 onCheckTheme()
 
 const title = computed(() =>
-  t(Utils.getKey("Spiny Wheel"))
+  t(Utils.getKey("Game Center"))
 );
 
 useMeta(() => {

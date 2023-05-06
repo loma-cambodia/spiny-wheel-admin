@@ -84,7 +84,7 @@
                 </div>
                 <div class="">
                   <img
-                    style="height: 200px"
+                    style="width: 100%; max-height: 250px"
                     class="cropped"
                     :src="images_url[lang.locale]"
                   />
@@ -706,12 +706,12 @@ const onUploadIamge = async (id) => {
   const FormData = require("form-data");
   const fomrData = new FormData();
   languages.value.forEach((lg, index) => {
-      if(images.value[lg.locale]){
-        fomrData.append(`images[${lg.id}]`, images.value[lg.locale]);
-      }
+    if (images.value[lg.locale]) {
+      fomrData.append(`images[${lg.id}]`, images.value[lg.locale]);
+    }
   });
   fomrData.append(`id`, id);
-  await updateImage(fomrData)
+  await updateImage(fomrData);
   isLoading.value = false;
 };
 
@@ -744,8 +744,8 @@ async function onSubmit() {
     }
     game.value.setting = rows.value;
     let response = await add({ ...game.value, translation_name: lang_data });
-    console.log(response.data, 'data');
-    await onUploadIamge(response.data.data.game_id)
+    console.log(response.data, "data");
+    await onUploadIamge(response.data.data.game_id);
     $q.notify({
       position: "top-right",
       type: "positive",
