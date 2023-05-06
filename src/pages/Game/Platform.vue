@@ -104,6 +104,17 @@
                   rounded
                   padding="5px"
                   color="primary"
+                  icon="mdi-content-copy"
+                  @click="onShowCopy(props.row)"
+                >
+                  <q-tooltip>{{ $t(Utils.getKey("copy")) }}</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-mr-sm"
+                  size="xs"
+                  rounded
+                  padding="5px"
+                  color="primary"
                   icon="mdi-code-json"
                   @click="onShowRepsone(props.row)"
                 >
@@ -145,7 +156,6 @@
       </q-card>
     </div>
 
-
     <div v-if="showAdd" class="q-py-lg q-px-md">
       <add-game @onClose="showAdd = false" @onAdded="onRefresh" />
     </div>
@@ -173,6 +183,14 @@
         :button-label="$t(Utils.getKey('Delete'))"
       />
     </q-dialog>
+
+    <q-dialog v-model="showCopy" position="top" persistent>
+      <copy-game
+        :data="selectedCategory"
+        @onClose="showCopy = false"
+        @onAdded="onRefresh"
+      />
+    </q-dialog>
   </q-page>
 </template>
 
@@ -186,6 +204,7 @@ import { store } from "../../store/store";
 import AddButton from "../../components/Buttons/AddButton.vue";
 import EditGame from "../../components/Game/EditSetting.vue";
 import AddGame from "../../components/Game/AddSetting.vue";
+import CopyGame from "../../components/Game/Copy.vue";
 import Confirm from "../../components/Shared/Confirm.vue";
 import useLanguage from "src/composables/useLanguage";
 import JsonView from "./JsonView";
@@ -211,6 +230,7 @@ const filters = reactive({
 const selectResponse = ref({});
 const showResponse = ref(false);
 const jsonData = reactive(selectResponse);
+const showCopy = ref(false);
 
 getData();
 async function getData() {
@@ -242,6 +262,11 @@ const onShowRepsone = (row) => {
 const onDeleteClick = (row) => {
   showConfirm.value = true;
   selected.value = [row];
+};
+
+const onShowCopy = (row) => {
+  showCopy.value = true;
+  selectedCategory.value = row;
 };
 
 const getStatusColor = (props) => {
