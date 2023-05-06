@@ -78,6 +78,11 @@
                 {{ props.row?.game?.translates[locale]?.name }}
               </q-td>
             </template>
+            <template v-slot:body-cell-language="props">
+              <q-td class="text-center">
+                {{ props.row?.language?.name }}
+              </q-td>
+            </template>
 
             <template v-slot:body-cell-status="props">
               <q-td class="text-center">

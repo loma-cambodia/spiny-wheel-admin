@@ -50,6 +50,22 @@
               :label="$t('inactive')"
             />
           </div>
+          <div class="col-4 option">
+            <q-select
+              v-model="languageSelect"
+              :options="languages"
+              :label="$t(Utils.getKey('Language'))"
+              dense
+              emit-value
+              map-options
+              option-label="name"
+              option-value="id"
+              outlined
+              lazy-rules
+              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
+            >
+            </q-select>
+          </div>
           <!-- setting -->
           <div
             class="col-12 col-md-12 q-pr-md"
@@ -177,7 +193,11 @@
                               <q-input
                                 class="q-pt-sm"
                                 v-model="child.value"
-                                :label="child.label ? child?.label[locale] : child.parameters"
+                                :label="
+                                  child.label
+                                    ? child?.label[locale]
+                                    : child.parameters
+                                "
                                 dense
                                 outlined
                                 :rules="[
@@ -248,7 +268,11 @@
                                     hc.parameters
                                   ][child.parameters]
                                 "
-                                :label="child.label ?  child?.label[locale] : child.parameters"
+                                :label="
+                                  child.label
+                                    ? child?.label[locale]
+                                    : child.parameters
+                                "
                                 dense
                                 outlined
                                 :rules="[
@@ -397,6 +421,7 @@ const platformSetting = ref([]);
 const settingSelect = ref({});
 
 const value_setting = ref({});
+const lanuageHandle = useLanguage();
 
 watch(
   () => gameSelect.value,
@@ -481,11 +506,11 @@ const onAddRow = (st) => {
       objsetting[e.parameters] = {};
       e.value.forEach((chil) => {
         objsetting[e.parameters][chil.parameters] = "";
-        objsetting[e.parameters]["label_"+e.parameters] = chil.label;
+        objsetting[e.parameters]["label_" + e.parameters] = chil.label;
       });
     } else {
       objsetting[e.parameters] = "";
-      objsetting["label_"+e.parameters] = e.label;
+      objsetting["label_" + e.parameters] = e.label;
     }
   });
   let value_setting_row = {
@@ -514,11 +539,11 @@ const onAddRowListinGroup = (child, setting) => {
       objsetting[e.parameters] = {};
       e.value.forEach((chil) => {
         objsetting[e.parameters][chil.parameters] = "";
-        objsetting[e.parameters]["label_"+e.parameters] = chil.label;
+        objsetting[e.parameters]["label_" + e.parameters] = chil.label;
       });
     } else {
       objsetting[e.parameters] = "";
-      objsetting["label_"+e.parameters] = e.label;
+      objsetting["label_" + e.parameters] = e.label;
     }
   });
   let value_setting_row = {
@@ -544,6 +569,10 @@ const onAddRowListinGroup = (child, setting) => {
 };
 
 const languages = ref([]);
+const languageSelect = ref(1);
+
+watch(languageSelect, () => {
+});
 
 const onRemove = (val) => {
   rows.value = rows.value.filter((row) => row.id != val.id);
@@ -574,6 +603,14 @@ const onLoadGames = async (val) => {
 };
 onLoadGames();
 
+getLanguages();
+async function getLanguages() {
+  isLoading.value = true;
+  let lang = await lanuageHandle.all();
+  languages.value  = lang.data;
+  isLoading.value = false;
+}
+
 async function onSubmit() {
   try {
     let validation = await refForm.value.validate();
@@ -589,7 +626,7 @@ async function onSubmit() {
       });
     }
     game.value.setting = platformSetting;
-    await add({ ...game.value });
+    await add({ ...game.value , language_id: languageSelect.value});
     $q.notify({
       position: "top-right",
       type: "positive",

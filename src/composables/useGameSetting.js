@@ -26,7 +26,15 @@ export default function useGameSetting() {
       required: true,
       field: (row) => row,
       align: "center",
-      sortable: true,
+      sortable: false,
+    },
+    {
+      name: "language",
+      label: "language",
+      required: true,
+      field: (row) => row,
+      align: "center",
+      sortable: false,
     },
     {
       name: "user",
@@ -34,13 +42,14 @@ export default function useGameSetting() {
       required: true,
       field: (row) => row?.user?.name,
       align: "center",
-      sortable: true,
+      sortable: false,
     },
+
     {
       name: "created_at",
       label: "created_at",
       required: true,
-      field: (row) => date.formatDate(row.created_at, "YYYY-MM-DD HH:mm:ss") ,
+      field: (row) => date.formatDate(row.created_at, "YYYY-MM-DD HH:mm:ss"),
       align: "center",
       sortable: true,
     },
@@ -114,7 +123,9 @@ export default function useGameSetting() {
         ? Object.assign(props.pagination, { ...props.filter })
         : props.pagination;
     try {
-      const response = await api.get("/game-platform-settings/paginate", { params });
+      const response = await api.get("/game-platform-settings/paginate", {
+        params,
+      });
       state.items = response.data.data;
       state.loading = false;
       return response;

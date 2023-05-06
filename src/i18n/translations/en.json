@@ -1272,6 +1272,7 @@
     "list": "List",
     "label": "Label",
     "text": "Text",
-    "number": "Number"
+    "number": "Number",
+    "your_game_setting_already_exist": "Your game setting already exists with this language"
   }
 

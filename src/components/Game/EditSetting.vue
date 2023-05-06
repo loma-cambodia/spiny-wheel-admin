@@ -49,6 +49,23 @@
               :label="$t('inactive')"
             />
           </div>
+          <div class="col-4 option">
+            <q-select
+              v-model="languageSelect"
+              :options="languages"
+              :label="$t(Utils.getKey('Language'))"
+              dense
+              emit-value
+              map-options
+              disable
+              option-label="name"
+              option-value="id"
+              outlined
+              lazy-rules
+              :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
+            >
+            </q-select>
+          </div>
           <!-- setting -->
           <div
             class="col-12 col-md-12 q-pr-md"
@@ -149,7 +166,11 @@
               <q-separator class="q-my-md" />
               <p class="font_18">
                 <!-- {{ $t("parameter") }}: -->
-                {{ setting.label[locale] ? setting.label[locale] : setting.parameters }}
+                {{
+                  setting.label[locale]
+                    ? setting.label[locale]
+                    : setting.parameters
+                }}
                 <!-- <q-checkbox v-model="setting.status" /> -->
                 <!-- {{ $t("type") }}: <span class="red"> {{ setting.type }} </span> -->
               </p>
@@ -159,7 +180,9 @@
                     <thead>
                       <tr>
                         <th v-for="h in groupValue.value" :key="h.parameters">
-                          {{ h?.label[locale] ? h?.label[locale] : h.parameters }}
+                          {{
+                            h?.label[locale] ? h?.label[locale] : h.parameters
+                          }}
                         </th>
                       </tr>
                     </thead>
@@ -174,7 +197,11 @@
                               <q-input
                                 class="q-pt-sm"
                                 v-model="child.value"
-                                :label="child.label ? child?.label[locale] : child.parameters"
+                                :label="
+                                  child.label
+                                    ? child?.label[locale]
+                                    : child.parameters
+                                "
                                 dense
                                 outlined
                                 :rules="[
@@ -245,7 +272,11 @@
                                     hc.parameters
                                   ][child.parameters]
                                 "
-                                :label="child.label ? child?.label[locale] : child.parameters"
+                                :label="
+                                  child.label
+                                    ? child?.label[locale]
+                                    : child.parameters
+                                "
                                 dense
                                 outlined
                                 :rules="[
@@ -265,7 +296,9 @@
                               v-model="
                                 groupValue.setting_value[index][hc.parameters]
                               "
-                              :label="hc.label ? hc?.label[locale] : hc.parameters"
+                              :label="
+                                hc.label ? hc?.label[locale] : hc.parameters
+                              "
                               dense
                               outlined
                               :rules="[
@@ -307,7 +340,11 @@
                   <q-input
                     class="q-pt-sm"
                     v-model="groupValue.value"
-                    :label="groupValue.label ? groupValue?.label[locale] : groupValue.parameters"
+                    :label="
+                      groupValue.label
+                        ? groupValue?.label[locale]
+                        : groupValue.parameters
+                    "
                     dense
                     outlined
                     :rules="[
@@ -324,14 +361,18 @@
               <q-separator class="q-my-md" />
               <p class="font_18">
                 <!-- {{ $t("parameter") }}: -->
-                {{ setting.label ? setting?.label[locale] : setting.parameters }}
+                {{
+                  setting.label ? setting?.label[locale] : setting.parameters
+                }}
                 <!-- <q-checkbox v-model="setting.status" /> -->
                 <!-- {{ $t("type") }}: <span class="red"> {{ setting.type }} </span> -->
               </p>
               <q-input
                 class="q-pt-sm"
                 v-model="setting.value"
-                :label="setting.label ? setting?.label[locale] : setting.parameters "
+                :label="
+                  setting.label ? setting?.label[locale] : setting.parameters
+                "
                 dense
                 outlined
                 :rules="[
@@ -392,6 +433,9 @@ const games = ref([]);
 const gameSelect = ref([]);
 const platformSetting = ref(props.data?.setting);
 const value_setting_row = ref(props.data?.setting?.setting_value);
+const lanuageHandle = useLanguage();
+const languages = ref([]);
+const languageSelect = ref(props.data?.language_id);
 
 watch(
   () => gameSelect.value,
@@ -471,11 +515,11 @@ const onAddRow = (st) => {
       objsetting[e.parameters] = {};
       e.value.forEach((chil) => {
         objsetting[e.parameters][chil.parameters] = "";
-        objsetting[e.parameters]["label_"+e.parameters  ] = chil.label;
+        objsetting[e.parameters]["label_" + e.parameters] = chil.label;
       });
     } else {
       objsetting[e.parameters] = "";
-      objsetting["label_"+e.parameters] = e.label;
+      objsetting["label_" + e.parameters] = e.label;
     }
   });
   let value_setting_row = {
@@ -504,11 +548,11 @@ const onAddRowListinGroup = (child, setting) => {
       objsetting[e.parameters] = {};
       e.value.forEach((chil) => {
         objsetting[e.parameters][chil.parameters] = "";
-        objsetting[e.parameters]["label_"+e.parameters] = chil.label;
+        objsetting[e.parameters]["label_" + e.parameters] = chil.label;
       });
     } else {
       objsetting[e.parameters] = "";
-      objsetting["label_"+e.parameters] = e.label;
+      objsetting["label_" + e.parameters] = e.label;
     }
   });
   let value_setting_row = {
@@ -533,7 +577,15 @@ const onAddRowListinGroup = (child, setting) => {
   console.log("all setting", platformSetting.value);
 };
 
-const languages = ref([]);
+
+
+getLanguages();
+async function getLanguages() {
+  isLoading.value = true;
+  let lang = await lanuageHandle.all();
+  languages.value = lang.data;
+  isLoading.value = false;
+}
 
 const onRemove = (val) => {
   rows.value = rows.value.filter((row) => row.id != val.id);
@@ -575,7 +627,10 @@ async function onSubmit() {
       });
     }
     game.value.setting = platformSetting;
-    await update(game.value.id, { ...game.value });
+    await update(game.value.id, {
+      ...game.value,
+      language_id: languageSelect.value,
+    });
     $q.notify({
       position: "top-right",
       type: "positive",

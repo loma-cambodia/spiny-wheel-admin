@@ -1250,5 +1250,6 @@
     "winning_rate": "Winning rate",
     "parameter": "Parameter",
     "game_platform_setting": "Game platform setting",
-    "game_setting": "Game setting"
+    "game_setting": "Game setting",
+    "your_game_setting_already_exist": "Your game setting already exists with this language"
 }
