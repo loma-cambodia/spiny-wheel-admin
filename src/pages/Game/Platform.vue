@@ -101,6 +101,9 @@
                 <q-btn
                   class="q-mr-sm"
                   size="xs"
+                  v-if="
+                    Utils.hasPermissions(['Game Platform Setting: Edit/Update'])
+                  "
                   rounded
                   padding="5px"
                   color="primary"
