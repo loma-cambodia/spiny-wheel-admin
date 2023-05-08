@@ -15,7 +15,7 @@
               <img style="height: 70px" src="~assets/logo.png" />
             </div> -->
             <div class="flex-1">
-              <p class="oneshop">{{ $t("spiny_wheel") }}</p>
+              <p class="oneshop">{{ $t("game center") }}</p>
               <p class="agent">{{ $t("system") }}</p>
             </div>
           </div>
