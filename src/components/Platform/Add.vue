@@ -7,7 +7,7 @@
     }"
   >
     <q-bar dark class="bg-primary text-white">
-      <span class="text-body2">{{ $t(Utils.getKey("Add Platform")) }}</span>
+      <span class="text-body2">{{ $t(Utils.getKey("Add")) }}</span>
       <q-space />
       <q-btn
         dense
@@ -36,9 +36,9 @@
             />
           </div>
 
-            <div class="row">
+            <!-- <div class="row"> -->
               <div
-                class="col-12 col-md-6 q-pr-sm q-pb-sm"
+                class="col-12 col-md-6 q-pr-sm"
                 v-for="lang in languages"
                 :key="lang.locale"
               >
@@ -48,11 +48,12 @@
                   :label="$t(Utils.getKey('name'))"
                   dense
                   autogrow
+                  :rules="[(val) => !!val || $t(Utils.getKey('field is required'))]"
                   type="textarea"
                   outlined
                 />
               </div>
-            </div>
+            <!-- </div> -->
 
           <div class="col-12 col-md-12">
             <q-radio

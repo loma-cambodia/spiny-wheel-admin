@@ -115,7 +115,7 @@ async function onSubmit() {
       position: "top-right",
       type: "positive",
       icon: "fas fa-check",
-      message: t(Utils.getKey("added successfully")),
+      message: t(Utils.getKey("add successfully")),
     });
     isLoading.value = false;
     emit("onAdded");

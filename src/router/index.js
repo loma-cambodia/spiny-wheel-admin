@@ -38,19 +38,24 @@ export default route(function (/* { store, ssrContext } */) {
 
   Router.beforeEach((to, from, next) => {
     if (store.tages.filter((it) => it.name == to.name).length == 0) {
-      store.tages.push({
-        name: to.name,
-        path: to.path,
-      });
+      if (to.name != "Page: Login") {
+        store.tages.push({
+          name: to.name,
+          path: to.path,
+        });
+      }
     }
     // authenticate
-    if(to.meta.permission){
-      if(auth.state?.user?.permissions.includes(to.meta.permission)){
+    if (to.meta.permission) {
+      if (auth.state?.user?.permissions.includes(to.meta.permission)) {
         next();
       } else {
-        next({name: 'home'});
+        next({ name: "home" });
       }
     } else {
+      if (to.name == "Page: Login" && auth.state.user) {
+        next({ name: "home" });
+      }
       next();
     }
   });
