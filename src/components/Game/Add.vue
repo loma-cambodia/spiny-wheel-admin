@@ -688,18 +688,40 @@ const onShowProperty = (r) => {
   // console.log("rows", rows.value);
 };
 
+// const onParamsAdd = (emitValue) => {
+//   dialog.value = false;
+//   rows.value.map((rw) => {
+//     if (
+//       rw.id == pAttritures.value.id &&
+//       rw.parameters == pAttritures.value.parameters
+//     ) {
+//       rw.value = emitValue;
+//     }
+//     return rw;
+//   });
+//   // console.log("row ==== row", rows.value);
+// };
 const onParamsAdd = (emitValue) => {
+  // console.log("row ==== row", rows.value);
+  // console.log("emitValue", emitValue);
+  // console.log("pAttritures", pAttritures.value);
   dialog.value = false;
   rows.value.map((rw) => {
-    if (
-      rw.id == pAttritures.value.id &&
-      rw.parameters == pAttritures.value.parameters
-    ) {
-      rw.value = emitValue;
+    if (rw.type == "group" || rw.type == "list") {
+      rw.value.map((child) => {
+        if (child.id == pAttritures.value.id) {
+          child.value = emitValue;
+        }
+        return child;
+      });
+    } else {
+      if (rw.id == pAttritures.value.id) {
+        rw.value = emitValue;
+      }
     }
     return rw;
   });
-  // console.log("row ==== row", rows.value);
+  // console.log("return", rows.value);
 };
 
 const onUploadIamge = async (id) => {

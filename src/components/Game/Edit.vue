@@ -81,9 +81,13 @@
                     />
                   </label>
                 </div>
-                <div v-if="!images_url[lang.locale]" class="box-2 img-result q-mr-sm" style="max-height: 240px;">
+                <div
+                  v-if="!images_url[lang.locale]"
+                  class="box-2 img-result q-mr-sm"
+                  style="max-height: 240px"
+                >
                   <img
-                    style="height: 230px;object-fit: cover;    width: 100%;"
+                    style="height: 230px; object-fit: cover; width: 100%"
                     :src="
                       game.images.filter((img) => img.purpose == lang.id)?.[0]
                         ?.path
@@ -93,7 +97,7 @@
                 </div>
                 <div v-else>
                   <img
-                    style="height: 230px;object-fit: cover;    width: 100%;"
+                    style="height: 230px; object-fit: cover; width: 100%"
                     class="cropped q-mr-sm"
                     :src="images_url[lang.locale]"
                   />
@@ -784,21 +788,30 @@ const onShowProperty = (r) => {
   rows.value.map((rw) => {});
   pAttritures.value = r;
 
-  console.log("rows", rows.value);
+  // console.log("rows", rows.value);
 };
 
 const onParamsAdd = (emitValue) => {
+  // console.log("row ==== row", rows.value);
+  // console.log("emitValue", emitValue);
+  // console.log("pAttritures", pAttritures.value);
   dialog.value = false;
   rows.value.map((rw) => {
-    if (
-      rw.id == pAttritures.value.id &&
-      rw.parameters == pAttritures.value.parameters
-    ) {
-      rw.value = emitValue;
+    if (rw.type == "group" || rw.type == "list") {
+      rw.value.map((child) => {
+        if (child.id == pAttritures.value.id) {
+          child.value = emitValue;
+        }
+        return child;
+      });
+    } else {
+      if (rw.id == pAttritures.value.id) {
+        rw.value = emitValue;
+      }
     }
     return rw;
   });
-  console.log("row ==== row", rows.value);
+  // console.log("return", rows.value);
 };
 
 getLanguages();
@@ -820,7 +833,7 @@ const onUploadIamge = async (id) => {
     }
   });
   fomrData.append(`id`, id);
-  if(Object.keys(images.value).length > 0) {
+  if (Object.keys(images.value).length > 0) {
     await updateImage(fomrData);
   }
   isLoading.value = false;
@@ -842,7 +855,7 @@ async function onSubmit() {
     }
     game.value.setting = rows.value;
     await update(game.value.id, { ...game.value, translation_name: lang_data });
-    await onUploadIamge(game.value.id)
+    await onUploadIamge(game.value.id);
     $q.notify({
       position: "top-right",
       type: "positive",
