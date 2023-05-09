@@ -163,6 +163,7 @@
 </template>
 
 <script setup>
+
 import { ref, inject, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
@@ -172,9 +173,7 @@ import Utils from "../helpers/Utils";
 import useLanguage from "../composables/useLanguage";
 import useUser from "src/composables/useUser";
 import Google2FA from "src/components/Login/Google2FA.vue";
-
 import axios from "axios";
-
 const axoisInstance = axios.create({
   baseURL: process.env.API_URL_LOGIN,
   headers: {
@@ -183,11 +182,9 @@ const axoisInstance = axios.create({
   },
   withCredentials: true,
 });
-
 const { t, locale } = useI18n({ useScope: "global" });
 const { all } = useLanguage();
 const { verifyUser2FA, verifyCode, enableGa } = useUser();
-
 const auth = inject("auth");
 const $q = useQuasar();
 const router = useRouter();

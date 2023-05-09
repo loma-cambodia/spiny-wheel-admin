@@ -34,7 +34,7 @@ export default function usePlatfrom() {
       required: true,
       field: (row) => row,
       align: "center",
-      sortable: true,
+      sortable: false,
     },
     {
       name: "created_at",
@@ -55,7 +55,7 @@ export default function usePlatfrom() {
     {
       name: "actions",
       label: "ACTIONS",
-      required: true,
+      required: false,
       field: (row) => row,
       align: "center",
     },

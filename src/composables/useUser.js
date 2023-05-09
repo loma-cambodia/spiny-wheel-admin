@@ -48,10 +48,10 @@ export default function useUser() {
     {
       name: "platforms.name",
       label: "Platform Name",
-      required: true,
+      required: false,
       field: (row) => row?.platforms?.name,
       align: "center",
-      sortable: true,
+      sortable: false,
     },
     {
       name: "created_at",
