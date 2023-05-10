@@ -3,7 +3,6 @@
     <q-card class="card_container pa-3" :class="  $q.dark.isActive ? 'bg-dark': 'bg-white' ">
       <Loading :loading="isLoading" />
 
-
     </q-card>
   </q-page>
 </template>

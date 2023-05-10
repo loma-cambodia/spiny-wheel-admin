@@ -122,7 +122,14 @@
                       :rules="[
                         (val) => !!val || $t(Utils.getKey('field is required')),
                       ]"
-                      :options="['number', 'text', 'color', 'group']"
+                      :options="[
+                        'number',
+                        'text',
+                        'color',
+                        'group',
+                        'date',
+                        'datetime-local',
+                      ]"
                       maxlength="500"
                       lazy-rules
                     />
@@ -206,7 +213,13 @@
                               (val) =>
                                 !!val || $t(Utils.getKey('field is required')),
                             ]"
-                            :options="['number', 'text', 'color']"
+                            :options="[
+                              'number',
+                              'text',
+                              'color',
+                              'date',
+                              'datetime-local',
+                            ]"
                             maxlength="500"
                             lazy-rules
                           />
@@ -290,7 +303,7 @@ const game = ref({
   status: "active",
 });
 const isEdit = ref(props.isedit);
-console.log('isEdit', props.isedit)
+console.log("isEdit", props.isedit);
 const translation_name = ref({});
 const time = ref({});
 const isLoading = ref(false);
@@ -326,7 +339,7 @@ const onSaveRow = async () => {
     return;
   }
   emit("add", rows.value);
-  console.log('on AddRow', rows.value	)
+  console.log("on AddRow", rows.value);
 };
 
 const subRows = ref([]);
@@ -369,12 +382,12 @@ getLanguages();
 async function getLanguages() {
   languages.value = await (await all()).data;
   rows.value.map((row) => {
-    console.log("typeof row.label ",   )
+    console.log("typeof row.label ");
 
     if (!row.label) {
       row.label = {};
     }
-    if(row.label.length == 0) {
+    if (row.label.length == 0) {
       row.label = {};
     }
     if (row.type == "group") {

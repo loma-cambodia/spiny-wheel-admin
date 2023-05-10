@@ -466,6 +466,8 @@
                                         'list',
                                         'color',
                                         'group',
+                                        'date',
+                                        'datetime-local',
                                       ]"
                                       maxlength="500"
                                       lazy-rules

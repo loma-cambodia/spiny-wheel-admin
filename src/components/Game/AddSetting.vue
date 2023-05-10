@@ -170,7 +170,6 @@
                 {{ setting.label[locale] }}
                 <!-- <q-checkbox v-model="setting.status" /> -->
                 <!-- {{ $t("type") }}: <span class="red"> {{ setting.type }} </span> -->
-
               </p>
               <div v-for="groupValue in setting.value" :key="groupValue.id">
                 <!-- <span class="primary" style="margin-top: 40px;"> {{ Object.keys(groupValue.label).length > 0 ?  groupValue?.label[locale] : '' }} </span> -->
@@ -192,15 +191,15 @@
                               v-for="child in h.value"
                               :key="child.parameters"
                             >
+                              <label>{{
+                                child.label
+                                  ? child?.label[locale]
+                                  : child.parameters
+                              }}</label>
                               <q-input
-                                class="q-pt-sm"
                                 v-model="child.value"
-                                :label="
-                                  child.label
-                                    ? child?.label[locale]
-                                    : child.parameters
-                                "
                                 dense
+                                step="1"
                                 outlined
                                 :rules="[
                                   (val) =>
@@ -208,17 +207,19 @@
                                     $t(Utils.getKey('field is required')),
                                 ]"
                                 :type="child.type"
+                                :style="child.type =='date' || child.type =='datetime-local'? 'width: 250px': 'width:100%'"
                                 maxlength="500"
                                 lazy-rules
                               />
                             </div>
                           </div>
                           <div v-else>
+                            <label>{{ h?.label[locale] }}</label>
                             <q-input
-                              class="q-pt-sm"
                               v-model="h.value"
-                              :label="h?.label[locale]"
                               dense
+                              step="1"
+                              :style="h.type =='date' || h.type =='datetime-local'? 'width: 250px': 'width:100%'"
                               outlined
                               :rules="[
                                 (val) =>
@@ -240,7 +241,13 @@
                     <!-- <q-checkbox v-model="groupValue.status" /> -->
                     <!-- {{ $t("type") }}: -->
                     <!-- <span class="red"> {{ groupValue.type }} </span> -->
-                    <span class="primary" style="margin-top: 40px;"> {{ Object.keys(groupValue.label).length > 0 ?  groupValue?.label[locale] : '' }} </span>
+                    <span class="primary" style="margin-top: 40px">
+                      {{
+                        Object.keys(groupValue.label).length > 0
+                          ? groupValue?.label[locale]
+                          : ""
+                      }}
+                    </span>
                     <!-- <span class="red" style="margin-top: 40px;"> {{ Object.keys(groupValue.label).length > 0 ?  groupValue?.label[locale] : '' }} </span> -->
                   </p>
                   <table class="my_table">
@@ -265,19 +272,20 @@
                               v-for="child in hc.value"
                               :key="child.parameters"
                             >
+                              <label>{{
+                                child.label
+                                  ? child?.label[locale]
+                                  : child.parameters
+                              }}</label>
                               <q-input
-                                class="q-pt-sm"
+                                step="1"
                                 v-model="
                                   groupValue.setting_value[index][
                                     hc.parameters
                                   ][child.parameters]
                                 "
-                                :label="
-                                  child.label
-                                    ? child?.label[locale]
-                                    : child.parameters
-                                "
                                 dense
+                                :style="child.type =='date' || child.type =='datetime-local'? 'width: 250px': 'width:100%'"
                                 outlined
                                 :rules="[
                                   (val) =>
@@ -291,12 +299,12 @@
                             </div>
                           </div>
                           <div v-else>
+                            <label>{{ hc?.label[locale] }}</label>
                             <q-input
-                              class="q-pt-sm"
+                              step="1"
                               v-model="
                                 groupValue.setting_value[index][hc.parameters]
                               "
-                              :label="hc?.label[locale]"
                               dense
                               outlined
                               :rules="[
@@ -305,6 +313,7 @@
                                   $t(Utils.getKey('field is required')),
                               ]"
                               :type="hc.type"
+                              :style="hc.type =='date' || hc.type =='datetime-local'? 'width: 250px': 'width:100%'"
                               maxlength="500"
                               lazy-rules
                             />
@@ -335,12 +344,13 @@
                   </q-btn>
                 </div>
                 <div v-else class="q-my-md">
+                  {{ groupValue?.label[locale] }}
                   <q-input
-                    class="q-pt-sm"
+                    step="1"
                     v-model="groupValue.value"
-                    :label="groupValue?.label[locale]"
                     dense
                     outlined
+                    :style="groupValue.type =='date' || groupValue.type =='datetime-local'? 'width: 250px': 'width:100%'"
                     :rules="[
                       (val) => !!val || $t(Utils.getKey('field is required')),
                     ]"
@@ -355,20 +365,21 @@
               <q-separator class="q-my-md" />
               <p class="font_18">
                 <!-- {{ $t("parameter") }}: -->
-                {{ setting.label[locale] }}
+                <!-- {{ setting.label[locale] }} -->
                 <!-- <q-checkbox v-model="setting.status" /> -->
                 <!-- {{ $t("type") }}: <span class="red"> {{ setting.type }} </span> -->
               </p>
+              <label>{{ setting?.label[locale] }}</label>
               <q-input
-                class="q-pt-sm"
+                step="1"
                 v-model="setting.value"
-                :label="setting?.label[locale]"
                 dense
                 outlined
                 :rules="[
                   (val) => !!val || $t(Utils.getKey('field is required')),
                 ]"
                 :type="setting.type"
+                :style="setting.type =='date' || setting.type =='datetime-local' ? 'width: 250px': 'width:100%'"
                 maxlength="500"
                 lazy-rules
               />
@@ -575,8 +586,7 @@ const onAddRowListinGroup = (child, setting) => {
 const languages = ref([]);
 const languageSelect = ref(1);
 
-watch(languageSelect, () => {
-});
+watch(languageSelect, () => {});
 
 const onRemove = (val) => {
   rows.value = rows.value.filter((row) => row.id != val.id);
@@ -611,7 +621,7 @@ getLanguages();
 async function getLanguages() {
   isLoading.value = true;
   let lang = await lanuageHandle.all();
-  languages.value  = lang.data;
+  languages.value = lang.data;
   isLoading.value = false;
 }
 
@@ -630,7 +640,7 @@ async function onSubmit() {
       });
     }
     game.value.setting = platformSetting;
-    await add({ ...game.value , language_id: languageSelect.value});
+    await add({ ...game.value, language_id: languageSelect.value });
     $q.notify({
       position: "top-right",
       type: "positive",
@@ -651,3 +661,20 @@ async function onSubmit() {
 }
 onMounted(async () => {});
 </script>
+
+<style scoped>
+input.picker[type="date"] {
+  position: relative;
+}
+
+input.picker[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  color: transparent;
+  background: transparent;
+}
+</style>

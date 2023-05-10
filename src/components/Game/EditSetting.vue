@@ -176,7 +176,13 @@
               </p>
               <div v-for="groupValue in setting.value" :key="groupValue.id">
                 <div v-if="groupValue.type == 'group'">
-                  <span class="primary" style="margin-top: 40px;"> {{ Object.keys(groupValue.label).length > 0 ?  groupValue?.label[locale] : '' }} </span>
+                  <span class="primary" style="margin-top: 40px">
+                    {{
+                      Object.keys(groupValue.label).length > 0
+                        ? groupValue?.label[locale]
+                        : ""
+                    }}
+                  </span>
                   <table class="my_table">
                     <thead>
                       <tr>
@@ -195,15 +201,15 @@
                               v-for="child in h.value"
                               :key="child.parameters"
                             >
+                              <label>{{
+                                child.label
+                                  ? child?.label[locale]
+                                  : child.parameters
+                              }}</label>
                               <q-input
-                                class="q-pt-sm"
                                 v-model="child.value"
-                                :label="
-                                  child.label
-                                    ? child?.label[locale]
-                                    : child.parameters
-                                "
                                 dense
+                                step="1"
                                 outlined
                                 :rules="[
                                   (val) =>
@@ -211,17 +217,23 @@
                                     $t(Utils.getKey('field is required')),
                                 ]"
                                 :type="child.type"
+                                :style="
+                                  child.type == 'date' ||
+                                  child.type == 'datetime-local'
+                                    ? 'width: 250px'
+                                    : 'width:100%'
+                                "
                                 maxlength="500"
                                 lazy-rules
                               />
                             </div>
                           </div>
                           <div v-else>
+                            <label>{{ h?.label[locale] }} </label>
                             <q-input
-                              class="q-pt-sm"
                               v-model="h.value"
-                              :label="h?.label[locale]"
                               dense
+                              step="1"
                               outlined
                               :rules="[
                                 (val) =>
@@ -229,6 +241,11 @@
                                   $t(Utils.getKey('field is required')),
                               ]"
                               :type="h.type"
+                              :style="
+                                h.type == 'date' || h.type == 'datetime-local'
+                                  ? 'width: 250px'
+                                  : 'width:100%'
+                              "
                               maxlength="500"
                               lazy-rules
                             />
@@ -242,7 +259,13 @@
                   <p class="font_18">
                     <!-- <q-checkbox v-model="groupValue.status" /> -->
                     <!-- {{ $t("type") }}: -->
-                    <span class="primary" style="margin-top: 40px;"> {{ Object.keys(groupValue.label).length > 0 ?  groupValue?.label[locale] : '' }} </span>
+                    <span class="primary" style="margin-top: 40px">
+                      {{
+                        Object.keys(groupValue.label).length > 0
+                          ? groupValue?.label[locale]
+                          : ""
+                      }}
+                    </span>
                   </p>
                   <table class="my_table">
                     <thead>
@@ -266,41 +289,51 @@
                               v-for="child in hc.value"
                               :key="child.parameters"
                             >
+                              <label>
+                                {{
+                                  child.label
+                                    ? child?.label[locale]
+                                    : child.parameters
+                                }}</label
+                              >
                               <q-input
-                                class="q-pt-sm"
                                 v-model="
                                   groupValue.setting_value[index][
                                     hc.parameters
                                   ][child.parameters]
                                 "
-                                :label="
-                                  child.label
-                                    ? child?.label[locale]
-                                    : child.parameters
-                                "
                                 dense
                                 outlined
+                                step="1"
                                 :rules="[
                                   (val) =>
                                     !!val ||
                                     $t(Utils.getKey('field is required')),
                                 ]"
                                 :type="child.type"
+                                :style="
+                                  child.type == 'date' ||
+                                  child.type == 'datetime-local'
+                                    ? 'width: 250px'
+                                    : 'width:100%'
+                                "
                                 maxlength="500"
                                 lazy-rules
                               />
                             </div>
                           </div>
                           <div v-else>
+                            <label>
+                              {{
+                                hc.label ? hc?.label[locale] : hc.parameters
+                              }}</label
+                            >
                             <q-input
-                              class="q-pt-sm"
                               v-model="
                                 groupValue.setting_value[index][hc.parameters]
                               "
-                              :label="
-                                hc.label ? hc?.label[locale] : hc.parameters
-                              "
                               dense
+                              step="1"
                               outlined
                               :rules="[
                                 (val) =>
@@ -308,6 +341,11 @@
                                   $t(Utils.getKey('field is required')),
                               ]"
                               :type="hc.type"
+                              :style="
+                                hc.type == 'date' || hc.type == 'datetime-local'
+                                  ? 'width: 250px'
+                                  : 'width:100%'
+                              "
                               maxlength="500"
                               lazy-rules
                             />
@@ -338,20 +376,28 @@
                   </q-btn>
                 </div>
                 <div v-else>
-                  <q-input
-                    class="q-pt-sm"
-                    v-model="groupValue.value"
-                    :label="
+                  <label>
+                    {{
                       groupValue.label
                         ? groupValue?.label[locale]
                         : groupValue.parameters
-                    "
+                    }}</label
+                  >
+                  <q-input
+                    v-model="groupValue.value"
                     dense
+                    step="1"
                     outlined
                     :rules="[
                       (val) => !!val || $t(Utils.getKey('field is required')),
                     ]"
                     :type="groupValue.type"
+                    :style="
+                      groupValue.type == 'date' ||
+                      groupValue.type == 'datetime-local'
+                        ? 'width: 250px'
+                        : 'width:100%'
+                    "
                     maxlength="500"
                     lazy-rules
                   />
@@ -360,26 +406,25 @@
             </div>
             <div v-else>
               <q-separator class="q-my-md" />
-              <p class="font_18">
-                <!-- {{ $t("parameter") }}: -->
+              <label>
                 {{
                   setting.label ? setting?.label[locale] : setting.parameters
-                }}
-                <!-- <q-checkbox v-model="setting.status" /> -->
-                <!-- {{ $t("type") }}: <span class="red"> {{ setting.type }} </span> -->
-              </p>
+                }}</label
+              >
               <q-input
-                class="q-pt-sm"
                 v-model="setting.value"
-                :label="
-                  setting.label ? setting?.label[locale] : setting.parameters
-                "
                 dense
+                step="1"
                 outlined
                 :rules="[
                   (val) => !!val || $t(Utils.getKey('field is required')),
                 ]"
                 :type="setting.type"
+                :style="
+                  setting.type == 'date' || setting.type == 'datetime-local'
+                    ? 'width: 250px'
+                    : 'width:100%'
+                "
                 maxlength="500"
                 lazy-rules
               />
@@ -578,8 +623,6 @@ const onAddRowListinGroup = (child, setting) => {
   console.log("all setting", platformSetting.value);
 };
 
-
-
 getLanguages();
 async function getLanguages() {
   isLoading.value = true;
@@ -611,25 +654,24 @@ const onLoadGames = async (val) => {
 
     // add for child
     try {
-      let chldLendth = []
-      let newChildLength = []
-      checkIsnewSetting[0].setting?.setting.forEach(gVal => {
-        newChildLength = gVal.value
-      })
-      props.data.setting.forEach(gVal => {
-        chldLendth = gVal.value
-      })
-      if(newChildLength.length != chldLendth.length){
+      let chldLendth = [];
+      let newChildLength = [];
+      checkIsnewSetting[0].setting?.setting.forEach((gVal) => {
+        newChildLength = gVal.value;
+      });
+      props.data.setting.forEach((gVal) => {
+        chldLendth = gVal.value;
+      });
+      if (newChildLength.length != chldLendth.length) {
         let diff2 = newChildLength.length - chldLendth.length;
         let oldLendth = chldLendth.length;
         for (let j = 0; j < diff2; j++) {
-           chldLendth.push( newChildLength[oldLendth + j ] );
+          chldLendth.push(newChildLength[oldLendth + j]);
         }
       }
     } catch (e) {
-      console.log('error=',e)
+      console.log("error=", e);
     }
-
   }
 };
 onLoadGames();
