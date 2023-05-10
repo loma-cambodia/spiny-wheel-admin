@@ -176,6 +176,7 @@
               </p>
               <div v-for="groupValue in setting.value" :key="groupValue.id">
                 <div v-if="groupValue.type == 'group'">
+                  <span class="primary" style="margin-top: 40px;"> {{ Object.keys(groupValue.label).length > 0 ?  groupValue?.label[locale] : '' }} </span>
                   <table class="my_table">
                     <thead>
                       <tr>
@@ -241,7 +242,7 @@
                   <p class="font_18">
                     <!-- <q-checkbox v-model="groupValue.status" /> -->
                     <!-- {{ $t("type") }}: -->
-                    <!-- <span class="red"> {{ groupValue.type }} </span> -->
+                    <span class="primary" style="margin-top: 40px;"> {{ Object.keys(groupValue.label).length > 0 ?  groupValue?.label[locale] : '' }} </span>
                   </p>
                   <table class="my_table">
                     <thead>
@@ -600,7 +601,6 @@ const onLoadGames = async (val) => {
   if (checkIsnewSetting.length > 0) {
     let oldSetting = props.data.setting.length;
     let newSetting = checkIsnewSetting[0].setting?.setting.length;
-    // check is game add new parameter
     if (newSetting != oldSetting) {
       let diff = newSetting - oldSetting;
       for (let i = 0; i < diff; i++) {
@@ -608,6 +608,28 @@ const onLoadGames = async (val) => {
         platformSetting.value.push(stObj);
       }
     }
+
+    // add for child
+    try {
+      let chldLendth = []
+      let newChildLength = []
+      checkIsnewSetting[0].setting?.setting.forEach(gVal => {
+        newChildLength = gVal.value
+      })
+      props.data.setting.forEach(gVal => {
+        chldLendth = gVal.value
+      })
+      if(newChildLength.length != chldLendth.length){
+        let diff2 = newChildLength.length - chldLendth.length;
+        let oldLendth = chldLendth.length;
+        for (let j = 0; j < diff2; j++) {
+           chldLendth.push( newChildLength[oldLendth + j ] );
+        }
+      }
+    } catch (e) {
+      console.log('error=',e)
+    }
+
   }
 };
 onLoadGames();

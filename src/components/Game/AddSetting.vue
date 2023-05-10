@@ -170,8 +170,10 @@
                 {{ setting.label[locale] }}
                 <!-- <q-checkbox v-model="setting.status" /> -->
                 <!-- {{ $t("type") }}: <span class="red"> {{ setting.type }} </span> -->
+
               </p>
               <div v-for="groupValue in setting.value" :key="groupValue.id">
+                <!-- <span class="primary" style="margin-top: 40px;"> {{ Object.keys(groupValue.label).length > 0 ?  groupValue?.label[locale] : '' }} </span> -->
                 <div v-if="groupValue.type == 'group'" class="q-my-md">
                   <table class="my_table">
                     <thead>
@@ -238,6 +240,8 @@
                     <!-- <q-checkbox v-model="groupValue.status" /> -->
                     <!-- {{ $t("type") }}: -->
                     <!-- <span class="red"> {{ groupValue.type }} </span> -->
+                    <span class="primary" style="margin-top: 40px;"> {{ Object.keys(groupValue.label).length > 0 ?  groupValue?.label[locale] : '' }} </span>
+                    <!-- <span class="red" style="margin-top: 40px;"> {{ Object.keys(groupValue.label).length > 0 ?  groupValue?.label[locale] : '' }} </span> -->
                   </p>
                   <table class="my_table">
                     <thead>
