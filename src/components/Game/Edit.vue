@@ -188,7 +188,6 @@
                         class="q-mt-md"
                         outlined
                         style="margin-top: 20px"
-                        disable
                         v-model="parametersGroup"
                         :label="$t('parameters')"
                         dense
@@ -441,7 +440,6 @@
                                           $t(Utils.getKey('field is required')),
                                       ]"
                                       v-model="child.parameters"
-                                      disable
                                       :label="$t('parameters')"
                                       dense
                                     />
@@ -623,7 +621,7 @@
     <q-dialog v-model="dialog">
       <Property
         :data="pAttritures"
-        :isedit="true"
+        :isedit="false"
         @onClose="dialog = false"
         @add="onParamsAdd"
       />
