@@ -207,7 +207,7 @@
                                     $t(Utils.getKey('field is required')),
                                 ]"
                                 :type="child.type"
-                                :style="child.type =='date' || child.type =='datetime-local'? 'width: 250px': 'width:100%'"
+                                :style="child.type =='date' || child.type =='datetime-local' || child.type =='timel' ? 'width: 250px': 'width:100%'"
                                 maxlength="500"
                                 lazy-rules
                               />
@@ -219,7 +219,7 @@
                               v-model="h.value"
                               dense
                               step="1"
-                              :style="h.type =='date' || h.type =='datetime-local'? 'width: 250px': 'width:100%'"
+                              :style="h.type =='date' || h.type =='datetime-local' || h.type =='time' ? 'width: 250px': 'width:100%'"
                               outlined
                               :rules="[
                                 (val) =>
@@ -285,7 +285,7 @@
                                   ][child.parameters]
                                 "
                                 dense
-                                :style="child.type =='date' || child.type =='datetime-local'? 'width: 250px': 'width:100%'"
+                                :style="child.type =='date' || child.type =='datetime-local' || child.type =='time' ? 'width: 250px': 'width:100%'"
                                 outlined
                                 :rules="[
                                   (val) =>
@@ -313,7 +313,7 @@
                                   $t(Utils.getKey('field is required')),
                               ]"
                               :type="hc.type"
-                              :style="hc.type =='date' || hc.type =='datetime-local'? 'width: 250px': 'width:100%'"
+                              :style="hc.type =='date' || hc.type =='datetime-local' || hc.type =='time'? 'width: 250px': 'width:100%'"
                               maxlength="500"
                               lazy-rules
                             />
@@ -350,7 +350,7 @@
                     v-model="groupValue.value"
                     dense
                     outlined
-                    :style="groupValue.type =='date' || groupValue.type =='datetime-local'? 'width: 250px': 'width:100%'"
+                    :style="groupValue.type =='date' || groupValue.type =='datetime-local' || groupValue.type =='time' ? 'width: 250px': 'width:100%'"
                     :rules="[
                       (val) => !!val || $t(Utils.getKey('field is required')),
                     ]"
@@ -379,7 +379,7 @@
                   (val) => !!val || $t(Utils.getKey('field is required')),
                 ]"
                 :type="setting.type"
-                :style="setting.type =='date' || setting.type =='datetime-local' ? 'width: 250px': 'width:100%'"
+                :style="setting.type =='date' || setting.type =='datetime-local' || setting.type =='time' ? 'width: 250px': 'width:100%'"
                 maxlength="500"
                 lazy-rules
               />

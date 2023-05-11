@@ -393,7 +393,8 @@
                                         'color',
                                         'group',
                                         'date',
-                                        'datetime-local'
+                                        'datetime-local',
+                                        'time'
                                       ]"
                                       maxlength="500"
                                       lazy-rules

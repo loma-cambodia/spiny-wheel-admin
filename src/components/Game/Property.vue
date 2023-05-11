@@ -129,6 +129,7 @@
                         'group',
                         'date',
                         'datetime-local',
+                        'time'
                       ]"
                       maxlength="500"
                       lazy-rules
@@ -219,6 +220,7 @@
                               'color',
                               'date',
                               'datetime-local',
+                              'time'
                             ]"
                             maxlength="500"
                             lazy-rules

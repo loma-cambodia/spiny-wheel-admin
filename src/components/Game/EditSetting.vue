@@ -219,7 +219,8 @@
                                 :type="child.type"
                                 :style="
                                   child.type == 'date' ||
-                                  child.type == 'datetime-local'
+                                  child.type == 'datetime-local' ||
+                                  child.type == 'time'
                                     ? 'width: 250px'
                                     : 'width:100%'
                                 "
@@ -242,7 +243,7 @@
                               ]"
                               :type="h.type"
                               :style="
-                                h.type == 'date' || h.type == 'datetime-local'
+                                h.type == 'date' || h.type == 'datetime-local' || h.type == 'time'
                                   ? 'width: 250px'
                                   : 'width:100%'
                               "
@@ -313,7 +314,7 @@
                                 :type="child.type"
                                 :style="
                                   child.type == 'date' ||
-                                  child.type == 'datetime-local'
+                                  child.type == 'datetime-local' || child.type == 'time'
                                     ? 'width: 250px'
                                     : 'width:100%'
                                 "
@@ -342,7 +343,7 @@
                               ]"
                               :type="hc.type"
                               :style="
-                                hc.type == 'date' || hc.type == 'datetime-local'
+                                hc.type == 'date' || hc.type == 'datetime-local' || hc.type == 'time'
                                   ? 'width: 250px'
                                   : 'width:100%'
                               "
@@ -394,7 +395,7 @@
                     :type="groupValue.type"
                     :style="
                       groupValue.type == 'date' ||
-                      groupValue.type == 'datetime-local'
+                      groupValue.type == 'datetime-local' ||  groupValue.type == 'time'
                         ? 'width: 250px'
                         : 'width:100%'
                     "
@@ -421,7 +422,7 @@
                 ]"
                 :type="setting.type"
                 :style="
-                  setting.type == 'date' || setting.type == 'datetime-local'
+                  setting.type == 'date' || setting.type == 'datetime-local' || setting.type == 'time'
                     ? 'width: 250px'
                     : 'width:100%'
                 "
