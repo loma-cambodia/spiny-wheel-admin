@@ -303,7 +303,6 @@ const resetFilters = () => {
   for (const [key, value] of Object.entries(filters)) {
     filters[key] = "";
   }
-
   range.value = null;
 };
 </script>
