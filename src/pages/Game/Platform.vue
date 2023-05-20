@@ -30,6 +30,24 @@
                 :placeholder="$t(Utils.getKey('Search'))"
                 style="width: 300px"
               />
+              <q-select
+                v-model="filters.language_id"
+                :options="languages"
+                class="q-mx-sm"
+                style="width: 300px; margin-top: 20px"
+                :label="$t(Utils.getKey('Language'))"
+                dense
+                emit-value
+                map-options
+                option-label="name"
+                option-value="id"
+                outlined
+                lazy-rules
+                :rules="[
+                  (val) => !!val || $t(Utils.getKey('field is required')),
+                ]"
+              >
+              </q-select>
               <q-btn
                 class="q-mr-sm q-mt-xs"
                 dense
@@ -226,9 +244,11 @@ const {
   onRefresh,
 } = useTable(paginate, trash);
 const languages = ref([]);
+const languageSelect = ref(1);
 const selectedCategory = ref();
 const filters = reactive({
   search: "",
+  language_id: 1
 });
 const selectResponse = ref({});
 const showResponse = ref(false);
@@ -249,7 +269,7 @@ onMounted(() => {
       ...pagination.value,
       sortBy: "created_at",
     },
-    filter: undefined,
+    filter: filters,
   });
 });
 

@@ -1,7 +1,7 @@
 <template>
   <!-- Add new attribute design -->
-  <q-card style="box-shadow: none; border:0; margin-top: 20px;"> 
-        
+  <q-card style="box-shadow: none; border:0; margin-top: 20px;">
+
         <div class="row">
           <div class="col-md-4 col-sm-12 col-12 padding-left-right">
             <div class="add-game-form">
@@ -71,7 +71,7 @@
                       @click="resetFilters"
                     />
                     <q-space />
-  
+
                     <add-button
                       v-if="Utils.hasPermissions(['Game: Create'])"
                       :disable="loading"
@@ -80,7 +80,7 @@
                       color="primary"
                     />
                   </template>
-  
+
                   <template v-slot:header-cell="props">
                     <q-th :props="props">
                       {{
@@ -133,7 +133,7 @@
                       >
                         <q-tooltip>{{ $t(Utils.getKey("Edit")) }}</q-tooltip>
                       </q-btn>
-  
+
                       <q-btn
                         v-if="
                           Utils.hasPermissions([
@@ -156,13 +156,13 @@
         </q-card-section>
         <Loading :loading="loading" />
             </q-card>
-  
+
           </div> -->
         </div>
       </q-card>
-  
-  
-  
+
+
+
   <!-- <div class="row">
       <div class="col-md-12">
         <q-card
@@ -187,7 +187,7 @@
               <q-tooltip>{{ $t(Utils.getKey("Close")) }}</q-tooltip>
             </q-btn>
           </q-bar>
-  
+
           <q-card-section class="q-pt-lg pb-0">
             <q-form ref="refForm">
               <div class="row">
@@ -208,7 +208,7 @@
                       :label="$t(lang.locale)"
                     ></q-tab>
                   </q-tabs>
-                  
+
                   <div class="mt-1" v-for="lang in languages" :key="lang.locale">
                     <div v-show="tab2 == lang.locale">
                       <q-input
@@ -253,8 +253,8 @@
                           </q-btn>
                         </div>
                       </div>
-                      
-                      
+
+
                       <q-table
                         :columns="columns"
                         bordered
@@ -292,7 +292,7 @@
                             </q-btn>
                           </q-td>
                         </template>
-                       
+
                         <template v-slot:header-cell="props">
                           <q-th :props="props">
                             {{
@@ -327,13 +327,13 @@
                                   <th class="text-left text-bold">
                                     {{ $t("parameters") }}
                                   </th>
-                       
+
                                 </tr>
                                 <tr v-for="ch in props.row.value" :key="ch.id">
                                   <td>
                                     {{ ch.parameters }}
                                   </td>
-                          
+
                                 </tr>
                               </table>
                             </div>
@@ -381,15 +381,15 @@
                             >
                               <table style="width: 100%"  class="parameter-type">
                                 <tr>
-                  
+
                                   <th colspan="2" class="text-left text-bold">{{ $t("type") }}</th>
-  
+
                                 </tr>
                                 <tr v-for="ch in props.row.value" :key="ch.id">
-                        
+
                                   <td>
                                     {{ ch.type }}
-                     
+
                                   </td>
                                   <td>
                                     <q-btn
@@ -406,18 +406,18 @@
                                 </tr>
                               </table>
                             </div>
-                         
+
                           </q-td>
                         </template>
                       </q-table>
-                  
+
                   </div>
-                      
+
                 </div>
               </div>
             </q-form>
           </q-card-section>
-  
+
           <q-card-section class="text-right q-mt-md">
             <q-btn
               flat
@@ -437,7 +437,7 @@
             >
           </q-card-section>
           <Loading :loading="isLoading" />
-  
+
           <q-dialog v-model="dialog">
             <Property
               :data="pAttritures"
@@ -448,9 +448,9 @@
         </q-card>
       </div>
     </div>  -->
-    
+
   </template>
-  
+
   <script setup>
   import { onMounted, ref, watch } from "vue";
   import { useQuasar } from "quasar";
@@ -461,7 +461,7 @@
   import Utils from "../../helpers/Utils";
   import Auth from "src/store/auth";
   import Property from "src/components/Game/Property";
-  
+
   const form = ref(null);
   const { t } = useI18n();
   const props = defineProps({ data: Object });
@@ -489,7 +489,7 @@
       label: "parameters",
     },
     { name: "type", field: (row) => row, align: "left", label: "type" },
-  
+
     { name: "actions", field: (row) => row, label: " Action", align: "center" },
   ];
   const refForm = ref(null);
@@ -505,11 +505,11 @@
     });
   };
   const languages = ref([]);
-  
+
   const onRemove = (val) => {
     rows.value = rows.value.filter((row) => row.id != val.id);
   };
-  
+
   const onRemoveSub = (val, parent) => {
     rows.value.map((rw) => {
       if (rw.id == parent.id && rw.parameters == parent.parameters) {
@@ -520,14 +520,14 @@
       return rw;
     });
   };
-  
+
   const pAttritures = ref({});
   const onShowProperty = (r) => {
     dialog.value = true;
     rows.value.map((rw) => {});
     pAttritures.value = r;
   };
-  
+
   const onParamsAdd = (emitValue) => {
     dialog.value = false;
     rows.value.map((rw) => {
@@ -541,7 +541,7 @@
     });
     console.log("e event", rows);
   };
-  
+
   getLanguages();
   async function getLanguages() {
     languages.value = await (await all()).data;
@@ -549,7 +549,7 @@
       translation_name.value[lg.id] = "";
     });
   }
-  
+
   async function onSubmit() {
     try {
       let validation = await refForm.value.validate();
@@ -609,4 +609,3 @@
   }
   onMounted(async () => {});
   </script>
-  
