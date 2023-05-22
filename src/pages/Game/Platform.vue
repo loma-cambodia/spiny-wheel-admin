@@ -248,7 +248,7 @@ const languageSelect = ref(1);
 const selectedCategory = ref();
 const filters = reactive({
   search: "",
-  language_id: 1
+  language_id: 1,
 });
 const selectResponse = ref({});
 const showResponse = ref(false);
@@ -301,7 +301,9 @@ const getStatusColor = (props) => {
 
 const resetFilters = () => {
   for (const [key, value] of Object.entries(filters)) {
-    filters[key] = "";
+    if (key != "language_id") {
+      filters[key] = "";
+    }
   }
   range.value = null;
 };
